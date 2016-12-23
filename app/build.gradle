@@ -8,15 +8,28 @@ android {
         applicationId "io.quartic.app"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode (version.isInteger() ? version.toInteger() : 0)
+        versionName version
     }
+
+    signingConfigs {
+        release {
+            // TODO: figure out where to put these
+            storeFile file("release-key.jks")
+            storePassword "quartic"
+            keyAlias "release-key"
+            keyPassword "quartic"
+        }
+    }
+
     buildTypes {
         release {
-            minifyEnabled false
+            signingConfig signingConfigs.release
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {

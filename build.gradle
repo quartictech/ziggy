@@ -16,6 +16,8 @@ allprojects {
     repositories {
         jcenter()
     }
+
+    version (System.env.CIRCLE_BUILD_NUM ?: "unknown")
 }
 
 task clean(type: Delete) {
