@@ -4,11 +4,11 @@ machine:
 
 dependencies:
   override:
-    - ./gradlew resolveConfigurations --parallel
+    - ./gradlew resolveConfigurations --parallel --console=plain
 
 test:
   override:
-    - ./gradlew check build --parallel --info
+    - ./gradlew check build --parallel --info --console=plain
   post:
     - mkdir -p ${CIRCLE_TEST_REPORTS}/junit/
     - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ${CIRCLE_TEST_REPORTS}/junit/ \;
