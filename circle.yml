@@ -4,7 +4,7 @@ machine:
 
 dependencies:
   override:
-    - ./gradlew resolveConfigurations npmInstall --parallel
+    - ./gradlew resolveConfigurations --parallel
 
 test:
   override:
