@@ -1,4 +1,4 @@
-package io.quartic.silly;
+package io.quartic.app;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

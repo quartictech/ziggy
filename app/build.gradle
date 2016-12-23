@@ -5,7 +5,7 @@ android {
     buildToolsVersion "25.0.2"
 
     defaultConfig {
-        applicationId "io.quartic.silly"
+        applicationId "io.quartic.app"
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 1
