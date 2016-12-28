@@ -3,6 +3,7 @@ plugins {
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 25
@@ -10,14 +11,10 @@ android {
 
     defaultConfig {
         applicationId "io.quartic.app"
-        minSdkVersion 15
+        minSdkVersion 23
         targetSdkVersion 25
         versionCode (version.isInteger() ? version.toInteger() : 0)
         versionName version
-
-        jackOptions {
-            enabled true
-        }
     }
 
     signingConfigs {
@@ -38,15 +35,17 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
     }
-
 }
 
 dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.android.support:design:25.1.0'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }
