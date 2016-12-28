@@ -8,17 +8,19 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils.isEmpty
 import android.text.TextWatcher
+import android.util.Base64
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
+import io.quartic.app.api.RegistrationRequest
 
 class LoginActivity : Activity() {
 
     private var loginTask: UserLoginTask? = null
-    private var codeView: EditText? = null
-    private var progressView: View? = null
-    private var loginFormView: View? = null
+    private lateinit var codeView: EditText
+    private lateinit var progressView: View
+    private lateinit var loginFormView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,14 +34,14 @@ class LoginActivity : Activity() {
         val signInButton = findViewById(R.id.sign_in_button) as Button
 
         codeView = findViewById(R.id.code) as EditText
-        codeView!!.addTextChangedListener(object : TextWatcher {
+        codeView.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) = Unit
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) = Unit
             override fun afterTextChanged(s: Editable) {
                 signInButton.isEnabled = isCodeValid(s.toString())
             }
         })
-        codeView!!.setOnEditorActionListener { textView, id, keyEvent ->
+        codeView.setOnEditorActionListener { textView, id, keyEvent ->
             if ((id == R.id.login || id == EditorInfo.IME_NULL) && signInButton.isEnabled) {
                 attemptLogin()
                 true
@@ -59,19 +61,19 @@ class LoginActivity : Activity() {
             return
         }
 
-        codeView!!.error = null
-        val code = codeView!!.text.toString()
+        codeView.error = null
+        val code = codeView.text.toString()
 
         var cancel = false
         var focusView: View? = null
 
         // Check for a valid code
         if (isEmpty(code)) {
-            codeView!!.error = getString(R.string.error_field_required)
+            codeView.error = getString(R.string.error_field_required)
             focusView = codeView
             cancel = true
         } else if (!isCodeValid(code)) {
-            codeView!!.error = getString(R.string.error_invalid_code)
+            codeView.error = getString(R.string.error_invalid_code)
             focusView = codeView
             cancel = true
         }
@@ -88,33 +90,28 @@ class LoginActivity : Activity() {
     private fun isCodeValid(code: String) = code.length == EXPECTED_CODE_LENGTH
 
     private fun showProgress(show: Boolean) {
-        val shortAnimTime = resources.getInteger(android.R.integer.config_shortAnimTime)
+        animate(loginFormView, if (show) View.GONE else View.VISIBLE, if (show) 0.0f else 1.0f)
+        animate(progressView, if (show) View.VISIBLE else View.GONE, if (show) 1.0f else 0.0f)
+    }
 
-        loginFormView!!.visibility = if (show) View.GONE else View.VISIBLE
-        loginFormView!!.animate()
-                .setDuration(shortAnimTime.toLong())
-                .alpha(if (show) 0.0f else 1.0f)
+    private fun animate(view: View, visibility: Int, alpha: Float) {
+        view.visibility = visibility
+        view.animate()
+                .setDuration(resources.getInteger(android.R.integer.config_shortAnimTime).toLong())
+                .alpha(alpha)
                 .setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator) {
-                        loginFormView!!.visibility = if (show) View.GONE else View.VISIBLE
-                    }
-                })
-
-        progressView!!.visibility = if (show) View.VISIBLE else View.GONE
-        progressView!!.animate()
-                .setDuration(shortAnimTime.toLong())
-                .alpha(if (show) 1.0f else 0.0f)
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        progressView!!.visibility = if (show) View.VISIBLE else View.GONE
+                        view.visibility = visibility
                     }
                 })
     }
 
-    inner class UserLoginTask internal constructor(private val code: String) : AsyncTask<Void, Void, Boolean>() {
+    private inner class UserLoginTask constructor(private val code: String) : AsyncTask<Void, Void, Boolean>() {
 
         override fun doInBackground(vararg params: Void): Boolean? {
-            val key = publicKey
+            val request = RegistrationRequest(code, Base64.encodeToString(publicKey.encoded, Base64.DEFAULT))
+
+            // TODO: send request and receive response
 
             // TODO: send public key + code in request
             // TODO: if 2xx then cool - finish() activity (who's responsible for updating state in local storage?)
@@ -147,8 +144,8 @@ class LoginActivity : Activity() {
             if (success!!) {
                 finish()
             } else {
-                codeView!!.error = getString(R.string.error_unrecognised_code)
-                codeView!!.requestFocus()
+                codeView.error = getString(R.string.error_unrecognised_code)
+                codeView.requestFocus()
             }
         }
 

@@ -1,3 +1,6 @@
 package io.quartic.app.api
 
-interface RegistrationRequest
+data class RegistrationRequest(
+        val code: String,
+        val publicKey: String
+)
