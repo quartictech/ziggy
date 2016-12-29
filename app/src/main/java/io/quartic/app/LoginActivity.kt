@@ -14,6 +14,9 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import io.quartic.app.api.RegistrationRequest
+import io.quartic.app.api.RegistrationService
+import retrofit2.Retrofit
+import retrofit2.converter.jackson.JacksonConverterFactory
 
 class LoginActivity : Activity() {
 
@@ -87,7 +90,7 @@ class LoginActivity : Activity() {
         }
     }
 
-    private fun isCodeValid(code: String) = code.length == EXPECTED_CODE_LENGTH
+    private fun isCodeValid(code: String) = code.length >= MINIMUM_CODE_LENGTH
 
     private fun showProgress(show: Boolean) {
         animate(loginFormView, if (show) View.GONE else View.VISIBLE, if (show) 0.0f else 1.0f)
@@ -110,6 +113,18 @@ class LoginActivity : Activity() {
 
         override fun doInBackground(vararg params: Void): Boolean? {
             val request = RegistrationRequest(code, Base64.encodeToString(publicKey.encoded, Base64.DEFAULT))
+
+
+            val retrofit = Retrofit.Builder()
+                    .baseUrl("http://localhost:5555")
+                    .addConverterFactory(JacksonConverterFactory.create())
+                    .build()
+
+            val registration = retrofit.create(RegistrationService::class.java)
+
+            registration.register(request)
+
+
 
             // TODO: send request and receive response
 
@@ -156,7 +171,7 @@ class LoginActivity : Activity() {
     }
 
     companion object {
-        private val EXPECTED_CODE_LENGTH = 4
+        private val MINIMUM_CODE_LENGTH = 4
 
         // TODO: remove these
         private val DUMMY_CODES = arrayOf("1234", "5678")
