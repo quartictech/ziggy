@@ -1,14 +1,36 @@
 machine:
   java:
     version: openjdk8
+  environment:
+    ANDROID_SDK_VERSION: 25
+    BUILD_TOOLS_VERSION: 25.0.2
+    SUPPORT_VERSION: 25.1.0
 
 dependencies:
+  pre:
+    # Although the Android Gradle plugin claims to install SDK components
+    # (https://developer.android.com/studio/intro/update.html#download-with-gradle), it's still rife with shittiness
+    # (e.g. http://stackoverflow.com/a/38381577/129570 and https://code.google.com/p/android/issues/detail?id=230654).
+    # Thus we install the SDK and tooling components manually.
+    - if [ ! -d "${ANDROID_HOME}/platforms/android-${ANDROID_SDK_VERSION}" ]; then echo y | android update sdk --no-ui --all --filter "platform-tools,android-${ANDROID_SDK_VERSION}"; fi
+    - if [ ! -d "${ANDROID_HOME}/build-tools/${BUILD_TOOLS_VERSION}" ]; then echo y | android update sdk --no-ui --all --filter "build-tools-${BUILD_TOOLS_VERSION}"; fi
+    - if [ ! -d "${ANDROID_HOME}/extras/android/m2repository/com/android/support/design/${SUPPORT_VERSION}" ]; then echo y | android update sdk --no-ui --all --filter "extra-android-m2repository"; fi
   override:
-    - ./gradlew resolveConfigurations --parallel
+    - ./gradlew resolveConfigurations --parallel --console=plain
+  cache_directories:
+      # CircleCI seems to not expand env vars for cache_directories (https://discuss.circleci.com/t/variable-substitution-does-not-work-for-cache-directories/9080)
+      - /usr/local/android-sdk-linux/platforms/android-25
+      - /usr/local/android-sdk-linux/platform-tools
+      - /usr/local/android-sdk-linux/build-tools/25.0.2
+      - /usr/local/android-sdk-linux/extras/android/m2repository
 
 test:
   override:
-    - ./gradlew check build --parallel --info
+    - ./gradlew checkRelease assembleRelease --parallel --info --console=plain
   post:
     - mkdir -p ${CIRCLE_TEST_REPORTS}/junit/
     - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ${CIRCLE_TEST_REPORTS}/junit/ \;
+
+general:
+  artifacts:
+    - app/build/outputs
