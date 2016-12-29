@@ -4,11 +4,12 @@ machine:
 
 dependencies:
   pre:
-    # Grossness for Android tooling awfulness (see http://stackoverflow.com/a/38381577/129570)
-    - mkdir ${ANDROID_HOME}/licenses
-    - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > ${ANDROID_HOME}/licenses/android-sdk-license
+    # Although the Android Gradle plugin claims to install SDK components
+    # (https://developer.android.com/studio/intro/update.html#download-with-gradle), it's still rife with shittiness
+    # (e.g. http://stackoverflow.com/a/38381577/129570 and https://code.google.com/p/android/issues/detail?id=230654).
+    # Thus we install the SDK manually
+    -  if [ ! -d "/usr/local/android-sdk-linux/platforms/android-25" ]; then echo y | android update sdk --no-ui --all --filter "android-25"; echo y | android update sdk -u -a -t 3; fi
   override:
-    - ./gradlew dependencies || true # Yes, we have to call it twice, and discard the first result (see above SO link)
     - ./gradlew resolveConfigurations --parallel --console=plain
 
 test:
