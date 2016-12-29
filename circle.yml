@@ -18,10 +18,10 @@ dependencies:
   override:
     - ./gradlew resolveConfigurations --parallel --console=plain
   cache_directories:
-      - ${ANDROID_HOME}/platforms/android-${ANDROID_SDK_VERSION}
-      - ${ANDROID_HOME}/platform-tools
-      - ${ANDROID_HOME}/build-tools/25.0.2
-      - ${ANDROID_HOME}/extras/android/m2repository
+      - /${ANDROID_HOME}/platforms/android-${ANDROID_SDK_VERSION}
+      - /${ANDROID_HOME}/platform-tools
+      - /${ANDROID_HOME}/build-tools/25.0.2
+      - /${ANDROID_HOME}/extras/android/m2repository
 
 test:
   override:
