@@ -18,8 +18,8 @@ dependencies:
   override:
     - ./gradlew resolveConfigurations --parallel --console=plain
   cache_directories:
-      # CircleCI seems to not expand env vars (i.e. ${ANDROID_HOME}) for cache_directories
-      - /usr/local/android-sdk-linux/platforms/android-${ANDROID_SDK_VERSION}
+      # CircleCI seems to not expand env vars for cache_directories (https://discuss.circleci.com/t/variable-substitution-does-not-work-for-cache-directories/9080)
+      - /usr/local/android-sdk-linux/platforms/android-25
       - /usr/local/android-sdk-linux/platform-tools
       - /usr/local/android-sdk-linux/build-tools/25.0.2
       - /usr/local/android-sdk-linux/extras/android/m2repository
