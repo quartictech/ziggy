@@ -48,6 +48,10 @@ android {
     lintOptions {
         lintConfig file("lint.xml")
     }
+
+    dexOptions {
+        preDexLibraries file("local.properties").exists()   // Prevents pointlessly running on CircleCI
+    }
 }
 
 repositories {
