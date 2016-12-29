@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Workaround for Retrofit weirdness - see https://guides.codepath.com/android/Consuming-APIs-with-Retrofit#issues -->
+<lint>
+    <issue id="InvalidPackage">
+        <ignore regexp=".*jackson.*" />
+        <ignore regexp=".*retrofit.*" />
+    </issue>
+</lint>

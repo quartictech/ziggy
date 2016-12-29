@@ -44,6 +44,10 @@ android {
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/NOTICE'
     }
+
+    lintOptions {
+        lintConfig file("lint.xml")
+    }
 }
 
 repositories {
