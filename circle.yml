@@ -8,6 +8,7 @@ machine:
 
 dependencies:
   pre:
+    - echo "${ANDROID_HOME}"
     # Although the Android Gradle plugin claims to install SDK components
     # (https://developer.android.com/studio/intro/update.html#download-with-gradle), it's still rife with shittiness
     # (e.g. http://stackoverflow.com/a/38381577/129570 and https://code.google.com/p/android/issues/detail?id=230654).
