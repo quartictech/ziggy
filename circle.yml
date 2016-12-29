@@ -26,7 +26,7 @@ dependencies:
 
 test:
   override:
-    - ./gradlew check build --parallel --info --console=plain
+    - ./gradlew checkRelease assembleRelease --parallel --info --console=plain
   post:
     - mkdir -p ${CIRCLE_TEST_REPORTS}/junit/
     - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ${CIRCLE_TEST_REPORTS}/junit/ \;
