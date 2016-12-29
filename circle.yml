@@ -8,7 +8,6 @@ machine:
 
 dependencies:
   pre:
-    - echo "${ANDROID_HOME}"
     # Although the Android Gradle plugin claims to install SDK components
     # (https://developer.android.com/studio/intro/update.html#download-with-gradle), it's still rife with shittiness
     # (e.g. http://stackoverflow.com/a/38381577/129570 and https://code.google.com/p/android/issues/detail?id=230654).
@@ -19,10 +18,11 @@ dependencies:
   override:
     - ./gradlew resolveConfigurations --parallel --console=plain
   cache_directories:
-      - /${ANDROID_HOME}/platforms/android-${ANDROID_SDK_VERSION}
-      - /${ANDROID_HOME}/platform-tools
-      - /${ANDROID_HOME}/build-tools/25.0.2
-      - /${ANDROID_HOME}/extras/android/m2repository
+      # CircleCI seems to not expand env vars (i.e. ${ANDROID_HOME}) for cache_directories
+      - /usr/local/android-sdk-linux/platforms/android-${ANDROID_SDK_VERSION}
+      - /usr/local/android-sdk-linux/platform-tools
+      - /usr/local/android-sdk-linux/build-tools/25.0.2
+      - /usr/local/android-sdk-linux/extras/android/m2repository
 
 test:
   override:
