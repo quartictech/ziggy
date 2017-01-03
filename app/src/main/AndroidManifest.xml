@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -27,6 +28,9 @@
             </intent-filter>
 
         </activity>
+
+        <service android:name="io.quartic.app.sensors.SensorService"
+                 android:exported="false" />
     </application>
 
 </manifest>

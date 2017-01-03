@@ -1,10 +1,14 @@
 package io.quartic.app
 
+import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
+import android.content.pm.PackageManager
 import android.os.AsyncTask
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.text.Editable
 import android.text.TextUtils.isEmpty
 import android.text.TextWatcher
@@ -15,6 +19,7 @@ import android.widget.Button
 import android.widget.EditText
 import io.quartic.app.api.RegistrationRequest
 import io.quartic.app.api.RegistrationService
+import io.quartic.app.sensors.SensorService
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 
@@ -29,6 +34,16 @@ class LoginActivity : Activity() {
         super.onCreate(savedInstanceState)
         configureWidgets()
         generateKeyPair()
+        loadPermissions(Manifest.permission.ACCESS_FINE_LOCATION, 0)
+        SensorService.startService(applicationContext)
+    }
+
+    private fun loadPermissions(perm: String, requestCode: Int) {
+        if (ContextCompat.checkSelfPermission(applicationContext, perm) != PackageManager.PERMISSION_GRANTED) {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, perm)) {
+                ActivityCompat.requestPermissions(this, arrayOf(perm), requestCode)
+            }
+        }
     }
 
     private fun configureWidgets() {
