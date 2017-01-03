@@ -3,8 +3,11 @@ package io.quartic.app.sensors
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
+import io.quartic.app.sync.AccountSingleton
+import android.content.ContentResolver
 
 class SensorService : Service() {
     var thread : ServiceThread? = null
@@ -23,6 +26,19 @@ class SensorService : Service() {
             thread = ServiceThread(applicationContext)
             thread!!.start()
         }
+
+        Log.i(TAG, "requesting sync")
+        val settingsBundle = Bundle()
+        settingsBundle.putBoolean(
+                ContentResolver.SYNC_EXTRAS_MANUAL, true)
+        settingsBundle.putBoolean(
+                ContentResolver.SYNC_EXTRAS_EXPEDITED, true)
+
+        ContentResolver.requestSync(
+                AccountSingleton.getAccount(applicationContext),
+                "io.quartic.app.provider",
+                settingsBundle)
+
     }
 
     override fun onBind(intent: Intent?): IBinder {
