@@ -59,11 +59,24 @@ repositories {
 }
 
 dependencies {
+    compile project(":backend-api")
+
     compile "com.android.support:appcompat-v7:25.1.0"
     compile "com.android.support:design:25.1.0"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.7.6"
     compile "com.squareup.retrofit2:retrofit:2.1.0"
+    compile "com.squareup.retrofit2:adapter-rxjava:2.1.0"
     compile "com.squareup.retrofit2:converter-jackson:2.1.0"
 
+    compile "io.reactivex:rxkotlin:0.60.0"
+    compile "io.reactivex:rxjava-async-util:0.21.0"
+    compile "io.reactivex:rxandroid:1.2.1"
+    compile "com.jakewharton.rxbinding:rxbinding-kotlin:1.0.0"
+
     testCompile "junit:junit:4.12"
+    testCompile "com.github.tomakehurst:wiremock:2.2.2"
+    testCompile "com.fasterxml.jackson.core:jackson-databind:2.7.6" // Explicit spec of transitive dep to avoid version conflicts
+    testCompile "com.fasterxml.jackson.core:jackson-annotations:2.7.6" // Explicit spec of transitive dep to avoid version conflicts
 }
