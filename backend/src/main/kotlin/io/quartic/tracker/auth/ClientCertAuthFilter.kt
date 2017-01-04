@@ -4,13 +4,12 @@ import io.dropwizard.auth.AuthFilter
 import io.quartic.common.logging.logger
 import io.quartic.tracker.Store
 import io.quartic.tracker.model.UserId
-import io.quartic.tracker.resource.MyCredentials
 import javax.ws.rs.WebApplicationException
 import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.core.HttpHeaders
 import javax.ws.rs.core.SecurityContext
 
-class MyAuthFilter : AuthFilter<MyCredentials, MyPrincipal>() {
+class ClientCertAuthFilter : AuthFilter<ClientCertCredentials, MyPrincipal>() {
     private val LOG by logger()
     private val regex = """$PREFIX userId="(.+)", signature="(.+)"""".toRegex()
 
@@ -21,7 +20,7 @@ class MyAuthFilter : AuthFilter<MyCredentials, MyPrincipal>() {
         }
     }
 
-    private fun extractCredentials(requestContext: ContainerRequestContext): MyCredentials? {
+    private fun extractCredentials(requestContext: ContainerRequestContext): ClientCertCredentials? {
         if (requestContext.method != "POST" && requestContext.method != "PUT") {
             LOG.warn("Unsupported method '${requestContext.method}")
             return null
@@ -31,7 +30,7 @@ class MyAuthFilter : AuthFilter<MyCredentials, MyPrincipal>() {
         val matchResult = regex.matchEntire(authHeader) ?: return null
         val entity = extractEntity(requestContext)
 
-        return MyCredentials(UserId(matchResult.groupValues[1]), matchResult.groupValues[2], entity)
+        return ClientCertCredentials(UserId(matchResult.groupValues[1]), matchResult.groupValues[2], entity)
     }
 
     /** Convert the entity to a ByteArray. */
@@ -42,11 +41,11 @@ class MyAuthFilter : AuthFilter<MyCredentials, MyPrincipal>() {
     }
 
     companion object {
-        fun create(store: Store): MyAuthFilter = create(MyAuthenticator(store))
+        fun create(store: Store): ClientCertAuthFilter = create(ClientCertAuthenticator(store))
 
-        fun create(authenticator: MyAuthenticator): MyAuthFilter {
-            val builder = object : AuthFilterBuilder<MyCredentials, MyPrincipal, MyAuthFilter>() {
-                override fun newInstance() = MyAuthFilter()
+        fun create(authenticator: ClientCertAuthenticator): ClientCertAuthFilter {
+            val builder = object : AuthFilterBuilder<ClientCertCredentials, MyPrincipal, ClientCertAuthFilter>() {
+                override fun newInstance() = ClientCertAuthFilter()
             }
 
             return builder

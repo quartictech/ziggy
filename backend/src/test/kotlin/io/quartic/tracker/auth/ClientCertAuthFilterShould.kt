@@ -3,7 +3,7 @@ package io.quartic.tracker.auth
 import com.nhaarman.mockito_kotlin.*
 import io.quartic.assertThrows
 import io.quartic.tracker.model.UserId
-import io.quartic.tracker.resource.MyCredentials
+import io.quartic.tracker.auth.ClientCertCredentials
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers
 import org.hamcrest.Matchers.*
@@ -16,9 +16,9 @@ import javax.ws.rs.WebApplicationException
 import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.core.HttpHeaders
 
-class MyAuthFilterShould {
-    private val authenticator = mock<MyAuthenticator>()
-    private val filter = MyAuthFilter.create(authenticator)
+class ClientCertAuthFilterShould {
+    private val authenticator = mock<ClientCertAuthenticator>()
+    private val filter = ClientCertAuthFilter.create(authenticator)
     private val requestContext = mock<ContainerRequestContext>(RETURNS_DEEP_STUBS)
 
     @Test
@@ -54,7 +54,7 @@ class MyAuthFilterShould {
 
         filter.filter(requestContext)
 
-        verify(authenticator).authenticate(MyCredentials(UserId("abc"), "789", "stuff and nonsense".toByteArray()))
+        verify(authenticator).authenticate(ClientCertCredentials(UserId("abc"), "789", "stuff and nonsense".toByteArray()))
     }
 
     @Test
