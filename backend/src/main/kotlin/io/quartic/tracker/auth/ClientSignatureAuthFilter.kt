@@ -9,7 +9,7 @@ import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.core.HttpHeaders
 import javax.ws.rs.core.SecurityContext
 
-class ClientCertAuthFilter : AuthFilter<ClientCertCredentials, MyPrincipal>() {
+class ClientSignatureAuthFilter : AuthFilter<ClientSignatureCredentials, MyPrincipal>() {
     private val LOG by logger()
     private val regex = """$PREFIX userId="(.+)", signature="(.+)"""".toRegex()
 
@@ -20,7 +20,7 @@ class ClientCertAuthFilter : AuthFilter<ClientCertCredentials, MyPrincipal>() {
         }
     }
 
-    private fun extractCredentials(requestContext: ContainerRequestContext): ClientCertCredentials? {
+    private fun extractCredentials(requestContext: ContainerRequestContext): ClientSignatureCredentials? {
         if (requestContext.method != "POST" && requestContext.method != "PUT") {
             LOG.warn("Unsupported method '${requestContext.method}")
             return null
@@ -30,7 +30,7 @@ class ClientCertAuthFilter : AuthFilter<ClientCertCredentials, MyPrincipal>() {
         val matchResult = regex.matchEntire(authHeader) ?: return null
         val entity = extractEntity(requestContext)
 
-        return ClientCertCredentials(UserId(matchResult.groupValues[1]), matchResult.groupValues[2], entity)
+        return ClientSignatureCredentials(UserId(matchResult.groupValues[1]), matchResult.groupValues[2], entity)
     }
 
     /** Convert the entity to a ByteArray. */
@@ -41,11 +41,11 @@ class ClientCertAuthFilter : AuthFilter<ClientCertCredentials, MyPrincipal>() {
     }
 
     companion object {
-        fun create(store: Store): ClientCertAuthFilter = create(ClientCertAuthenticator(store))
+        fun create(store: Store): ClientSignatureAuthFilter = create(ClientSignatureAuthenticator(store))
 
-        fun create(authenticator: ClientCertAuthenticator): ClientCertAuthFilter {
-            val builder = object : AuthFilterBuilder<ClientCertCredentials, MyPrincipal, ClientCertAuthFilter>() {
-                override fun newInstance() = ClientCertAuthFilter()
+        fun create(authenticator: ClientSignatureAuthenticator): ClientSignatureAuthFilter {
+            val builder = object : AuthFilterBuilder<ClientSignatureCredentials, MyPrincipal, ClientSignatureAuthFilter>() {
+                override fun newInstance() = ClientSignatureAuthFilter()
             }
 
             return builder
