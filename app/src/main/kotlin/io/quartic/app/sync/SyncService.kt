@@ -16,7 +16,6 @@ class SyncService : Service() {
         Log.i(TAG, "creating SyncService")
         synchronized(syncAdapterLock) {
             syncAdapter = SyncAdapter(applicationContext, true)
-
         }
     }
 

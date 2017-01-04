@@ -23,9 +23,9 @@ class SyncAdapter(context: Context?, autoInitialize: Boolean) :
         Log.i(TAG, "starting sync")
         val sensorValues = Database(context).getUnsavedSensorData(100)
         Log.i(TAG, "syncing ${sensorValues.size} values")
-        val registration = clientOf<BackendApi>("http://10.0.2.2:9000/api/")
+        val backend = clientOf<BackendApi>("http://10.0.2.2:9000/api/")
 
-        registration.upload(UploadRequest(sensorValues)).subscribe(
+        backend.upload(UploadRequest(sensorValues)).subscribe(
                 { v -> Log.i(TAG, "uploaded ${sensorValues.size} values") },
                 { e -> Log.e(TAG, "error uploading: ${e.message}")}
         )
