@@ -10,7 +10,6 @@ import io.quartic.tracker.model.UnregisteredUser
 import io.quartic.tracker.model.User
 import io.quartic.tracker.model.UserId
 import java.util.*
-import javax.ws.rs.*
 
 class Store {
     private val LOG by logger()

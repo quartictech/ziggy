@@ -12,18 +12,18 @@ import javax.ws.rs.core.MediaType
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 class UsersResource(val store: Store) {
-    // TODO: most of these methods should be exposed to the outside world!
+    // TODO: most of these methods should be exposed to the outside world!  (Perhaps use Dropwizard @RolesAllowed)
 
     @GET
     fun getUsers(): Map<UserId, User> = store.getUsers()
 
     @GET
     @Path("/{id}")
-    fun getUser(@PathParam("id") userId: UserId) = store.getUser(userId) ?: throw NotFoundException("No user with ID $userId")
+    fun getUser(@PathParam("id") userId: UserId) = store.getUser(userId) ?: throw NotFoundException("User '$userId' not recognised")
 
     @DELETE
     @Path("/{id}")
-    fun deleteUser(@PathParam("id") userId: UserId) = if (store.deleteUser(userId)) Unit else throw NotFoundException("No user with ID $userId")
+    fun deleteUser(@PathParam("id") userId: UserId) = if (store.deleteUser(userId)) Unit else throw NotFoundException("User '$userId' not recognised")
 
     @POST
     fun createUser() = store.createUser()

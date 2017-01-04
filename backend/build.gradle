@@ -17,9 +17,10 @@ dependencies {
 
     compile "io.quartic.platform:common-application:818"
     compile "io.dropwizard:dropwizard-core:1.0.5"
+    compile "io.dropwizard:dropwizard-auth:1.0.5"
     compile "io.dropwizard.modules:dropwizard-java8:0.9.0-1"
 
-    testCompile "junit:junit:4.12"
+    testCompile "org.junit.jupiter:junit-jupiter-api:5.0.0-M3"
     testCompile "org.hamcrest:hamcrest-all:1.3"
     testCompile "com.nhaarman:mockito-kotlin:1.0.1"
 }

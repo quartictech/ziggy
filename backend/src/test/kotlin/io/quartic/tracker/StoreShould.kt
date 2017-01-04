@@ -4,9 +4,9 @@ import io.quartic.tracker.model.RegisteredUser
 import io.quartic.tracker.model.UnregisteredUser
 import io.quartic.tracker.model.User
 import io.quartic.tracker.model.UserId
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
-import org.junit.Assert.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 class StoreShould {
     val store = Store()
