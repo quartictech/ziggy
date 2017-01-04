@@ -11,8 +11,8 @@ import org.junit.Test
 import javax.ws.rs.NotAuthorizedException
 import javax.ws.rs.NotFoundException
 
-class TrackerResourceShould {
-    val resource = TrackerResource()
+class UsersResourceShould {
+    val resource = UsersResource()
 
     @Test
     fun report_created_users() {

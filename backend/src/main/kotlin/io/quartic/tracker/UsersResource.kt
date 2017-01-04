@@ -16,7 +16,7 @@ import javax.ws.rs.core.MediaType
 @Path("/users")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-class TrackerResource {
+class UsersResource {
     private val LOG by logger()
 
     private val random = Random()

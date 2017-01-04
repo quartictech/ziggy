@@ -5,7 +5,7 @@ import io.quartic.common.application.ApplicationBase
 
 class TrackerApplication : ApplicationBase<TrackerConfiguration>() {
     override fun runApplication(configuration: TrackerConfiguration, environment: Environment) {
-        environment.jersey().register(TrackerResource())
+        environment.jersey().register(UsersResource())
     }
 
     companion object {
