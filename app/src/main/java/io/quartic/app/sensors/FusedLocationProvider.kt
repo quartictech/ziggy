@@ -15,9 +15,8 @@ import rx.subjects.PublishSubject
 import java.util.*
 
 class FusedLocationProvider(private val context: Context) :
-        LocationProvider, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
-
     companion object {
         const val TAG = "FusedLocationProvider"
     }
@@ -27,14 +26,12 @@ class FusedLocationProvider(private val context: Context) :
 
     init {
         Log.i(TAG, "connecting to google play APIs")
-        Log.i(TAG, this.toString())
         this.apiClient = GoogleApiClient.Builder(context.applicationContext)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build()
         apiClient.connect()
-        Log.d(TAG, "done")
         this.subject = PublishSubject.create()
     }
 
@@ -45,7 +42,6 @@ class FusedLocationProvider(private val context: Context) :
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setFastestInterval(1000)
         LocationServices.FusedLocationApi.requestLocationUpdates(apiClient, locationRequest, this)
-        Log.i(TAG, "waiting")
     }
 
     override fun onConnectionSuspended(i: Int) {
@@ -61,7 +57,7 @@ class FusedLocationProvider(private val context: Context) :
         subject.onNext(LocationUpdate(location.latitude, location.longitude, Date().time))
     }
 
-    override fun get(): Observable<io.quartic.app.model.LocationUpdate> {
+    fun get(): Observable<io.quartic.app.model.LocationUpdate> {
         return subject
     }
 }
