@@ -1,4 +1,4 @@
-package io.quartic.tracker
+package io.quartic.tracker.resource
 
 import io.quartic.common.logging.logger
 import io.quartic.common.uid.UidGenerator

@@ -1,4 +1,4 @@
-package io.quartic.tracker
+package io.quartic.tracker.resource
 
 import io.quartic.tracker.api.RegistrationRequest
 import io.quartic.tracker.model.RegisteredUser

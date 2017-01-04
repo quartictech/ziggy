@@ -2,6 +2,7 @@ package io.quartic.tracker
 
 import io.dropwizard.setup.Environment
 import io.quartic.common.application.ApplicationBase
+import io.quartic.tracker.resource.UsersResource
 
 class TrackerApplication : ApplicationBase<TrackerConfiguration>() {
     override fun runApplication(configuration: TrackerConfiguration, environment: Environment) {
