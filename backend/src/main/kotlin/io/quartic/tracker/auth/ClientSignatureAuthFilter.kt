@@ -22,14 +22,23 @@ class ClientSignatureAuthFilter : AuthFilter<ClientSignatureCredentials, MyPrinc
 
     private fun extractCredentials(requestContext: ContainerRequestContext): ClientSignatureCredentials? {
         if (requestContext.method != "POST" && requestContext.method != "PUT") {
-            LOG.warn("Unsupported method '${requestContext.method}")
+            LOG.warn("Unsupported method '${requestContext.method}'")
             return null
         }
 
-        val authHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION) ?: return null
-        val matchResult = regex.matchEntire(authHeader) ?: return null
-        val entity = extractEntity(requestContext)
+        val authHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)
+        if (authHeader == null) {
+            LOG.warn("Authorization header is missing")
+            return null
+        }
 
+        val matchResult = regex.matchEntire(authHeader)
+        if (matchResult == null) {
+            LOG.warn("Authorization header format invalid")
+            return null
+        }
+
+        val entity = extractEntity(requestContext)
         return ClientSignatureCredentials(UserId(matchResult.groupValues[1]), matchResult.groupValues[2], entity)
     }
 
