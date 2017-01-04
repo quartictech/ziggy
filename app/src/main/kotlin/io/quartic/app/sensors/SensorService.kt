@@ -13,13 +13,12 @@ class SensorService : Service() {
     var thread : ServiceThread? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.i(TAG, "start command")
+        Log.i(TAG, "start command: ${intent}")
         if (intent != null) {
             thread!!.processIntent(intent)
         }
         return START_STICKY
     }
-
 
     companion object {
         const val TAG = "SensorService"
