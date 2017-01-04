@@ -1,1 +1,4 @@
+include ":backend-api"
+include ":backend"
+
 include ':app'

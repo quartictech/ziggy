@@ -1,0 +1,13 @@
+plugins {
+    id "nebula.kotlin" version "1.0.5"
+}
+
+apply from: "${rootDir}/gradle/quartic-repos.gradle"
+
+dependencies {
+    compile project(":backend-api")
+
+    compile "io.quartic.platform:common-application:814"
+    compile "io.dropwizard:dropwizard-core:1.0.5"
+    compile "io.dropwizard.modules:dropwizard-java8:0.9.0-1"
+}
