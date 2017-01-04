@@ -8,11 +8,24 @@ import android.util.Log
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.ActivityRecognition
-import rx.subjects.PublishSubject
+import com.google.android.gms.location.ActivityRecognitionResult
 
-class ActivityProvider(val context: Context) : GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+class ActivitySensor(val context: Context) : Sensor, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+    override fun processIntent(intent: Intent, database: Database) {
+        if (ActivityRecognitionResult.hasResult(intent)) {
+            processUpdate(ActivityRecognitionResult.extractResult(intent), database)
+        }
+    }
+
+    private fun processUpdate(result: ActivityRecognitionResult, database: Database) {
+        Log.i(TAG, "writing acitivity update")
+        database.writeSensor("activity",
+                result.mostProbableActivity.type.toString(),
+                result.time)
+    }
+
     companion object {
-        const val TAG = "ActivityProvider"
+        const val TAG = "ActivitySensor"
     }
 
     override fun onConnectionFailed(p0: ConnectionResult) {
@@ -20,9 +33,9 @@ class ActivityProvider(val context: Context) : GoogleApiClient.ConnectionCallbac
     }
 
     override fun onConnected(p0: Bundle?) {
-        val intent = Intent(this,
-                PendingIntent.getService()
-        ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(apiClient, 5000, )
+        val intent = Intent(context.applicationContext, SensorService::class.java)
+        val pendingIntent = PendingIntent.getService(context.applicationContext, 0, intent, 0)
+        ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(apiClient, 5000, pendingIntent)
     }
 
     override fun onConnectionSuspended(p0: Int) {
@@ -30,7 +43,6 @@ class ActivityProvider(val context: Context) : GoogleApiClient.ConnectionCallbac
     }
 
     private val apiClient: GoogleApiClient
-    private val subject: PublishSubject<ActivityUpdate>
 
     init {
         Log.i(TAG, "connecting to google play APIs")
@@ -40,6 +52,5 @@ class ActivityProvider(val context: Context) : GoogleApiClient.ConnectionCallbac
                 .addOnConnectionFailedListener(this)
                 .build()
         apiClient.connect()
-        this.subject = PublishSubject.create()
     }
 }

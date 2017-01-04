@@ -34,7 +34,7 @@ class Database(context: Context) {
 
     val helper = Helper(context)
 
-    public fun writeSensor(name: String, value: String, timestamp: Long) {
+    fun writeSensor(name: String, value: String, timestamp: Long) {
         helper.writableDatabase.use { db ->
             db.beginTransaction()
             val contentValues = ContentValues()
@@ -45,6 +45,7 @@ class Database(context: Context) {
                 put("timestamp", timestamp)
             }
             db.insertOrThrow("sensors", null, contentValues)
+            db.setTransactionSuccessful()
             db.endTransaction()
         }
     }

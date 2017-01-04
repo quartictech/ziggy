@@ -3,8 +3,11 @@ package io.quartic.app
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
+import android.content.pm.PackageManager
 import android.os.AsyncTask
 import android.os.Bundle
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.util.Base64
 import android.util.Log
 import android.view.View
@@ -15,6 +18,7 @@ import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.widget.editorActions
 import com.jakewharton.rxbinding.widget.textChanges
 import io.quartic.app.api.RegistrationService
+import io.quartic.app.sensors.SensorService
 import io.quartic.tracker.api.RegistrationRequest
 import rx.Observable.empty
 import rx.lang.kotlin.merge
@@ -29,9 +33,23 @@ class LoginActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        loadPermissions(android.Manifest.permission.ACCESS_FINE_LOCATION, 0)
+        Log.i("LoginActivity", "request perms")
+        loadPermissions("com.google.android.gms.permission.ACTIVITY_RECOGNITION", 0)
         configureWidgets()
         generateKeyPair()
+        SensorService.startService(applicationContext)
+
     }
+
+    private fun loadPermissions(perm: String, requestCode: Int) {
+        if (ContextCompat.checkSelfPermission(applicationContext, perm) != PackageManager.PERMISSION_GRANTED) {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, perm)) {
+                ActivityCompat.requestPermissions(this, arrayOf(perm), requestCode)
+            }
+        }
+    }
+
 
     private fun configureWidgets() {
         setContentView(R.layout.activity_login)
