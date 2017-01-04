@@ -17,8 +17,8 @@ import android.widget.EditText
 import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.widget.editorActions
 import com.jakewharton.rxbinding.widget.textChanges
-import io.quartic.app.api.RegistrationService
 import io.quartic.app.sensors.SensorService
+import io.quartic.app.api.BackendApi
 import io.quartic.tracker.api.RegistrationRequest
 import rx.Observable.empty
 import rx.lang.kotlin.merge
@@ -104,7 +104,7 @@ class LoginActivity : Activity() {
             val request = RegistrationRequest(code, Base64.encodeToString(publicKey.encoded, Base64.DEFAULT))
 
             // TODO: we should inject this
-            val registration = clientOf<RegistrationService>("http://localhost:5555")
+            val registration = clientOf<BackendApi>("http://localhost:5555")
 
             val observable = registration.register(request)
 

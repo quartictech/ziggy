@@ -2,10 +2,14 @@ package io.quartic.tracker
 
 import io.dropwizard.setup.Environment
 import io.quartic.common.application.ApplicationBase
+import io.quartic.tracker.resource.UploadResource
+import io.quartic.tracker.resource.UsersResource
 
 class TrackerApplication : ApplicationBase<TrackerConfiguration>() {
     override fun runApplication(configuration: TrackerConfiguration, environment: Environment) {
-        environment.jersey().register(TrackerResource())
+        val store = Store()
+        environment.jersey().register(UsersResource(store))
+        environment.jersey().register(UploadResource())
     }
 
     companion object {
