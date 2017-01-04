@@ -1,4 +1,4 @@
-package io.quartic.tracker
+package io.quartic.tracker.model
 
 import io.quartic.common.uid.Uid
 

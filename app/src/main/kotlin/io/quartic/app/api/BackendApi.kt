@@ -6,7 +6,7 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 import rx.Observable
 
-interface RegistrationService {
-    @POST("register")
+interface BackendApi {
+    @POST("users/register")
     fun register(@Body request: RegistrationRequest): Observable<RegistrationResponse>
 }

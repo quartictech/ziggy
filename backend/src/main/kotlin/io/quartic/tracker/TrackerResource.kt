@@ -3,15 +3,17 @@ package io.quartic.tracker
 import io.quartic.common.logging.logger
 import io.quartic.common.uid.UidGenerator
 import io.quartic.common.uid.randomGenerator
-import io.quartic.tracker.User.RegisteredUser
-import io.quartic.tracker.User.UnregisteredUser
 import io.quartic.tracker.api.RegistrationRequest
 import io.quartic.tracker.api.RegistrationResponse
-import java.security.PublicKey
+import io.quartic.tracker.model.RegisteredUser
+import io.quartic.tracker.model.UnregisteredUser
+import io.quartic.tracker.model.User
+import io.quartic.tracker.model.UserId
 import java.util.*
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
 
+@Path("/users")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 class TrackerResource {
@@ -27,17 +29,16 @@ class TrackerResource {
     // TODO: none of these methods should be exposed to the outside world!
 
     @GET
-    @Path("/users")
     fun getUsers(): Map<UserId, User> = synchronized { HashMap(users) }
 
     @GET
-    @Path("/users/{id}")
+    @Path("/{id}")
     fun getUser(@PathParam("id") userId: UserId) = synchronized {
         users[userId] ?: throw NotFoundException("No user with ID $userId")
     }
 
     @DELETE
-    @Path("/users/{id}")
+    @Path("/{id}")
     fun deleteUser(@PathParam("id") userId: UserId) = synchronized {
         val user = users.remove(userId) ?: throw NotFoundException("No user with ID $userId")
         if (user is UnregisteredUser) {
@@ -46,7 +47,6 @@ class TrackerResource {
     }
 
     @POST
-    @Path("/users")
     fun createUser(): UserId = synchronized {
         val user = UnregisteredUser(uidGen.get(), generateCode())
         users[user.id] = user
@@ -57,7 +57,7 @@ class TrackerResource {
     @POST
     @Path("/register")
     fun registerUser(request: RegistrationRequest) = synchronized {
-        val user = unregisteredUsers[request.code] ?: throw NotFoundException("No user matches code ${request.code}")
+        val user = unregisteredUsers[request.code] ?: throw NotAuthorizedException("Unrecognised code ${request.code}")
         unregisteredUsers.remove(request.code)
         users[user.id] = RegisteredUser(user.id, request.publicKey)
         LOG.info("Registered user ${user.id}")

@@ -6,7 +6,7 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.core.Options.DYNAMIC_PORT
 import com.github.tomakehurst.wiremock.junit.WireMockRule
-import io.quartic.app.api.RegistrationService
+import io.quartic.app.api.BackendApi
 import io.quartic.tracker.api.RegistrationRequest
 import org.apache.http.HttpHeaders.CONTENT_TYPE
 import org.apache.http.entity.ContentType.APPLICATION_JSON
@@ -38,7 +38,7 @@ class UnderstandRetrofit {
                 .addConverterFactory(JacksonConverterFactory.create(ObjectMapper().registerKotlinModule()))
                 .build()
 
-        val registration = retrofit.create(RegistrationService::class.java)
+        val registration = retrofit.create(BackendApi::class.java)
 
         val observable = registration.register(request)
 
