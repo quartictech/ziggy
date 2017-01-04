@@ -21,6 +21,11 @@ class UploadResource(val store: Store) {
     }
 
     @POST
+    fun postStuff(@Auth principal: MyPrincipal, stuff: String) : Unit {
+        LOG.info("postStuff ($principal, $stuff)")
+    }
+
+    @POST
     @Path("/{userId}")
     fun postStuff(@PathParam("userId") userId: UserId) {
         val user = store.getUser(userId)

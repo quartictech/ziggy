@@ -12,6 +12,6 @@ class MyAuthenticator(val store: Store): Authenticator<MyCredentials, MyPrincipa
     override fun authenticate(credentials: MyCredentials): Optional<MyPrincipal> {
         LOG.info("authenticate ($credentials)")
         // TODO
-        return Optional.empty<MyPrincipal>()
+        return Optional.of(MyPrincipal())
     }
 }
