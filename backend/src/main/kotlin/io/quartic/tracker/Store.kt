@@ -9,6 +9,9 @@ import io.quartic.tracker.model.RegisteredUser
 import io.quartic.tracker.model.UnregisteredUser
 import io.quartic.tracker.model.User
 import io.quartic.tracker.model.UserId
+import java.security.KeyFactory
+import java.security.PublicKey
+import java.security.spec.X509EncodedKeySpec
 import java.util.*
 
 class Store {
@@ -45,12 +48,12 @@ class Store {
         user.id
     }
 
-    fun registerUser(code: String, base64EncodedKey: String) = synchronized {
+    fun registerUser(code: String, publicKey: PublicKey) = synchronized {
         val user = unregisteredUsers[code]
         if (user != null) {
+            users[user.id] = RegisteredUser(user.id, publicKey)
             unregisteredUsers.remove(code)
-            users[user.id] = RegisteredUser(user.id, base64EncodedKey)
-            LOG.info("Registered user ${user.id}")
+            LOG.info("Registered user '${user.id}'")
             user.id
         } else {
             null

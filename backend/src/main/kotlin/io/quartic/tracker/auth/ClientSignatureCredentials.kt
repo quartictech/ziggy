@@ -3,7 +3,7 @@ package io.quartic.tracker.auth
 import io.quartic.tracker.model.UserId
 import java.util.*
 
-data class ClientSignatureCredentials(val userId: UserId, val signature: String, val request: ByteArray) {
+data class ClientSignatureCredentials(val userId: UserId, val signature: ByteArray, val request: ByteArray) {
     // We have to override because ByteArray is really a byte[]
 
     override fun equals(other: Any?): Boolean {
@@ -12,14 +12,14 @@ data class ClientSignatureCredentials(val userId: UserId, val signature: String,
 
         other as ClientSignatureCredentials
 
-        if (userId != other.userId) return false
-        if (signature != other.signature) return false
-        return Arrays.equals(request, other.request)
+        return (userId == other.userId) &&
+                Arrays.equals(signature, other.signature) &&
+                Arrays.equals(request, other.request)
     }
 
     override fun hashCode(): Int {
         var result = userId.hashCode()
-        result = 31 * result + signature.hashCode()
+        result = 31 * result + Arrays.hashCode(signature)
         result = 31 * result + Arrays.hashCode(request)
         return result
     }

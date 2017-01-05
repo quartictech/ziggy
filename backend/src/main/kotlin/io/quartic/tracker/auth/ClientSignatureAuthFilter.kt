@@ -4,6 +4,7 @@ import io.dropwizard.auth.AuthFilter
 import io.quartic.common.logging.logger
 import io.quartic.tracker.Store
 import io.quartic.tracker.model.UserId
+import java.util.*
 import javax.ws.rs.WebApplicationException
 import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.core.HttpHeaders
@@ -38,8 +39,18 @@ class ClientSignatureAuthFilter : AuthFilter<ClientSignatureCredentials, MyPrinc
             return null
         }
 
-        val entity = extractEntity(requestContext)
-        return ClientSignatureCredentials(UserId(matchResult.groupValues[1]), matchResult.groupValues[2], entity)
+        val signature = try {
+            Base64.getDecoder().decode(matchResult.groupValues[2])
+        } catch (e: IllegalArgumentException) {
+            LOG.warn("Undecodable signature (${e.message})")
+            return null
+        }
+
+        return ClientSignatureCredentials(
+                UserId(matchResult.groupValues[1]),
+                signature,
+                extractEntity(requestContext)
+        )
     }
 
     /** Convert the entity to a ByteArray. */

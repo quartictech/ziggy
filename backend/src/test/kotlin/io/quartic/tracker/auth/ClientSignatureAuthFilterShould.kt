@@ -22,29 +22,34 @@ class ClientSignatureAuthFilterShould {
     private val requestContext = mock<ContainerRequestContext>(RETURNS_DEEP_STUBS)
 
     @Test
-    fun extract_null_creds_if_no_auth_header() {
+    fun reject_if_no_auth_header() {
         mockMethod("POST")
 
         assertThrows<WebApplicationException> { filter.filter(requestContext) }
-        verify(authenticator, never()).authenticate(any())
     }
 
     @Test
-    fun extract_null_creds_if_scheme_incorrect() {
+    fun reject_if_scheme_incorrect() {
         mockMethod("POST")
         mockAuthHeader("Basic 123456")
 
         assertThrows<WebApplicationException> { filter.filter(requestContext) }
-        verify(authenticator, never()).authenticate(any())
     }
 
     @Test
-    fun extract_null_creds_if_params_invalid() {
+    fun reject_if_params_invalid() {
         mockMethod("POST")
         mockAuthHeader("QuarticAuth userId=\"abc\", xjhgafj=\"def\"")
 
         assertThrows<WebApplicationException> { filter.filter(requestContext) }
-        verify(authenticator, never()).authenticate(any())
+    }
+
+    @Test
+    fun reject_if_signature_undecodable() {
+        mockMethod("POST")
+        mockAuthHeader("QuarticAuth userId=\"abc\", signature=\"###\"")
+
+        assertThrows<WebApplicationException> { filter.filter(requestContext) }
     }
 
     @Test
@@ -54,7 +59,11 @@ class ClientSignatureAuthFilterShould {
 
         filter.filter(requestContext)
 
-        verify(authenticator).authenticate(ClientSignatureCredentials(UserId("abc"), "789", "stuff and nonsense".toByteArray()))
+        verify(authenticator).authenticate(ClientSignatureCredentials(
+                UserId("abc"),
+                "789".toByteArray(),
+                "stuff and nonsense".toByteArray()
+        ))
     }
 
     @Test
@@ -99,9 +108,11 @@ class ClientSignatureAuthFilterShould {
 
     private fun mockValidHeaderForMethod(method: String) {
         mockMethod(method)
-        mockAuthHeader("QuarticAuth userId=\"abc\", signature=\"789\"")
+        mockAuthHeader("QuarticAuth userId=\"abc\", signature=\"${base64Encode("789")}\"")
         mockBody("stuff and nonsense")
     }
+
+    private fun base64Encode(input: String) = String(Base64.getEncoder().encode(input.toByteArray()))
 
     private fun mockMethod(method: String) {
         whenever(requestContext.method).thenReturn(method)
