@@ -16,7 +16,7 @@ dependencies:
     - if [ ! -d "${ANDROID_HOME}/platforms/android-${ANDROID_SDK_VERSION}" ]; then echo y | android update sdk --no-ui --all --filter "platform-tools,android-${ANDROID_SDK_VERSION}"; fi
     - if [ ! -d "${ANDROID_HOME}/build-tools/${BUILD_TOOLS_VERSION}" ]; then echo y | android update sdk --no-ui --all --filter "build-tools-${BUILD_TOOLS_VERSION}"; fi
     - if [ ! -d "${ANDROID_HOME}/extras/android/m2repository/com/android/support/design/${SUPPORT_VERSION}" ]; then echo y | android update sdk --no-ui --all --filter "extra-android-m2repository"; fi
-    - if [ ! -d "${ANDROID_HOME}/extras/google/m2repository/com/google/android/gms/play-services/${PLAY_SERVICES_VERSION}" ]; then echo y | android update sdk --no-ui --all --filter "extra-google-m2repository"; echo y | android update sdk --no-ui --all --filter "extra-google-play_services"; fi
+    - if [ ! -d "${ANDROID_HOME}/extras/google/m2repository/com/google/android/gms/play-services/${PLAY_SERVICES_VERSION}" ]; then echo y | android update sdk --no-ui --all --filter "extra-google-m2repository";  fi
   override:
     - ./gradlew resolveConfigurations --parallel --console=plain
   cache_directories:
