@@ -3,6 +3,7 @@ package io.quartic.tracker.auth
 import io.dropwizard.auth.AuthFilter
 import io.quartic.common.logging.logger
 import io.quartic.tracker.Store
+import io.quartic.tracker.model.User
 import io.quartic.tracker.model.UserId
 import java.util.*
 import javax.ws.rs.WebApplicationException
@@ -10,7 +11,7 @@ import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.core.HttpHeaders
 import javax.ws.rs.core.SecurityContext
 
-class ClientSignatureAuthFilter : AuthFilter<ClientSignatureCredentials, MyPrincipal>() {
+class ClientSignatureAuthFilter : AuthFilter<ClientSignatureCredentials, User>() {
     private val LOG by logger()
     private val regex = """$PREFIX userId="(.+)", signature="(.+)"""".toRegex()
 
@@ -64,7 +65,7 @@ class ClientSignatureAuthFilter : AuthFilter<ClientSignatureCredentials, MyPrinc
         fun create(store: Store): ClientSignatureAuthFilter = create(ClientSignatureAuthenticator(store))
 
         fun create(authenticator: ClientSignatureAuthenticator): ClientSignatureAuthFilter {
-            val builder = object : AuthFilterBuilder<ClientSignatureCredentials, MyPrincipal, ClientSignatureAuthFilter>() {
+            val builder = object : AuthFilterBuilder<ClientSignatureCredentials, User, ClientSignatureAuthFilter>() {
                 override fun newInstance() = ClientSignatureAuthFilter()
             }
 

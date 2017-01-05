@@ -3,8 +3,8 @@ package io.quartic.tracker.resource
 import io.dropwizard.auth.Auth
 import io.quartic.common.logging.logger
 import io.quartic.tracker.Store
-import io.quartic.tracker.auth.MyPrincipal
 import io.quartic.tracker.model.UnregisteredUser
+import io.quartic.tracker.model.User
 import io.quartic.tracker.model.UserId
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
@@ -16,13 +16,13 @@ class UploadResource(val store: Store) {
     private val LOG by logger()
 
     @GET
-    fun getStuff(@Auth principal: MyPrincipal) : Unit {
-        LOG.info("getStuff ($principal)")
+    fun getStuff(@Auth user: User) : Unit {
+        LOG.info("getStuff ($user)")
     }
 
     @POST
-    fun postStuff(@Auth principal: MyPrincipal, stuff: String) : Unit {
-        LOG.info("postStuff ($principal, $stuff)")
+    fun postStuff(@Auth user: User, stuff: String) : Unit {
+        LOG.info("postStuff ($user, $stuff)")
     }
 
     @POST

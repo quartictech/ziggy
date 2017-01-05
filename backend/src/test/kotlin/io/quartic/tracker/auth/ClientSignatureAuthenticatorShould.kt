@@ -6,8 +6,10 @@ import com.nhaarman.mockito_kotlin.whenever
 import io.quartic.tracker.Store
 import io.quartic.tracker.model.RegisteredUser
 import io.quartic.tracker.model.UnregisteredUser
+import io.quartic.tracker.model.User
 import io.quartic.tracker.model.UserId
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers
 import org.hamcrest.Matchers.equalTo
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -32,6 +34,8 @@ class ClientSignatureAuthenticatorShould {
                     .toByteArray()
     ))
 
+    private val user = RegisteredUser(mock<UserId>(), publicKey)
+
     @Test
     fun reject_if_unknown_user() {
         val userId = mock<UserId>()
@@ -52,28 +56,25 @@ class ClientSignatureAuthenticatorShould {
 
     @Test
     fun accept_if_signature_verified_by_public_key_for_registered_user() {
-        val userId = mock<UserId>()
-        whenever(store.getUser(userId)).thenReturn(RegisteredUser(userId, publicKey))
+        whenever(store.getUser(user.id)).thenReturn(user)
 
-        val creds = ClientSignatureCredentials(userId, signature, input.toByteArray())
-        assertTrue(authenticator.authenticate(creds).isPresent)
+        val creds = ClientSignatureCredentials(user.id, signature, input.toByteArray())
+        assertThat(authenticator.authenticate(creds), equalTo(Optional.of(user as User)))
     }
 
     @Test
     fun reject_if_signature_mismatch() {
-        val userId = mock<UserId>()
-        whenever(store.getUser(userId)).thenReturn(RegisteredUser(userId, publicKey))
+        whenever(store.getUser(user.id)).thenReturn(user)
 
-        val creds = ClientSignatureCredentials(userId, signature, (input + "X").toByteArray())
+        val creds = ClientSignatureCredentials(user.id, signature, (input + "X").toByteArray())
         assertFalse(authenticator.authenticate(creds).isPresent)
     }
 
     @Test
     fun reject_rather_than_throw_if_signature_undecodable() {
-        val userId = mock<UserId>()
-        whenever(store.getUser(userId)).thenReturn(RegisteredUser(userId, publicKey))
+        whenever(store.getUser(user.id)).thenReturn(user)
 
-        val creds = ClientSignatureCredentials(userId, "abcdefg".toByteArray(), input.toByteArray())
+        val creds = ClientSignatureCredentials(user.id, "abcdefg".toByteArray(), input.toByteArray())
         assertFalse(authenticator.authenticate(creds).isPresent)
     }
 }

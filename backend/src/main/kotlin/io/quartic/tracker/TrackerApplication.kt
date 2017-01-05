@@ -5,7 +5,7 @@ import io.dropwizard.auth.AuthValueFactoryProvider
 import io.dropwizard.setup.Environment
 import io.quartic.common.application.ApplicationBase
 import io.quartic.tracker.auth.ClientSignatureAuthFilter
-import io.quartic.tracker.auth.MyPrincipal
+import io.quartic.tracker.model.User
 import io.quartic.tracker.resource.UploadResource
 import io.quartic.tracker.resource.UsersResource
 
@@ -15,7 +15,7 @@ class TrackerApplication : ApplicationBase<TrackerConfiguration>() {
 
         with (environment.jersey()) {
             register(AuthDynamicFeature(ClientSignatureAuthFilter.create(store)))
-            register(AuthValueFactoryProvider.Binder(MyPrincipal::class.java))
+            register(AuthValueFactoryProvider.Binder(User::class.java))
             register(UsersResource(store))
             register(UploadResource(store))
         }

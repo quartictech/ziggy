@@ -6,20 +6,21 @@ import io.quartic.tracker.Store
 import io.quartic.tracker.auth.ClientSignatureCredentials
 import io.quartic.tracker.model.RegisteredUser
 import io.quartic.tracker.model.UnregisteredUser
+import io.quartic.tracker.model.User
 import java.security.PublicKey
 import java.security.Signature
 import java.security.SignatureException
 import java.util.*
 
-class ClientSignatureAuthenticator(val store: Store): Authenticator<ClientSignatureCredentials, MyPrincipal> {
+class ClientSignatureAuthenticator(val store: Store): Authenticator<ClientSignatureCredentials, User> {
     private val LOG by logger()
 
-    override fun authenticate(credentials: ClientSignatureCredentials): Optional<MyPrincipal> {
+    override fun authenticate(credentials: ClientSignatureCredentials): Optional<User> {
         val user = store.getUser(credentials.userId)
         when (user) {
             is RegisteredUser -> {
                 if (verifySignature(credentials, user)) {
-                    return Optional.of(MyPrincipal())
+                    return Optional.of(user)
                 } else {
                     LOG.warn("Signature mismatch for '${credentials.userId}'")
                 }
