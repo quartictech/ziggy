@@ -1,15 +1,17 @@
 package io.quartic.tracker
 
+import com.nhaarman.mockito_kotlin.mock
 import io.quartic.tracker.model.RegisteredUser
 import io.quartic.tracker.model.UnregisteredUser
 import io.quartic.tracker.model.User
 import io.quartic.tracker.model.UserId
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
-import org.junit.Assert.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import java.security.PublicKey
 
 class StoreShould {
-    val store = Store()
+    private val store = Store()
 
     @Test
     fun report_created_users() {
@@ -68,23 +70,24 @@ class StoreShould {
     @Test
     fun report_registered_user_once_user_is_registered() {
         val user = store.getUser(store.createUser()) as UnregisteredUser
-        store.registerUser(user.registrationCode, "abcdefg")
+        val publicKey = mock<PublicKey>()
+        store.registerUser(user.registrationCode, publicKey)
 
-        assertThat(store.getUser(user.id), equalTo(RegisteredUser(user.id, "abcdefg") as User))
+        assertThat(store.getUser(user.id), equalTo(RegisteredUser(user.id, publicKey) as User))
     }
 
     @Test
     fun return_null_if_trying_to_register_with_unrecognised_code() {
         val user = store.getUser(store.createUser()) as UnregisteredUser
 
-        assertThat(store.registerUser(user.registrationCode + "X", "abcdefg"), nullValue())
+        assertThat(store.registerUser(user.registrationCode + "X", mock()), nullValue())
     }
 
     @Test
     fun return_null_if_trying_to_register_same_user_twice() {
         val user = store.getUser(store.createUser()) as UnregisteredUser
-        store.registerUser(user.registrationCode, "abcdefg")
+        store.registerUser(user.registrationCode, mock())
 
-        assertThat(store.registerUser(user.registrationCode, "abcdefg"), nullValue())
+        assertThat(store.registerUser(user.registrationCode, mock()), nullValue())
     }
 }
