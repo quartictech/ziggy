@@ -1,3 +1,5 @@
 package io.quartic.tracker.model
 
-data class RegisteredUser(val id: UserId, val base64EncodedPublicKey: String) : User
+import java.security.PublicKey
+
+data class RegisteredUser(override val id: UserId, val publicKey: PublicKey) : User

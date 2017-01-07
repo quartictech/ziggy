@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
-import io.quartic.app.sensors.SensorService
 
 class MainActivity : AppCompatActivity() {
 
