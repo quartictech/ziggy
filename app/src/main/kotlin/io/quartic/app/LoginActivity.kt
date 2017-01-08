@@ -17,8 +17,8 @@ import android.widget.EditText
 import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.widget.editorActions
 import com.jakewharton.rxbinding.widget.textChanges
-import io.quartic.app.sensors.SensorService
 import io.quartic.app.api.BackendApi
+import io.quartic.app.sensors.SensorService
 import io.quartic.tracker.api.RegistrationRequest
 import rx.Observable.empty
 import rx.lang.kotlin.merge

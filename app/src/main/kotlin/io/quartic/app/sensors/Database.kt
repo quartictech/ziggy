@@ -5,8 +5,6 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import io.quartic.tracker.api.SensorValue
-import io.quartic.tracker.api.UploadRequest
-import java.util.*
 
 class Database(context: Context) {
     class Helper(context: Context) :

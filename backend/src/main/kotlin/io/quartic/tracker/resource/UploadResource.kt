@@ -12,6 +12,8 @@ import javax.ws.rs.Produces
 import javax.ws.rs.core.MediaType
 
 
+import javax.ws.rs.core.Response
+
 @Path("/upload")
 @Consumes(MediaType.APPLICATION_JSON)   // TODO: should consider protobuf
 @Produces(MediaType.APPLICATION_JSON)
@@ -19,7 +21,8 @@ class UploadResource(val store: Store) {
     private val LOG by logger()
 
     @POST
-    fun postStuff(@Auth user: User, stuff: UploadRequest) {
-        LOG.info("User '${user.id} uploaded: $stuff")
+    fun upload(@Auth user: User, request: UploadRequest): Response {
+        LOG.info("User '${user.id} uploaded: ${request.values.size}")
+        return Response.ok().build()
     }
 }
