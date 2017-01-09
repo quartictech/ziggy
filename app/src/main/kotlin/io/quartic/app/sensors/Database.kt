@@ -35,24 +35,40 @@ class Database(context: Context) {
 
     val helper = Helper(context)
 
-    fun getUnsavedSensorData(limit: Int): List<SensorValue> {
-        val sensorValues = arrayListOf<SensorValue>()
+    fun processSensorData(batchSize: Int, f: (List<SensorValue>) -> Unit) {
         helper.writableDatabase.use { db ->
-            db.query("sensors", arrayOf("id", "name", "value", "timestamp"), null, null, null, null, null, "$limit")
-                    .use { cursor ->
-                        cursor.moveToFirst()
-                        while (!cursor.isAfterLast) {
-                            sensorValues.add(SensorValue(
-                                    cursor.getInt(0),
-                                    cursor.getString(1),
-                                    cursor.getString(2),
-                                    cursor.getLong(3)
-                            ))
-                            cursor.moveToNext()
+            while (true) {
+                db.beginTransaction()
+                val sensorValues = arrayListOf<SensorValue>()
+                db.query("sensors", arrayOf("id", "name", "value", "timestamp"), null, null, null, null, null, "$batchSize")
+                        .use { cursor ->
+                            cursor.moveToFirst()
+                            while (!cursor.isAfterLast) {
+                                sensorValues.add(SensorValue(
+                                        cursor.getInt(0),
+                                        cursor.getString(1),
+                                        cursor.getString(2),
+                                        cursor.getLong(3)
+                                ))
+                                cursor.moveToNext()
+                            }
                         }
-                    }
+
+                if (sensorValues.isEmpty()) {
+                    break
+                }
+
+                try {
+                    f.invoke(sensorValues)
+                    sensorValues.forEach { db.delete("sensors", "id = ?", arrayOf("${it.id}")) }
+                }
+                catch (e: Exception) {
+                    if (db.inTransaction()) db.endTransaction()
+                }
+                db.setTransactionSuccessful()
+                db.endTransaction()
+            }
         }
-        return sensorValues
     }
 
     fun writeSensor(name: String, value: String, timestamp: Long) {

@@ -28,15 +28,19 @@ class SyncAdapter(context: Context?, autoInitialize: Boolean) :
     override fun onPerformSync(account: Account?, extras: Bundle?, authority: String?,
                                provider: ContentProviderClient?, syncResult: SyncResult?) {
         Log.i(TAG, "starting sync")
-        val sensorValues = Database(context).getUnsavedSensorData(100)
-        Log.i(TAG, "syncing ${sensorValues.size} values")
         val config = ApplicationConfiguration.load(context.applicationContext)
         val backend = ApplicationState(context.applicationContext, config).authClient
-
-        backend.upload(UploadRequest(sensorValues)).subscribe(
-                { v -> Log.i(TAG, "uploaded ${sensorValues.size} values") },
-                { e -> Log.e(TAG, "error uploading: ${e.message}")}
-        )
+        Database(context).processSensorData(1000, { sensorValues ->
+            Log.i(TAG, "syncing ${sensorValues.size} values")
+            try {
+                backend.upload(UploadRequest(sensorValues)).toBlocking().first()
+                Log.i(TAG, "uploaded ${sensorValues.size} values")
+            }
+            catch (e: Exception) {
+                Log.e(TAG, "error uploading: ${e.message}")
+                throw e
+            }
+        })
     }
 
 }
