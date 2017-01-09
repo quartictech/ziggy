@@ -28,7 +28,16 @@ class StoreShould {
         helper.stop(Duration.millis(3000))
     }
 
-    // TODO: test namespace isolation
+    @Test
+    fun respect_namespace_isolation() {
+        val anotherStore = Store(helper.options
+                .toBuilder()
+                .setNamespace("something-else")
+                .build().service)
+
+        store.createUser()
+        assertThat(anotherStore.getUsers().entries, empty())
+    }
 
     @Test
     fun report_created_users() {
