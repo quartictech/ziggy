@@ -48,7 +48,7 @@ class ClientSignatureAuthFilter : AuthFilter<ClientSignatureCredentials, User>()
         }
 
         return ClientSignatureCredentials(
-                UserId(matchResult.groupValues[1]),
+                UserId.fromString(matchResult.groupValues[1]),
                 signature,
                 extractEntity(requestContext)
         )

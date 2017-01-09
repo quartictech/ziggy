@@ -60,7 +60,7 @@ class ClientSignatureAuthFilterShould {
         filter.filter(requestContext)
 
         verify(authenticator).authenticate(ClientSignatureCredentials(
-                UserId("abc"),
+                UserId(123),
                 "789".toByteArray(),
                 "stuff and nonsense".toByteArray()
         ))

@@ -11,8 +11,8 @@ import io.quartic.tracker.resource.UsersResource
 
 class TrackerApplication : ApplicationBase<TrackerConfiguration>() {
     override fun runApplication(configuration: TrackerConfiguration, environment: Environment) {
-        val store = Store()
-        
+        val store = Store("balls", "ovaries")
+
         with (environment.jersey()) {
             register(AuthDynamicFeature(ClientSignatureAuthFilter.create(store)))
             register(AuthValueFactoryProvider.Binder(User::class.java))
