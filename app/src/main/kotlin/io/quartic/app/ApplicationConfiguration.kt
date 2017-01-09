@@ -1,4 +1,4 @@
-package io.quartic.app.state
+package io.quartic.app
 
 import android.content.Context
 import com.fasterxml.jackson.databind.ObjectMapper

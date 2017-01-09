@@ -7,6 +7,17 @@ import android.database.sqlite.SQLiteOpenHelper
 import io.quartic.tracker.api.SensorValue
 
 class Database(context: Context) {
+    companion object {
+        var INSTANCE: Database? = null
+
+        fun getInstance(context: Context): Database {
+            if (INSTANCE == null) {
+                INSTANCE = Database(context)
+            }
+            return INSTANCE!!
+        }
+    }
+
     class Helper(context: Context) :
             SQLiteOpenHelper(context, Helper.DATABASE_NAME, null, Helper.DATABASE_VERSION) {
         companion object {
@@ -63,7 +74,10 @@ class Database(context: Context) {
                     sensorValues.forEach { db.delete("sensors", "id = ?", arrayOf("${it.id}")) }
                 }
                 catch (e: Exception) {
-                    if (db.inTransaction()) db.endTransaction()
+                    if (db.inTransaction()) {
+                        db.endTransaction()
+                        return
+                    }
                 }
                 db.setTransactionSuccessful()
                 db.endTransaction()

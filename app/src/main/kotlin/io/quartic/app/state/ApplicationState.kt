@@ -4,9 +4,11 @@ import android.accounts.Account
 import android.accounts.AccountManager
 import android.content.Context
 import android.content.Context.ACCOUNT_SERVICE
+import io.quartic.app.ApplicationConfiguration
 import io.quartic.app.api.BackendApi
 import io.quartic.app.authClientOf
 import io.quartic.app.clientOf
+import io.quartic.app.sensors.Database
 
 class ApplicationState(val context: Context, val configuration: ApplicationConfiguration) {
     private val sharedPreferences = context.getSharedPreferences("tracker", 0)
@@ -22,6 +24,9 @@ class ApplicationState(val context: Context, val configuration: ApplicationConfi
 
     val authClient: BackendApi
         get() = authClientOf(configuration.backendBaseUrl, userId)
+
+    val database: Database
+        get() = Database.getInstance(context)
 
     val account: Account
         get() {

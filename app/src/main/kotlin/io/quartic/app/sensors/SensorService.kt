@@ -10,7 +10,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.os.SystemClock
 import android.util.Log
-import io.quartic.app.state.ApplicationConfiguration
+import io.quartic.app.ApplicationConfiguration
 import io.quartic.app.state.ApplicationState
 
 
@@ -57,7 +57,7 @@ class SensorService : Service() {
         val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
         alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 SystemClock.elapsedRealtime(),
-                2*60*1000,
+                5*1000,
                 pendingIntent)
     }
 
