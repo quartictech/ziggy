@@ -6,6 +6,6 @@ interface User : Principal {
     val id: UserId
 
     override fun getName(): String {
-        return id.toString()
+        return id.uid.toString()
     }
 }

@@ -1,9 +1,7 @@
 package io.quartic.tracker.model
 
-import io.quartic.common.uid.Uid
+import com.fasterxml.jackson.annotation.JsonValue
 
-class UserId(uid: String) : Uid(uid) {
-    companion object {
-        fun fromString(uid: String) = UserId(uid)
-    }
+data class UserId(@get:JsonValue val uid: Long) {
+    constructor(uid: String) : this(uid.toLong())
 }

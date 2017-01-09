@@ -3,11 +3,9 @@ package io.quartic.tracker.auth
 import io.dropwizard.auth.Authenticator
 import io.quartic.common.logging.logger
 import io.quartic.tracker.Store
-import io.quartic.tracker.auth.ClientSignatureCredentials
 import io.quartic.tracker.model.RegisteredUser
 import io.quartic.tracker.model.UnregisteredUser
 import io.quartic.tracker.model.User
-import java.security.PublicKey
 import java.security.Signature
 import java.security.SignatureException
 import java.util.*

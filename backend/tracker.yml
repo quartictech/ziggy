@@ -1,3 +1,6 @@
+datastore:
+  emulated: true
+
 server:
   applicationContextPath: /
   applicationConnectors:
