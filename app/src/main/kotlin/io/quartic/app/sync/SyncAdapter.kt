@@ -7,9 +7,16 @@ import android.content.Context
 import android.content.SyncResult
 import android.os.Bundle
 import android.util.Log
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import com.fasterxml.jackson.module.kotlin.KotlinModule
+import io.quartic.app.state.ApplicationConfiguration
+import io.quartic.app.R
 import io.quartic.app.api.BackendApi
+import io.quartic.app.authClientOf
 import io.quartic.app.clientOf
 import io.quartic.app.sensors.Database
+import io.quartic.app.state.ApplicationState
 import io.quartic.tracker.api.UploadRequest
 
 class SyncAdapter(context: Context?, autoInitialize: Boolean) :
@@ -23,7 +30,8 @@ class SyncAdapter(context: Context?, autoInitialize: Boolean) :
         Log.i(TAG, "starting sync")
         val sensorValues = Database(context).getUnsavedSensorData(100)
         Log.i(TAG, "syncing ${sensorValues.size} values")
-        val backend = clientOf<BackendApi>("http://10.0.2.2:9000/api/")
+        val config = ApplicationConfiguration.load(context.applicationContext)
+        val backend = ApplicationState(context.applicationContext, config).authClient
 
         backend.upload(UploadRequest(sensorValues)).subscribe(
                 { v -> Log.i(TAG, "uploaded ${sensorValues.size} values") },

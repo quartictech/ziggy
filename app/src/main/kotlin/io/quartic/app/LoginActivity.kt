@@ -19,6 +19,8 @@ import com.jakewharton.rxbinding.widget.editorActions
 import com.jakewharton.rxbinding.widget.textChanges
 import io.quartic.app.api.BackendApi
 import io.quartic.app.sensors.SensorService
+import io.quartic.app.state.ApplicationConfiguration
+import io.quartic.app.state.ApplicationState
 import io.quartic.tracker.api.RegistrationRequest
 import rx.Observable.empty
 import rx.lang.kotlin.merge
@@ -39,7 +41,6 @@ class LoginActivity : Activity() {
         configureWidgets()
         generateKeyPair()
         SensorService.startService(applicationContext)
-
     }
 
     private fun loadPermissions(perm: String, requestCode: Int) {
@@ -49,7 +50,6 @@ class LoginActivity : Activity() {
             }
         }
     }
-
 
     private fun configureWidgets() {
         setContentView(R.layout.activity_login)
@@ -101,24 +101,29 @@ class LoginActivity : Activity() {
     private inner class UserLoginTask constructor(private val code: String) : AsyncTask<Void, Void, Boolean>() {
 
         override fun doInBackground(vararg params: Void): Boolean? {
-            val request = RegistrationRequest(code, Base64.encodeToString(publicKey.encoded, Base64.DEFAULT))
+            Log.i("wat", "i think key is ${Base64.encodeToString(publicKey.encoded, Base64.NO_WRAP)}")
+            val request = RegistrationRequest(code, Base64.encodeToString(publicKey.encoded, Base64.NO_WRAP))
 
+            val state = ApplicationState(applicationContext, ApplicationConfiguration.load(applicationContext))
             // TODO: we should inject this
-            val registration = clientOf<BackendApi>("http://localhost:5555")
+            val registration = state.client
 
             val observable = registration.register(request)
 
+            var success = false
             observable.subscribe(
-                    { Log.d("LoginActivity", it.toString()) },
+                    { resp ->
+                        state.userId = resp.userId
+                        success = true
+                    },
                     { Log.e("LoginActivity", "Error registering with server", it) }
             )
 
-            // TODO: send public key + code in request
             // TODO: if 2xx then cool - finish() activity (who's responsible for updating state in local storage?)
             // TODO: if 4xx then say "code incorrect"
             // TODO: if 5xx then say "server error - please try again later"
 
-            return false
+            return success
         }
 
         override fun onPostExecute(success: Boolean?) {
