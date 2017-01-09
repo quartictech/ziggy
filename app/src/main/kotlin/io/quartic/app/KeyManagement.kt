@@ -2,12 +2,9 @@ package io.quartic.app
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties.*
-import android.util.Base64
-import android.util.Log
 import java.security.spec.ECGenParameterSpec
 import java.security.*
 
-private const val TAG = "KeyManagement"
 private const val KEY_ALIAS = "key"
 
 fun generateKeyPair() {

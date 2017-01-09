@@ -1,16 +1,12 @@
 package io.quartic.app
 
 import android.util.Base64
-import android.util.Log
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.jackson.JacksonConverterFactory
-import java.nio.Buffer
 
 inline fun <reified T : Any> clientOf(baseUrl: String) = Retrofit.Builder()
         .baseUrl(baseUrl)

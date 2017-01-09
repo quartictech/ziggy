@@ -1,13 +1,18 @@
 package io.quartic.app.sensors
 
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.IBinder
+import android.os.SystemClock
 import android.util.Log
-import io.quartic.app.sync.AccountSingleton
+import io.quartic.app.state.ApplicationConfiguration
+import io.quartic.app.state.ApplicationState
+
 
 class SensorService : Service() {
     var thread : ServiceThread? = null
@@ -42,11 +47,18 @@ class SensorService : Service() {
         settingsBundle.putBoolean(
                 ContentResolver.SYNC_EXTRAS_EXPEDITED, true)
 
+        val applicationState = ApplicationState(applicationContext, ApplicationConfiguration.load(applicationContext))
         ContentResolver.requestSync(
-                AccountSingleton.getAccount(applicationContext),
+                applicationState.account,
                 "io.quartic.app.provider",
                 settingsBundle)
-
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(this, AlarmReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime(),
+                2*60*1000,
+                pendingIntent)
     }
 
     override fun onBind(intent: Intent?): IBinder {
