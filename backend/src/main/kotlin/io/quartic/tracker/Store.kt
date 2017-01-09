@@ -90,10 +90,11 @@ class Store(val datastore: Datastore) {
             } else {
                 val key = results.next()
 
+
                 put(Entity.newBuilder(key)
                         .set(REGISTERED, true)
-                        .set(PUBLIC_KEY, Blob.copyFrom(publicKey.encoded))
-                        .set(PUBLIC_KEY_ALGORITHM, publicKey.algorithm)
+                        .set(PUBLIC_KEY, BlobValue.newBuilder(Blob.copyFrom(publicKey.encoded)).setExcludeFromIndexes(true).build())
+                        .set(PUBLIC_KEY_ALGORITHM, StringValue.newBuilder(publicKey.algorithm).setExcludeFromIndexes(true).build())
                         .build())
 
                 UserId(key.id)
