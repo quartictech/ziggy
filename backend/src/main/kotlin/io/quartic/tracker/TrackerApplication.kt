@@ -27,6 +27,7 @@ class TrackerApplication : ApplicationBase<TrackerConfiguration>() {
         }
     }
 
+    // TODO: It would be better to run Datastore emulator independently (via Gradle or something), and inject configuration
     private fun datastore(config: DatastoreConfiguration, environment: Environment): Datastore {
         if (config.emulated) {
             val managedHelper = ManagedDatastoreHelper()
