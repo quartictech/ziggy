@@ -3,15 +3,12 @@ package io.quartic.tracker.auth
 import com.nhaarman.mockito_kotlin.*
 import io.quartic.assertThrows
 import io.quartic.tracker.model.UserId
-import io.quartic.tracker.auth.ClientSignatureCredentials
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers
 import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.RETURNS_DEEP_STUBS
 import java.io.InputStream
 import java.util.*
-import javax.ws.rs.NotAuthorizedException
 import javax.ws.rs.WebApplicationException
 import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.core.HttpHeaders

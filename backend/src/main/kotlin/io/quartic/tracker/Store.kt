@@ -4,8 +4,6 @@ import com.google.cloud.datastore.*
 import com.google.cloud.datastore.StructuredQuery.CompositeFilter
 import com.google.cloud.datastore.StructuredQuery.PropertyFilter
 import io.quartic.common.logging.logger
-import io.quartic.common.uid.UidGenerator
-import io.quartic.common.uid.randomGenerator
 import io.quartic.tracker.model.RegisteredUser
 import io.quartic.tracker.model.UnregisteredUser
 import io.quartic.tracker.model.User
