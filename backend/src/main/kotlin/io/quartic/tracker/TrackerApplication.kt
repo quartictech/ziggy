@@ -17,13 +17,13 @@ import org.joda.time.Duration
 
 class TrackerApplication : ApplicationBase<TrackerConfiguration>() {
     override fun runApplication(configuration: TrackerConfiguration, environment: Environment) {
-        val store = Store(datastore(configuration.datastore, environment))
+        val directory = UserDirectory(datastore(configuration.datastore, environment))
 
         with (environment.jersey()) {
-            register(AuthDynamicFeature(ClientSignatureAuthFilter.create(store)))
+            register(AuthDynamicFeature(ClientSignatureAuthFilter.create(directory)))
             register(AuthValueFactoryProvider.Binder(User::class.java))
-            register(UsersResource(store))
-            register(UploadResource(store))
+            register(UsersResource(directory))
+            register(UploadResource())
         }
     }
 

@@ -4,7 +4,7 @@ import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import io.quartic.EC_PUBLIC_KEY
-import io.quartic.tracker.Store
+import io.quartic.tracker.UserDirectory
 import io.quartic.tracker.model.RegisteredUser
 import io.quartic.tracker.model.UnregisteredUser
 import io.quartic.tracker.model.User
@@ -16,8 +16,8 @@ import org.junit.jupiter.api.Test
 import java.util.*
 
 class ClientSignatureAuthenticatorShould {
-    private val store = mock<Store>()
-    private val authenticator = ClientSignatureAuthenticator(store)
+    private val directory = mock<UserDirectory>()
+    private val authenticator = ClientSignatureAuthenticator(directory)
 
     // These vectors were generated painfully from the Android app
     private val input = "abcdefghihjklmnop"
@@ -29,7 +29,7 @@ class ClientSignatureAuthenticatorShould {
     @Test
     fun reject_if_unknown_user() {
         val userId = mock<UserId>()
-        whenever(store.getUser(any())).thenReturn(null)
+        whenever(directory.getUser(any())).thenReturn(null)
 
         val creds = ClientSignatureCredentials(userId, "foo".toByteArray(), "bar".toByteArray())
         assertFalse(authenticator.authenticate(creds).isPresent)
@@ -38,7 +38,7 @@ class ClientSignatureAuthenticatorShould {
     @Test
     fun reject_if_unregistered_user() {
         val userId = mock<UserId>()
-        whenever(store.getUser(any())).thenReturn(UnregisteredUser(userId, "1234"))
+        whenever(directory.getUser(any())).thenReturn(UnregisteredUser(userId, "1234"))
 
         val creds = ClientSignatureCredentials(userId, "foo".toByteArray(), "bar".toByteArray())
         assertFalse(authenticator.authenticate(creds).isPresent)
@@ -46,7 +46,7 @@ class ClientSignatureAuthenticatorShould {
 
     @Test
     fun accept_if_signature_verified_by_public_key_for_registered_user() {
-        whenever(store.getUser(user.id)).thenReturn(user)
+        whenever(directory.getUser(user.id)).thenReturn(user)
 
         val creds = ClientSignatureCredentials(user.id, signature, input.toByteArray())
         assertThat(authenticator.authenticate(creds), equalTo(Optional.of(user as User)))
@@ -54,7 +54,7 @@ class ClientSignatureAuthenticatorShould {
 
     @Test
     fun reject_if_signature_mismatch() {
-        whenever(store.getUser(user.id)).thenReturn(user)
+        whenever(directory.getUser(user.id)).thenReturn(user)
 
         val creds = ClientSignatureCredentials(user.id, signature, (input + "X").toByteArray())
         assertFalse(authenticator.authenticate(creds).isPresent)
@@ -62,7 +62,7 @@ class ClientSignatureAuthenticatorShould {
 
     @Test
     fun reject_rather_than_throw_if_signature_undecodable() {
-        whenever(store.getUser(user.id)).thenReturn(user)
+        whenever(directory.getUser(user.id)).thenReturn(user)
 
         val creds = ClientSignatureCredentials(user.id, "abcdefg".toByteArray(), input.toByteArray())
         assertFalse(authenticator.authenticate(creds).isPresent)

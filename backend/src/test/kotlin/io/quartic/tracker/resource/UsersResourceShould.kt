@@ -4,7 +4,7 @@ import com.nhaarman.mockito_kotlin.*
 import io.quartic.EC_PUBLIC_KEY
 import io.quartic.RSA_PUBLIC_KEY
 import io.quartic.assertThrows
-import io.quartic.tracker.Store
+import io.quartic.tracker.UserDirectory
 import io.quartic.tracker.api.RegistrationRequest
 import io.quartic.tracker.api.RegistrationResponse
 import io.quartic.tracker.model.UserId
@@ -18,19 +18,19 @@ import javax.ws.rs.NotAuthorizedException
 import javax.ws.rs.NotFoundException
 
 class UsersResourceShould {
-    private val store = mock<Store>()
-    private val resource = UsersResource(store)
+    private val directory = mock<UserDirectory>()
+    private val resource = UsersResource(directory)
 
     @Test
     fun respond_with_404_if_trying_to_lookup_unrecognised_user() {
-        whenever(store.getUser(any())).thenReturn(null)
+        whenever(directory.getUser(any())).thenReturn(null)
 
         assertThrows<NotFoundException> { resource.getUser(mock()) }
     }
 
     @Test
     fun respond_with_404_if_trying_to_delete_unrecognised_user() {
-        whenever(store.deleteUser(any())).thenReturn(false)
+        whenever(directory.deleteUser(any())).thenReturn(false)
 
         assertThrows<NotFoundException> { resource.deleteUser(mock()) }
     }
@@ -38,18 +38,18 @@ class UsersResourceShould {
     @Test
     fun marshal_registration_request_and_response() {
         val id = UserId(123)
-        whenever(store.registerUser(any(), any())).thenReturn(id)
+        whenever(directory.registerUser(any(), any())).thenReturn(id)
 
         assertThat(resource.registerUser(RegistrationRequest("foo", base64Encode(EC_PUBLIC_KEY.encoded))),
                 equalTo(RegistrationResponse(id.toString())))
         val captor = argumentCaptor<PublicKey>()
-        verify(store).registerUser(eq("foo"), captor.capture())
+        verify(directory).registerUser(eq("foo"), captor.capture())
         assertThat(captor.firstValue.encoded, equalTo(EC_PUBLIC_KEY.encoded))
     }
 
     @Test
     fun respond_with_401_if_trying_to_register_with_unrecognised_code() {
-        whenever(store.registerUser(any(), any())).thenReturn(null)
+        whenever(directory.registerUser(any(), any())).thenReturn(null)
 
         assertThrows<NotAuthorizedException> { resource.registerUser(RegistrationRequest("foo", base64Encode(EC_PUBLIC_KEY.encoded))) }
     }

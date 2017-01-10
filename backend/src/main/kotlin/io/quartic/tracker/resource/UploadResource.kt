@@ -3,7 +3,6 @@ package io.quartic.tracker.resource
 
 import io.dropwizard.auth.Auth
 import io.quartic.common.logging.logger
-import io.quartic.tracker.Store
 import io.quartic.tracker.api.UploadRequest
 import io.quartic.tracker.model.User
 import javax.ws.rs.Consumes
@@ -16,7 +15,7 @@ import javax.ws.rs.core.Response
 @Path("/upload")
 @Consumes(MediaType.APPLICATION_JSON)   // TODO: should consider protobuf
 @Produces(MediaType.APPLICATION_JSON)
-class UploadResource(val store: Store) {
+class UploadResource() {
     private val LOG by logger()
 
     @POST

@@ -2,7 +2,7 @@ package io.quartic.tracker.auth
 
 import io.dropwizard.auth.AuthFilter
 import io.quartic.common.logging.logger
-import io.quartic.tracker.Store
+import io.quartic.tracker.UserDirectory
 import io.quartic.tracker.model.User
 import io.quartic.tracker.model.UserId
 import java.util.*
@@ -62,7 +62,7 @@ class ClientSignatureAuthFilter : AuthFilter<ClientSignatureCredentials, User>()
     }
 
     companion object {
-        fun create(store: Store): ClientSignatureAuthFilter = create(ClientSignatureAuthenticator(store))
+        fun create(directory: UserDirectory): ClientSignatureAuthFilter = create(ClientSignatureAuthenticator(directory))
 
         fun create(authenticator: ClientSignatureAuthenticator): ClientSignatureAuthFilter {
             val builder = object : AuthFilterBuilder<ClientSignatureCredentials, User, ClientSignatureAuthFilter>() {

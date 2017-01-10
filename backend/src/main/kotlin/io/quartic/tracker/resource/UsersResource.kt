@@ -1,7 +1,7 @@
 package io.quartic.tracker.resource
 
 import io.quartic.common.logging.logger
-import io.quartic.tracker.Store
+import io.quartic.tracker.UserDirectory
 import io.quartic.tracker.api.RegistrationRequest
 import io.quartic.tracker.api.RegistrationResponse
 import io.quartic.tracker.model.User
@@ -16,7 +16,7 @@ import javax.ws.rs.core.MediaType
 @Path("/users")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-class UsersResource(val store: Store) {
+class UsersResource(val store: UserDirectory) {
     private val LOG by logger()
     private val keyFactory = KeyFactory.getInstance("EC")
 
