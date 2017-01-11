@@ -20,10 +20,10 @@ class PublisherShould {
         val pubsub = helper.options.service
 
         // TODO: we need to figure out startup order
-        val topic = pubsub.create(TopicInfo.of("whatever"))
+        pubsub.create(TopicInfo.of(TOPIC))
 
-        subscription = pubsub.create(SubscriptionInfo.of(topic.name, "test"))
-        publisher = Publisher({ topic })
+        subscription = pubsub.create(SubscriptionInfo.of(TOPIC, "test"))
+        publisher = Publisher(pubsub, TOPIC)
     }
 
     @AfterEach
@@ -43,5 +43,9 @@ class PublisherShould {
 
         val futureB = subscription.pullAsync(1)
         futureB.get().forEach { println(it.payloadAsString) }
+    }
+
+    companion object {
+        val TOPIC = "whatever"
     }
 }

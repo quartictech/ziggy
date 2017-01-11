@@ -27,11 +27,9 @@ class TrackerApplication : ApplicationBase<TrackerConfiguration>() {
     private val LOG by logger()
 
     override fun runApplication(configuration: TrackerConfiguration, environment: Environment) {
-        val pubsub = pubsub(configuration.pubsub, environment)
-
-        // Wrappers around Google Cloud services
+        // Google Cloud service wrappers
         val directory = UserDirectory(datastore(configuration.datastore, environment))
-        val publisher = Publisher({ pubsub.getTopic(configuration.pubsub.topic) })   // TODO: gross lazy stuff
+        val publisher = Publisher(pubsub(configuration.pubsub, environment), configuration.pubsub.topic!!)
 
         with (environment.jersey()) {
             register(AuthDynamicFeature(ClientSignatureAuthFilter.create(directory, configuration.signatureVerificationEnabled)))
