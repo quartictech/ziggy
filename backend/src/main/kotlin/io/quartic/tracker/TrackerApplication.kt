@@ -13,6 +13,7 @@ import io.dropwizard.auth.AuthValueFactoryProvider
 import io.dropwizard.lifecycle.Managed
 import io.dropwizard.setup.Environment
 import io.quartic.common.application.ApplicationBase
+import io.quartic.common.logging.logger
 import io.quartic.tracker.TrackerConfiguration.DatastoreConfiguration
 import io.quartic.tracker.TrackerConfiguration.PubSubConfiguration
 import io.quartic.tracker.auth.ClientSignatureAuthFilter
@@ -23,10 +24,14 @@ import org.joda.time.Duration
 import java.time.Clock
 
 class TrackerApplication : ApplicationBase<TrackerConfiguration>() {
+    private val LOG by logger()
+
     override fun runApplication(configuration: TrackerConfiguration, environment: Environment) {
+        val pubsub = pubsub(configuration.pubsub, environment)
+
         // Wrappers around Google Cloud services
         val directory = UserDirectory(datastore(configuration.datastore, environment))
-        val publisher = Publisher({ pubsubTopic(configuration.pubsub, environment) })   // TODO: gross lazy stuff
+        val publisher = Publisher({ pubsub.getTopic(configuration.pubsub.topic) })   // TODO: gross lazy stuff
 
         with (environment.jersey()) {
             register(AuthDynamicFeature(ClientSignatureAuthFilter.create(directory, configuration.signatureVerificationEnabled)))
@@ -34,10 +39,6 @@ class TrackerApplication : ApplicationBase<TrackerConfiguration>() {
             register(UsersResource(directory))
             register(UploadResource(publisher, Clock.systemUTC()))
         }
-    }
-
-    private fun pubsubTopic(config: PubSubConfiguration, environment: Environment): Topic {
-        return pubsub(config, environment).getTopic(config.topic)
     }
 
     // TODO: It would be better to run emulators independently (via Gradle or something), and inject configuration somehow
@@ -67,8 +68,10 @@ class TrackerApplication : ApplicationBase<TrackerConfiguration>() {
 
         environment.lifecycle().manage(object :  Managed {
             override fun start() {
+                LOG.info("Emulator ${helper.javaClass} starting")
                 helper.start()
                 onStart(service)
+                LOG.info("Emulator ${helper.javaClass} started")
             }
             override fun stop() = helper.stop(Duration.millis(3000))
         })

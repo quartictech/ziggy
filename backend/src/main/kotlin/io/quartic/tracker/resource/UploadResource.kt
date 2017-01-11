@@ -8,7 +8,6 @@ import io.quartic.tracker.Publisher
 import io.quartic.tracker.api.UploadRequest
 import io.quartic.tracker.model.Message
 import io.quartic.tracker.model.User
-import io.quartic.tracker.model.UserId
 import java.time.Clock
 import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
@@ -21,16 +20,15 @@ class UploadResource(private val publisher: Publisher, private val clock: Clock)
 
     @POST
     fun upload(@Auth user: User, request: UploadRequest) {
-        // TODO: handle publishing failure
         try {
             val messageId = publisher.publish(encode(Message(
-                    userId = UserId(123),
+                    userId = user.id,
                     timestamp = clock.instant(),
                     readings = request.values
             )))
-            LOG.info("User '${user.id} uploaded ${request.values.size} sensor reading(s) with messageId=$messageId")
+            LOG.info("User '${user.id}' uploaded ${request.values.size} sensor reading(s) with messageId=$messageId")
         } catch (e: Exception) {
-            throw ServiceUnavailableException("Could not publish sensor readings")
+            throw ServiceUnavailableException("Could not publish sensor readings", 30, e)
         }
     }
 }
