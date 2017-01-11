@@ -19,6 +19,9 @@ dependencies {
     compile "io.dropwizard:dropwizard-core:1.0.5"
     compile "io.dropwizard:dropwizard-auth:1.0.5"
     compile "io.dropwizard.modules:dropwizard-java8:0.9.0-1"
+    compile("com.google.cloud:google-cloud-pubsub:0.8.0") {
+        exclude group: "javax.servlet", module: "servlet-api"   // Conflicts with Dropwizard ecosystem
+    }
     compile("com.google.cloud:google-cloud-datastore:0.8.0-beta") {
         exclude group: "javax.servlet", module: "servlet-api"   // Conflicts with Dropwizard ecosystem
     }

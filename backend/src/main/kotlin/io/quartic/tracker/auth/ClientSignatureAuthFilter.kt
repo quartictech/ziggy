@@ -23,35 +23,40 @@ class ClientSignatureAuthFilter : AuthFilter<ClientSignatureCredentials, User>()
     }
 
     private fun extractCredentials(requestContext: ContainerRequestContext): ClientSignatureCredentials? {
-        if (requestContext.method != "POST" && requestContext.method != "PUT") {
-            LOG.warn("Unsupported method '${requestContext.method}'")
+        try {
+            if (requestContext.method != "POST" && requestContext.method != "PUT") {
+                LOG.warn("Unsupported method '${requestContext.method}'")
+                return null
+            }
+
+            val authHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)
+            if (authHeader == null) {
+                LOG.warn("Authorization header is missing")
+                return null
+            }
+
+            val matchResult = regex.matchEntire(authHeader)
+            if (matchResult == null) {
+                LOG.warn("Authorization header format invalid")
+                return null
+            }
+
+            val signature = try {
+                Base64.getDecoder().decode(matchResult.groupValues[2])
+            } catch (e: IllegalArgumentException) {
+                LOG.warn("Undecodable signature (${e.message})")
+                return null
+            }
+
+            return ClientSignatureCredentials(
+                    UserId(matchResult.groupValues[1]),
+                    signature,
+                    extractEntity(requestContext)
+            )
+        } catch (e: Exception) {
+            LOG.warn("Unknown error when extracting creds", e)
             return null
         }
-
-        val authHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION)
-        if (authHeader == null) {
-            LOG.warn("Authorization header is missing")
-            return null
-        }
-
-        val matchResult = regex.matchEntire(authHeader)
-        if (matchResult == null) {
-            LOG.warn("Authorization header format invalid")
-            return null
-        }
-
-        val signature = try {
-            Base64.getDecoder().decode(matchResult.groupValues[2])
-        } catch (e: IllegalArgumentException) {
-            LOG.warn("Undecodable signature (${e.message})")
-            return null
-        }
-
-        return ClientSignatureCredentials(
-                UserId(matchResult.groupValues[1]),
-                signature,
-                extractEntity(requestContext)
-        )
     }
 
     /** Convert the entity to a ByteArray. */
@@ -62,7 +67,7 @@ class ClientSignatureAuthFilter : AuthFilter<ClientSignatureCredentials, User>()
     }
 
     companion object {
-        fun create(directory: UserDirectory): ClientSignatureAuthFilter = create(ClientSignatureAuthenticator(directory))
+        fun create(directory: UserDirectory, signatureVerificationEnabled: Boolean) = create(ClientSignatureAuthenticator(directory, signatureVerificationEnabled))
 
         fun create(authenticator: ClientSignatureAuthenticator): ClientSignatureAuthFilter {
             val builder = object : AuthFilterBuilder<ClientSignatureCredentials, User, ClientSignatureAuthFilter>() {

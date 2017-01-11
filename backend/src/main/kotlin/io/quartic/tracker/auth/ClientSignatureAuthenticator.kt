@@ -10,14 +10,17 @@ import java.security.Signature
 import java.security.SignatureException
 import java.util.*
 
-class ClientSignatureAuthenticator(val directory: UserDirectory): Authenticator<ClientSignatureCredentials, User> {
+class ClientSignatureAuthenticator(
+        private val directory: UserDirectory,
+        private val signatureVerificationEnabled: Boolean
+): Authenticator<ClientSignatureCredentials, User> {
     private val LOG by logger()
 
     override fun authenticate(credentials: ClientSignatureCredentials): Optional<User> {
         val user = directory.getUser(credentials.userId)
         when (user) {
             is RegisteredUser -> {
-                if (verifySignature(credentials, user)) {
+                if (!signatureVerificationEnabled || verifySignature(credentials, user)) {
                     return Optional.of(user)
                 } else {
                     LOG.warn("Signature mismatch for '${credentials.userId}'")

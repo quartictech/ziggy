@@ -5,11 +5,17 @@ import io.dropwizard.Configuration
 class TrackerConfiguration : Configuration() {
     class DatastoreConfiguration {
         var emulated = false
-        var projectId: String? = null
         var namespace: String? = null
     }
 
+    class PubSubConfiguration {
+        var emulated = false
+        var topic: String? = null
+    }
+
     val datastore = DatastoreConfiguration()
+    val pubsub = PubSubConfiguration()
+    val signatureVerificationEnabled = true
 }
 
 

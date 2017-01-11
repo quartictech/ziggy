@@ -14,7 +14,7 @@ import java.security.spec.X509EncodedKeySpec
 import java.util.*
 
 // For now, all of the methods will just propagate a DatastoreException if they fail
-class UserDirectory(val datastore: Datastore) {
+class UserDirectory(private val datastore: Datastore) {
     private val LOG by logger()
 
     private val random = Random()

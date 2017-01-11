@@ -3,24 +3,34 @@ package io.quartic.tracker.resource
 
 import io.dropwizard.auth.Auth
 import io.quartic.common.logging.logger
+import io.quartic.common.serdes.encode
+import io.quartic.tracker.Publisher
 import io.quartic.tracker.api.UploadRequest
+import io.quartic.tracker.model.Message
 import io.quartic.tracker.model.User
-import javax.ws.rs.Consumes
-import javax.ws.rs.POST
-import javax.ws.rs.Path
-import javax.ws.rs.Produces
+import io.quartic.tracker.model.UserId
+import java.time.Clock
+import javax.ws.rs.*
 import javax.ws.rs.core.MediaType
-import javax.ws.rs.core.Response
 
 @Path("/upload")
 @Consumes(MediaType.APPLICATION_JSON)   // TODO: should consider protobuf
 @Produces(MediaType.APPLICATION_JSON)
-class UploadResource() {
+class UploadResource(private val publisher: Publisher, private val clock: Clock) {
     private val LOG by logger()
 
     @POST
-    fun upload(@Auth user: User, request: UploadRequest): Response {
-        LOG.info("User '${user.id} uploaded: ${request.values.size}")
-        return Response.ok().build()
+    fun upload(@Auth user: User, request: UploadRequest) {
+        // TODO: handle publishing failure
+        try {
+            val messageId = publisher.publish(encode(Message(
+                    userId = UserId(123),
+                    timestamp = clock.instant(),
+                    readings = request.values
+            )))
+            LOG.info("User '${user.id} uploaded ${request.values.size} sensor reading(s) with messageId=$messageId")
+        } catch (e: Exception) {
+            throw ServiceUnavailableException("Could not publish sensor readings")
+        }
     }
 }

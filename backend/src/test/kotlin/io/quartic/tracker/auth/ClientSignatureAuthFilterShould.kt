@@ -36,7 +36,7 @@ class ClientSignatureAuthFilterShould {
     @Test
     fun reject_if_params_invalid() {
         mockMethod("POST")
-        mockAuthHeader("QuarticAuth userId=\"abc\", xjhgafj=\"def\"")
+        mockAuthHeader("QuarticAuth userId=\"123\", xjhgafj=\"def\"")
 
         assertThrows<WebApplicationException> { filter.filter(requestContext) }
     }
@@ -44,7 +44,15 @@ class ClientSignatureAuthFilterShould {
     @Test
     fun reject_if_signature_undecodable() {
         mockMethod("POST")
-        mockAuthHeader("QuarticAuth userId=\"abc\", signature=\"###\"")
+        mockAuthHeader("QuarticAuth userId=\"123\", signature=\"###\"")
+
+        assertThrows<WebApplicationException> { filter.filter(requestContext) }
+    }
+
+    @Test
+    fun reject_if_unknown_error() {
+        mockMethod("POST")
+        mockAuthHeader("QuarticAuth userId=\"abc\", signature=\"${base64Encode("789")}\"")  // Error is invalid userId
 
         assertThrows<WebApplicationException> { filter.filter(requestContext) }
     }
@@ -105,7 +113,7 @@ class ClientSignatureAuthFilterShould {
 
     private fun mockValidHeaderForMethod(method: String) {
         mockMethod(method)
-        mockAuthHeader("QuarticAuth userId=\"abc\", signature=\"${base64Encode("789")}\"")
+        mockAuthHeader("QuarticAuth userId=\"123\", signature=\"${base64Encode("789")}\"")
         mockBody("stuff and nonsense")
     }
 

@@ -17,7 +17,7 @@ import java.util.*
 
 class ClientSignatureAuthenticatorShould {
     private val directory = mock<UserDirectory>()
-    private val authenticator = ClientSignatureAuthenticator(directory)
+    private val authenticator = ClientSignatureAuthenticator(directory, true)
 
     // These vectors were generated painfully from the Android app
     private val input = "abcdefghihjklmnop"
@@ -66,5 +66,15 @@ class ClientSignatureAuthenticatorShould {
 
         val creds = ClientSignatureCredentials(user.id, "abcdefg".toByteArray(), input.toByteArray())
         assertFalse(authenticator.authenticate(creds).isPresent)
+    }
+
+    @Test
+    fun accept_if_signature_mismatch_but_verification_disabled() {
+        val authenticator = ClientSignatureAuthenticator(directory, false)
+
+        whenever(directory.getUser(user.id)).thenReturn(user)
+
+        val creds = ClientSignatureCredentials(user.id, signature, (input + "X").toByteArray())
+        assertThat(authenticator.authenticate(creds), equalTo(Optional.of(user as User)))
     }
 }

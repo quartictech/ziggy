@@ -1,0 +1,47 @@
+package io.quartic.tracker
+
+import com.google.cloud.pubsub.Subscription
+import com.google.cloud.pubsub.SubscriptionInfo
+import com.google.cloud.pubsub.TopicInfo
+import com.google.cloud.pubsub.testing.LocalPubSubHelper
+import org.joda.time.Duration
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+
+class PublisherShould {
+    private val helper = LocalPubSubHelper.create()
+    private lateinit var publisher: Publisher
+    private lateinit var subscription: Subscription
+
+    @BeforeEach
+    fun before() {
+        helper.start()
+        val pubsub = helper.options.service
+
+        // TODO: we need to figure out startup order
+        val topic = pubsub.create(TopicInfo.of("whatever"))
+
+        subscription = pubsub.create(SubscriptionInfo.of(topic.name, "test"))
+        publisher = Publisher({ topic })
+    }
+
+    @AfterEach
+    fun after() {
+        helper.stop(Duration.millis(3000))
+    }
+
+    @Test
+    fun publish_when_basically_regular() {
+        publisher.publish("Hello")
+
+        val future = subscription.pullAsync(1)
+        future.get().forEach {
+            println(it.payloadAsString)
+            it.ack()
+        }
+
+        val futureB = subscription.pullAsync(1)
+        futureB.get().forEach { println(it.payloadAsString) }
+    }
+}
