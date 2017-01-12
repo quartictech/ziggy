@@ -42,6 +42,7 @@ class TrackerApplication : ApplicationBase<TrackerConfiguration>() {
     // TODO: It would be better to run emulators independently (via Gradle or something), and inject configuration somehow
 
     private fun pubsub(config: PubSubConfiguration, environment: Environment) = if (config.emulated) {
+        // TODO: in the emulator case, the topic obviously won't exist when we first fire up the emulator, so we have to create it
         managedEmulatorFor(LocalPubSubHelper.create(), environment, { it.create(Topic.of(config.topic)) })
     } else {
         PubSubOptions.getDefaultInstance().service

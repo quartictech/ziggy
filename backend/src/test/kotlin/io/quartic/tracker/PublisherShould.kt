@@ -4,6 +4,8 @@ import com.google.cloud.pubsub.Subscription
 import com.google.cloud.pubsub.SubscriptionInfo
 import com.google.cloud.pubsub.TopicInfo
 import com.google.cloud.pubsub.testing.LocalPubSubHelper
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.equalTo
 import org.joda.time.Duration
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -19,7 +21,6 @@ class PublisherShould {
         helper.start()
         val pubsub = helper.options.service
 
-        // TODO: we need to figure out startup order
         pubsub.create(TopicInfo.of(TOPIC))
 
         subscription = pubsub.create(SubscriptionInfo.of(TOPIC, "test"))
@@ -35,14 +36,7 @@ class PublisherShould {
     fun publish_when_basically_regular() {
         publisher.publish("Hello")
 
-        val future = subscription.pullAsync(1)
-        future.get().forEach {
-            println(it.payloadAsString)
-            it.ack()
-        }
-
-        val futureB = subscription.pullAsync(1)
-        futureB.get().forEach { println(it.payloadAsString) }
+        assertThat(subscription.pull(1).next().payloadAsString, equalTo("Hello"))
     }
 
     companion object {
