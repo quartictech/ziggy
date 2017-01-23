@@ -11,10 +11,12 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 
-class FusedLocationSensor(val context: Context) : Sensor, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-    override fun onConnectionFailed(p0: ConnectionResult) {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
+class FusedLocationSensor(context: Context) : GoogleApiClientSensor(context, LocationServices.API) {
+    companion object {
+        const val TAG = "FusedLocationSensor"
     }
+
+    private val apiClient = makeApiClient()
 
     override fun onConnected(p0: Bundle?) {
         val intent = Intent(context.applicationContext, SensorService::class.java)
@@ -26,31 +28,10 @@ class FusedLocationSensor(val context: Context) : Sensor, GoogleApiClient.Connec
         LocationServices.FusedLocationApi.requestLocationUpdates(apiClient, locationRequest, pendingIntent)
     }
 
-    override fun onConnectionSuspended(p0: Int) {
-        throw UnsupportedOperationException("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    companion object {
-        const val TAG = "FusedLocationSensor"
-    }
-
-    private val apiClient: GoogleApiClient
-
-    init {
-        Log.i(TAG, "connecting to google play APIs")
-        this.apiClient = GoogleApiClient.Builder(context.applicationContext)
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build()
-        apiClient.connect()
-    }
-
     override fun processIntent(intent: Intent, database: Database) {
         if (LocationResult.hasResult(intent)) {
            processLocationUpdate(LocationResult.extractResult(intent)!!, database)
         }
-
     }
 
     private fun processLocationUpdate(result: LocationResult, database: Database) {
