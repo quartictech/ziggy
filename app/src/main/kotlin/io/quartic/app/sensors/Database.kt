@@ -39,37 +39,4 @@ class Database(val context: Context) {
                 CONTENT_URI.buildUpon().appendPath(id.toString()).build(), null, null)
         }
     }
-
-//
-//
-//
-//    fun processSensorData(batchSize: Int, f: (List<SensorValue>) -> Unit) {
-//        lock.write {
-//            Log.i(TAG, "process ${android.os.Process.myPid()} acquiring lock")
-//            helper.writableDatabase.use { db ->
-//                while (true) {
-//                    db.beginTransaction()
-
-//
-//                    if (sensorValues.isEmpty()) {
-//                        break
-//                    }
-//
-//                    try {
-//                        f.invoke(sensorValues)
-//                        sensorValues.forEach { db.delete("sensors", "id = ?", arrayOf("${it.id}")) }
-//                    } catch (e: Exception) {
-//                        if (db.inTransaction()) {
-//                            db.endTransaction()
-//                            return
-//                        }
-//                    }
-//                    db.setTransactionSuccessful()
-//                    db.endTransaction()
-//                }
-//            }
-//        }
-//    }
-//
-
 }

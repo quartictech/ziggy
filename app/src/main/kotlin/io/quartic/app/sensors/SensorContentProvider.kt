@@ -9,15 +9,20 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.net.Uri
 import android.content.ContentUris
+import java.util.concurrent.locks.ReentrantReadWriteLock
+import kotlin.concurrent.read
+import kotlin.concurrent.write
 
 
 class SensorContentProvider : ContentProvider() {
+    val lock = ReentrantReadWriteLock()
+
     companion object {
         private const val TAG = "SensorContentProvider"
         private const val PROVIDER_NAME = "io.quartic.app.provider"
         private const val SENSORS = 1
         private const val SENSORS_ID = 2
-        val CONTENT_URI = Uri.parse("content://$PROVIDER_NAME/sensors")
+        val CONTENT_URI: Uri = Uri.parse("content://$PROVIDER_NAME/sensors")
 
         private const val BATCH_SIZE = 100
     }
@@ -57,10 +62,9 @@ class SensorContentProvider : ContentProvider() {
 
     private var helper: Helper? = null
 
-
     override fun insert(uri: Uri?, values: ContentValues?): Uri {
         when(uriMatcher.match(uri)) {
-            SENSORS -> {
+            SENSORS -> lock.write {
                 val db = helper!!.writableDatabase
                 db.beginTransaction()
                 val id = db.insertOrThrow("sensors", null, values)
@@ -74,8 +78,10 @@ class SensorContentProvider : ContentProvider() {
 
     override fun query(uri: Uri?, projection: Array<out String>?, selection: String?, selectionArgs: Array<out String>?, sortOrder: String?): Cursor {
         when(uriMatcher.match(uri)) {
-            SENSORS -> return helper!!.readableDatabase.query("sensors", arrayOf("id", "name", "value", "timestamp"),
-                            null, null, null, null, null, "$BATCH_SIZE")
+            SENSORS -> lock.read {
+                return helper!!.readableDatabase.query("sensors", arrayOf("id", "name", "value", "timestamp"),
+                        null, null, null, null, null, "$BATCH_SIZE")
+            }
             else -> throw IllegalArgumentException("not recognised: $uri")
         }
     }
@@ -91,7 +97,7 @@ class SensorContentProvider : ContentProvider() {
 
     override fun delete(uri: Uri?, selection: String?, selectionArgs: Array<out String>?): Int {
         when(uriMatcher.match(uri)) {
-            SENSORS_ID -> {
+            SENSORS_ID -> lock.write {
                 val db = helper!!.writableDatabase
                 val id = uri!!.pathSegments[1]
                 return db.delete("sensors", "id=?", arrayOf(id))
