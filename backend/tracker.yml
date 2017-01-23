@@ -1,3 +1,12 @@
+datastore:
+  emulated: true
+
+pubsub:
+  emulated: true
+  topic: yeah
+
+signatureVerificationEnabled: false
+
 server:
   applicationContextPath: /
   applicationConnectors:

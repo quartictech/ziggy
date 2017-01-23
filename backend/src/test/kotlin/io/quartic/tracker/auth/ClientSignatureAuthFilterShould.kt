@@ -3,15 +3,12 @@ package io.quartic.tracker.auth
 import com.nhaarman.mockito_kotlin.*
 import io.quartic.assertThrows
 import io.quartic.tracker.model.UserId
-import io.quartic.tracker.auth.ClientSignatureCredentials
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers
 import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.RETURNS_DEEP_STUBS
 import java.io.InputStream
 import java.util.*
-import javax.ws.rs.NotAuthorizedException
 import javax.ws.rs.WebApplicationException
 import javax.ws.rs.container.ContainerRequestContext
 import javax.ws.rs.core.HttpHeaders
@@ -39,7 +36,7 @@ class ClientSignatureAuthFilterShould {
     @Test
     fun reject_if_params_invalid() {
         mockMethod("POST")
-        mockAuthHeader("QuarticAuth userId=\"abc\", xjhgafj=\"def\"")
+        mockAuthHeader("QuarticAuth userId=\"123\", xjhgafj=\"def\"")
 
         assertThrows<WebApplicationException> { filter.filter(requestContext) }
     }
@@ -47,7 +44,15 @@ class ClientSignatureAuthFilterShould {
     @Test
     fun reject_if_signature_undecodable() {
         mockMethod("POST")
-        mockAuthHeader("QuarticAuth userId=\"abc\", signature=\"###\"")
+        mockAuthHeader("QuarticAuth userId=\"123\", signature=\"###\"")
+
+        assertThrows<WebApplicationException> { filter.filter(requestContext) }
+    }
+
+    @Test
+    fun reject_if_unknown_error() {
+        mockMethod("POST")
+        mockAuthHeader("QuarticAuth userId=\"abc\", signature=\"${base64Encode("789")}\"")  // Error is invalid userId
 
         assertThrows<WebApplicationException> { filter.filter(requestContext) }
     }
@@ -60,7 +65,7 @@ class ClientSignatureAuthFilterShould {
         filter.filter(requestContext)
 
         verify(authenticator).authenticate(ClientSignatureCredentials(
-                UserId("abc"),
+                UserId(123),
                 "789".toByteArray(),
                 "stuff and nonsense".toByteArray()
         ))
@@ -108,7 +113,7 @@ class ClientSignatureAuthFilterShould {
 
     private fun mockValidHeaderForMethod(method: String) {
         mockMethod(method)
-        mockAuthHeader("QuarticAuth userId=\"abc\", signature=\"${base64Encode("789")}\"")
+        mockAuthHeader("QuarticAuth userId=\"123\", signature=\"${base64Encode("789")}\"")
         mockBody("stuff and nonsense")
     }
 
