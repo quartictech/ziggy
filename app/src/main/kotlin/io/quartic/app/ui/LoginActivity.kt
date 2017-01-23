@@ -19,7 +19,6 @@ import android.widget.EditText
 import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.widget.editorActions
 import com.jakewharton.rxbinding.widget.textChanges
-import io.quartic.app.api.BackendApi
 import io.quartic.app.sensors.SensorService
 import io.quartic.app.ApplicationConfiguration
 import io.quartic.app.generateKeyPair
@@ -105,10 +104,9 @@ class LoginActivity : Activity() {
     private inner class UserLoginTask constructor(private val code: String) : AsyncTask<Void, Void, Boolean>() {
 
         override fun doInBackground(vararg params: Void): Boolean? {
-            Log.i("wat", "i think key is ${Base64.encodeToString(publicKey.encoded, Base64.NO_WRAP)}")
             val request = RegistrationRequest(code, Base64.encodeToString(publicKey.encoded, Base64.NO_WRAP))
 
-            val state = ApplicationState(applicationContext, ApplicationConfiguration.load(applicationContext))
+            val state = ApplicationState.get(applicationContext)
             // TODO: we should inject this
             val registration = state.client
 

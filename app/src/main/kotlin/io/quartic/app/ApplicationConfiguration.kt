@@ -7,7 +7,8 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import io.quartic.app.R
 
 data class ApplicationConfiguration(
-        val backendBaseUrl: String
+        val backendBaseUrl: String,
+        val uploadIntervalMilliseconds: Long
 ){
     companion object {
         fun load(context: Context): ApplicationConfiguration {

@@ -11,6 +11,12 @@ import io.quartic.app.clientOf
 import io.quartic.app.sensors.Database
 
 class ApplicationState(val context: Context, val configuration: ApplicationConfiguration) {
+    companion object {
+        fun get(context: Context): ApplicationState {
+            return ApplicationState(context, ApplicationConfiguration.load(context))
+        }
+    }
+
     private val sharedPreferences = context.getSharedPreferences("tracker", 0)
 
     var userId: String
