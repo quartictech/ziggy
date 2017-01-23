@@ -3,7 +3,7 @@ package io.quartic.tracker.resource
 import com.nhaarman.mockito_kotlin.*
 import io.quartic.EC_PUBLIC_KEY
 import io.quartic.RSA_PUBLIC_KEY
-import io.quartic.assertThrows
+import io.quartic.common.test.assertThrows
 import io.quartic.tracker.UserDirectory
 import io.quartic.tracker.api.RegistrationRequest
 import io.quartic.tracker.api.RegistrationResponse
