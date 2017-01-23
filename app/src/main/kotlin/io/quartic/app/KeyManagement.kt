@@ -22,7 +22,7 @@ fun generateKeyPair() {
     }
 }
 
-fun checkKeyExists(): Boolean {
+fun isKeyPresent(): Boolean {
     val ks = KeyStore.getInstance("AndroidKeyStore")
     ks.load(null)
     return ks.getEntry(KEY_ALIAS, null) != null
