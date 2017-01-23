@@ -8,7 +8,7 @@ import java.security.*
 private const val KEY_ALIAS = "key"
 
 fun generateKeyPair() {
-    if (checkKeyExists()) return
+    if (isKeyPresent()) return
     // TODO: validate that keys are being stored in hardware
     try {
         val kpg = KeyPairGenerator.getInstance(KEY_ALGORITHM_EC, "AndroidKeyStore")
