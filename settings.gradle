@@ -17,7 +17,11 @@ pluginRepositories {
     }
 }
 
+include ":common"
+
 include ":backend-api"
 include ":backend"
+
+include ":scribe"
 
 include ':app'

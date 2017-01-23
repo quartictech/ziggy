@@ -12,6 +12,9 @@ buildscript {
 }
 
 allprojects {
+    apply from: "${rootDir}/gradle/dependencies.gradle"
+    apply from: "${rootDir}/gradle/quartic-repos.gradle"
+
     repositories {
         jcenter()
     }

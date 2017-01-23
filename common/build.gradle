@@ -1,0 +1,11 @@
+plugins {
+    id "nebula.kotlin" version "1.0.5"
+}
+
+dependencies {
+    compile "io.quartic.platform:common-application:923"
+    compile "io.dropwizard:dropwizard-core:${versions.dropwizard}"
+    compile("com.google.cloud:google-cloud-core:0.8.0") {
+        exclude group: "javax.servlet", module: "servlet-api"   // Conflicts with Dropwizard ecosystem
+    }
+}
