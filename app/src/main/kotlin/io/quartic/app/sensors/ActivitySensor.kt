@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import com.google.android.gms.location.ActivityRecognition
 import com.google.android.gms.location.ActivityRecognitionResult
+import io.quartic.app.storage.Database
 
 class ActivitySensor(context: Context) : GoogleApiClientSensor(context, ActivityRecognition.API) {
     companion object {

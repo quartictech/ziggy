@@ -8,7 +8,7 @@ import io.quartic.app.ApplicationConfiguration
 import io.quartic.app.api.BackendApi
 import io.quartic.app.authHttpClient
 import io.quartic.app.clientOf
-import io.quartic.app.sensors.Database
+import io.quartic.app.storage.Database
 import okhttp3.OkHttpClient
 
 class ApplicationState(val context: Context, val configuration: ApplicationConfiguration) {

@@ -1,8 +1,8 @@
-package io.quartic.app.sensors
+package io.quartic.app.storage
 
 import android.content.ContentValues
 import android.content.Context
-import io.quartic.app.sensors.SensorContentProvider.Companion.CONTENT_URI
+import io.quartic.app.storage.SensorContentProvider.Companion.CONTENT_URI
 import io.quartic.tracker.api.SensorValue
 
 class Database(val context: Context) {

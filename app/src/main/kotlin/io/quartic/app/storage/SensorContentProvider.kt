@@ -1,4 +1,4 @@
-package io.quartic.app.sensors
+package io.quartic.app.storage
 
 import android.content.ContentProvider
 import android.content.ContentValues
@@ -22,7 +22,7 @@ class SensorContentProvider : ContentProvider() {
         private const val PROVIDER_NAME = "io.quartic.app.provider"
         private const val SENSORS = 1
         private const val SENSORS_ID = 2
-        val CONTENT_URI: Uri = Uri.parse("content://$PROVIDER_NAME/sensors")
+        val CONTENT_URI: Uri = Uri.parse("content://${PROVIDER_NAME}/sensors")
 
         private const val BATCH_SIZE = 100
     }
@@ -35,7 +35,7 @@ class SensorContentProvider : ContentProvider() {
     }
 
     private class Helper(context: Context) :
-            SQLiteOpenHelper(context, Helper.DATABASE_NAME, null, Helper.DATABASE_VERSION) {
+            SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
         companion object {
             private val DATABASE_NAME = "tracker"
             private val DATABASE_VERSION = 1
@@ -80,7 +80,7 @@ class SensorContentProvider : ContentProvider() {
         when(uriMatcher.match(uri)) {
             SENSORS -> lock.read {
                 return helper!!.readableDatabase.query("sensors", arrayOf("id", "name", "value", "timestamp"),
-                        null, null, null, null, null, "$BATCH_SIZE")
+                        null, null, null, null, null, "${BATCH_SIZE}")
             }
             else -> throw IllegalArgumentException("not recognised: $uri")
         }

@@ -10,6 +10,7 @@ import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import io.quartic.app.storage.Database
 
 class FusedLocationSensor(context: Context) : GoogleApiClientSensor(context, LocationServices.API) {
     companion object {
