@@ -6,6 +6,8 @@ machine:
     BUILD_TOOLS_VERSION: 25.0.2
     SUPPORT_VERSION: 25.1.0
     PLAY_SERVICES_VERSION: 10.0.1
+  services:
+    - docker
 
 dependencies:
   pre:
