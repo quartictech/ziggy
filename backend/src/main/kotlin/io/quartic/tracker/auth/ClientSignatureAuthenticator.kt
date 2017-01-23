@@ -2,7 +2,7 @@ package io.quartic.tracker.auth
 
 import io.dropwizard.auth.Authenticator
 import io.quartic.common.logging.logger
-import io.quartic.tracker.Store
+import io.quartic.tracker.UserDirectory
 import io.quartic.tracker.model.RegisteredUser
 import io.quartic.tracker.model.UnregisteredUser
 import io.quartic.tracker.model.User
@@ -10,14 +10,17 @@ import java.security.Signature
 import java.security.SignatureException
 import java.util.*
 
-class ClientSignatureAuthenticator(val store: Store): Authenticator<ClientSignatureCredentials, User> {
+class ClientSignatureAuthenticator(
+        private val directory: UserDirectory,
+        private val signatureVerificationEnabled: Boolean
+): Authenticator<ClientSignatureCredentials, User> {
     private val LOG by logger()
 
     override fun authenticate(credentials: ClientSignatureCredentials): Optional<User> {
-        val user = store.getUser(credentials.userId)
+        val user = directory.getUser(credentials.userId)
         when (user) {
             is RegisteredUser -> {
-                if (verifySignature(credentials, user)) {
+                if (!signatureVerificationEnabled || verifySignature(credentials, user)) {
                     return Optional.of(user)
                 } else {
                     LOG.warn("Signature mismatch for '${credentials.userId}'")
