@@ -9,7 +9,6 @@ class TrackerConfiguration : Configuration() {
     }
 
     class PubSubConfiguration {
-        var emulated = false
         var topic: String? = null
     }
 

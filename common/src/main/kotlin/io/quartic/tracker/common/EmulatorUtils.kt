@@ -5,8 +5,8 @@ import com.google.cloud.ServiceOptions
 import com.google.cloud.testing.BaseEmulatorHelper
 import io.dropwizard.lifecycle.Managed
 import io.dropwizard.setup.Environment
-import io.quartic.common.logging.logger
 import org.joda.time.Duration
+import org.slf4j.LoggerFactory
 
 fun <T : ServiceOptions<U, *, *>, U : Service<T>> managedEmulatorFor(
         helper: BaseEmulatorHelper<T>,
@@ -16,7 +16,7 @@ fun <T : ServiceOptions<U, *, *>, U : Service<T>> managedEmulatorFor(
     val service = helper.options.getService()
 
     environment.lifecycle().manage(object : Managed {
-        private val LOG by logger()
+        private val LOG = LoggerFactory.getLogger(javaClass)   // Would normally use the logger() helper, but get some Kotlin emo around reflection not working
 
         override fun start() {
             LOG.info("Emulator ${helper.javaClass} starting")
