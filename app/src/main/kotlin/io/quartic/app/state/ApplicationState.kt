@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Context.ACCOUNT_SERVICE
 import io.quartic.app.ApplicationConfiguration
 import io.quartic.app.api.BackendApi
-import io.quartic.app.authClientOf
 import io.quartic.app.authHttpClient
 import io.quartic.app.clientOf
 import io.quartic.app.sensors.Database
