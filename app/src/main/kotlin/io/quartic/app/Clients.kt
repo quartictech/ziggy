@@ -8,19 +8,12 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.jackson.JacksonConverterFactory
 
-inline fun <reified T : Any> clientOf(baseUrl: String) = Retrofit.Builder()
+inline fun <reified T : Any> clientOf(baseUrl: String, client: OkHttpClient) = Retrofit.Builder()
         .baseUrl(baseUrl)
+        .client(client)
         .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
         .addConverterFactory(JacksonConverterFactory.create(ObjectMapper().registerKotlinModule()))
         .build().create(T::class.java)
-
-inline fun <reified T : Any> authClientOf(baseUrl: String, userId: String) = Retrofit.Builder()
-        .client(authHttpClient(userId))
-        .baseUrl(baseUrl)
-        .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-        .addConverterFactory(JacksonConverterFactory.create(ObjectMapper().registerKotlinModule()))
-        .build().create(T::class.java)
-
 
 inline fun authHttpClient(userId: String) = OkHttpClient.Builder()
         .addInterceptor { chain ->

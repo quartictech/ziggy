@@ -7,8 +7,10 @@ import android.content.Context.ACCOUNT_SERVICE
 import io.quartic.app.ApplicationConfiguration
 import io.quartic.app.api.BackendApi
 import io.quartic.app.authClientOf
+import io.quartic.app.authHttpClient
 import io.quartic.app.clientOf
 import io.quartic.app.sensors.Database
+import okhttp3.OkHttpClient
 
 class ApplicationState(val context: Context, val configuration: ApplicationConfiguration) {
     companion object {
@@ -26,10 +28,10 @@ class ApplicationState(val context: Context, val configuration: ApplicationConfi
                 .apply()
 
     val client: BackendApi
-        get() = clientOf(configuration.backendBaseUrl)
+        get() = clientOf(configuration.backendBaseUrl, OkHttpClient())
 
     val authClient: BackendApi
-        get() = authClientOf(configuration.backendBaseUrl, userId)
+        get() = clientOf(configuration.backendBaseUrl, authHttpClient(userId))
 
     val database: Database
         get() = Database(context)
