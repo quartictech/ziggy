@@ -1,7 +1,6 @@
 package io.quartic.app.ui
 
 import android.Manifest
-import android.R
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
@@ -19,8 +18,8 @@ import android.widget.EditText
 import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.widget.editorActions
 import com.jakewharton.rxbinding.widget.textChanges
+import io.quartic.app.R
 import io.quartic.app.sensors.SensorService
-import io.quartic.app.ApplicationConfiguration
 import io.quartic.app.generateKeyPair
 import io.quartic.app.publicKey
 import io.quartic.app.state.ApplicationState
@@ -57,14 +56,14 @@ class LoginActivity : Activity() {
     private fun configureWidgets() {
         setContentView(io.quartic.app.R.layout.activity_login)
 
-        signInButton = findViewById(io.quartic.app.R.id.sign_in_button) as Button
-        codeText = findViewById(io.quartic.app.R.id.code) as EditText
-        loginFormView = findViewById(io.quartic.app.R.id.login_form)
-        progressView = findViewById(io.quartic.app.R.id.login_progress)
+        signInButton = findViewById(R.id.sign_in_button) as Button
+        codeText = findViewById(R.id.code) as EditText
+        loginFormView = findViewById(R.id.login_form)
+        progressView = findViewById(R.id.login_progress)
 
         // TODO: lifecycle stuff
 
-        val editorTriggerEvents = codeText.editorActions().filter { it == io.quartic.app.R.id.login || it == EditorInfo.IME_NULL }
+        val editorTriggerEvents = codeText.editorActions().filter { it == R.id.login || it == EditorInfo.IME_NULL }
         val signInTriggerEvents = signInButton.clicks()
         val loginTriggerEvents = listOf(editorTriggerEvents, signInTriggerEvents).merge()
         codeText.textChanges()
@@ -92,7 +91,7 @@ class LoginActivity : Activity() {
     private fun animate(view: View, visibility: Int, alpha: Float) {
         view.visibility = visibility
         view.animate()
-                .setDuration(resources.getInteger(R.integer.config_shortAnimTime).toLong())
+                .setDuration(resources.getInteger(android.R.integer.config_shortAnimTime).toLong())
                 .alpha(alpha)
                 .setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator) {
@@ -135,7 +134,7 @@ class LoginActivity : Activity() {
             if (success!!) {
                 finish()
             } else {
-                codeText.error = getString(io.quartic.app.R.string.error_unrecognised_code)
+                codeText.error = getString(R.string.error_unrecognised_code)
                 codeText.requestFocus()
             }
         }
