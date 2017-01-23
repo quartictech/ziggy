@@ -43,7 +43,7 @@
                  android:exported="false" />
 
         <provider
-                android:name=".sync.StubProvider"
+                android:name=".sensors.SensorContentProvider"
                 android:authorities="io.quartic.app.provider"
                 android:exported="false"
                 android:syncable="true"/>

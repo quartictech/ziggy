@@ -17,6 +17,7 @@ import io.quartic.app.authClientOf
 import io.quartic.app.clientOf
 import io.quartic.app.sensors.Database
 import io.quartic.app.state.ApplicationState
+import io.quartic.tracker.api.SensorValue
 import io.quartic.tracker.api.UploadRequest
 
 class SyncAdapter(context: Context?, autoInitialize: Boolean) :
@@ -31,17 +32,17 @@ class SyncAdapter(context: Context?, autoInitialize: Boolean) :
         val config = ApplicationConfiguration.load(context.applicationContext)
         val applicationState = ApplicationState(context.applicationContext, config)
         val backend = applicationState.authClient
-        applicationState.database.processSensorData(1000, { sensorValues ->
-            Log.i(TAG, "syncing ${sensorValues.size} values")
-            try {
-                backend.upload(UploadRequest(sensorValues)).toBlocking().first()
-                Log.i(TAG, "uploaded ${sensorValues.size} values")
-            }
-            catch (e: Exception) {
-                Log.e(TAG, "error uploading: ${e.message}")
-                throw e
-            }
-        })
-    }
 
+        val sensorValues = applicationState.database.getSensorValues()
+        Log.i(TAG, "syncing ${sensorValues.size} values")
+        try {
+            backend.upload(UploadRequest(sensorValues)).toBlocking().first()
+            applicationState.database.delete(sensorValues.map(SensorValue::id))
+            Log.i(TAG, "uploaded ${sensorValues.size} values")
+        }
+        catch (e: Exception) {
+            Log.e(TAG, "error uploading: ${e.message}")
+            throw e
+        }
+    }
 }

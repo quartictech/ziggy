@@ -32,7 +32,7 @@ class ApplicationState(val context: Context, val configuration: ApplicationConfi
         get() = authClientOf(configuration.backendBaseUrl, userId)
 
     val database: Database
-        get() = Database.getInstance(context)
+        get() = Database(context)
 
     val account: Account
         get() {

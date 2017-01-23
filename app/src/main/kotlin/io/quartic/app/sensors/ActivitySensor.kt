@@ -10,7 +10,8 @@ import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.ActivityRecognition
 import com.google.android.gms.location.ActivityRecognitionResult
 
-class ActivitySensor(val context: Context) : Sensor, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+class ActivitySensor(val context: Context) : Sensor, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
     override fun processIntent(intent: Intent, database: Database) {
         if (ActivityRecognitionResult.hasResult(intent)) {
             processUpdate(ActivityRecognitionResult.extractResult(intent), database)
