@@ -7,15 +7,7 @@ import android.content.Context
 import android.content.SyncResult
 import android.os.Bundle
 import android.util.Log
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.fasterxml.jackson.module.kotlin.KotlinModule
 import io.quartic.app.ApplicationConfiguration
-import io.quartic.app.R
-import io.quartic.app.api.BackendApi
-import io.quartic.app.authClientOf
-import io.quartic.app.clientOf
-import io.quartic.app.sensors.Database
 import io.quartic.app.state.ApplicationState
 import io.quartic.tracker.api.SensorValue
 import io.quartic.tracker.api.UploadRequest
