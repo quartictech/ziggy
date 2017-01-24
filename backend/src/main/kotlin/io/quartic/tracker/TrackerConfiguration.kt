@@ -15,7 +15,7 @@ class TrackerConfiguration : Configuration() {
 
     val datastore = DatastoreConfiguration()
     val pubsub = PubSubConfiguration()
-    val signatureVerificationEnabled = true
+    var signatureVerificationEnabled = true
 }
 
 
