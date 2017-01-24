@@ -18,13 +18,13 @@ class QuarticAuth(AuthBase):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Upload user sensor data.")
     parser.add_argument("-u", "--user-id", required=True, help="ID of registered user")
-    parser.add_argument("-n", "--num-messages", default=1, help="Number of duplicate messages")
-    parser.add_argument("payload", help="JSON-encoded paylod")
+    parser.add_argument("-n", "--num-messages", type=int, default=1, help="Number of duplicate messages")
+    parser.add_argument("-p", "--payload", default='{ "values": [ { "id": 123, "name": "bob", "value": "yeah", "timestamp": 9876 }] }', help="JSON-encoded payload")
     args = parser.parse_args()
 
     payload = json.loads(args.payload)
 
-    for i in range(int(args.num_messages)):
+    for i in range(args.num_messages):
         r = requests.post("{}/upload".format(API_ROOT), auth=QuarticAuth(args.user_id), json=payload)
         r.raise_for_status()
 
