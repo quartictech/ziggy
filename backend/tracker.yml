@@ -1,5 +1,5 @@
 datastore:
-  emulated: true
+  namespace: tracker
 
 pubsub:
   topic: tracker
