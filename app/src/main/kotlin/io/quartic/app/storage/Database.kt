@@ -39,4 +39,10 @@ class Database(val context: Context) {
                 CONTENT_URI.buildUpon().appendPath(id.toString()).build(), null, null)
         }
     }
+
+    fun  getBacklogSize(): Int {
+        val cursor = context.contentResolver.query(CONTENT_URI.buildUpon().appendPath("count").build(), null, null, null, null)
+        cursor.moveToFirst()
+        return cursor.getInt(0)
+    }
 }

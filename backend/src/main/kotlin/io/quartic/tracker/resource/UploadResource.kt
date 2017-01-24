@@ -24,7 +24,7 @@ class UploadResource(private val publisher: Publisher, private val clock: Clock)
             val messageId = publisher.publish(encode(Message(
                     userId = user.id,
                     timestamp = clock.instant(),
-                    readings = request.values
+                    data = request
             )))
             LOG.info("User '${user.id}' uploaded ${request.values.size} sensor reading(s) with messageId=$messageId")
         } catch (e: Exception) {

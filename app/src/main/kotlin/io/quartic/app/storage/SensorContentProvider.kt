@@ -22,6 +22,7 @@ class SensorContentProvider : ContentProvider() {
         private const val PROVIDER_NAME = "io.quartic.app.provider"
         private const val SENSORS = 1
         private const val SENSORS_ID = 2
+        private const val SENSORS_COUNT = 3
         val CONTENT_URI: Uri = Uri.parse("content://${PROVIDER_NAME}/sensors")
 
         private const val BATCH_SIZE = 100
@@ -32,6 +33,7 @@ class SensorContentProvider : ContentProvider() {
     init {
         uriMatcher.addURI(PROVIDER_NAME, "sensors", SENSORS)
         uriMatcher.addURI(PROVIDER_NAME, "sensors/#", SENSORS_ID)
+        uriMatcher.addURI(PROVIDER_NAME, "sensors/count", SENSORS_COUNT)
     }
 
     private class Helper(context: Context) :
@@ -82,6 +84,10 @@ class SensorContentProvider : ContentProvider() {
                 return helper!!.readableDatabase.query("sensors", arrayOf("id", "name", "value", "timestamp"),
                         null, null, null, null, null, "${BATCH_SIZE}")
             }
+            SENSORS_COUNT -> lock.read {
+                return helper!!.readableDatabase.rawQuery("select count(*) from sensors", null)
+            }
+
             else -> throw IllegalArgumentException("not recognised: $uri")
         }
     }
