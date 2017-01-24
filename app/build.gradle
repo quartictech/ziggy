@@ -17,6 +17,7 @@ android {
         versionName version
     }
 
+
     signingConfigs {
         release {
             // TODO: figure out where to put these

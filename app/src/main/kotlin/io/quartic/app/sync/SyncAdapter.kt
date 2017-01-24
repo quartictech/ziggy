@@ -33,8 +33,7 @@ class SyncAdapter(context: Context?, autoInitialize: Boolean) :
             Log.i(TAG, "uploaded ${sensorValues.size} values")
         }
         catch (e: Exception) {
-            Log.e(TAG, "error uploading: ${e.message}")
-            throw e
+            Log.e(TAG, "error uploading: ${e.message}. will try again later.")
         }
     }
 }
