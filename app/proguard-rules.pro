@@ -24,3 +24,16 @@
 # SnakeYAML
 -dontwarn org.yaml.snakeyaml.**
 -dontwarn com.fasterxml.jackson.dataformat.yaml.snakeyaml.**
+
+# Needed for Jackson not to be horrific
+# http://stackoverflow.com/questions/27687128/how-to-setup-proguard-for-jackson-json-processor/28022792#28022792
+-keepattributes *Annotation*,EnclosingMethod,Signature
+-keepnames class com.fasterxml.jackson.** { *; }
+ -dontwarn com.fasterxml.jackson.databind.**
+ -keep class org.codehaus.** { *; }
+ -keepclassmembers public final enum org.codehaus.jackson.annotate.JsonAutoDetect$Visibility {
+ public static final org.codehaus.jackson.annotate.JsonAutoDetect$Visibility *; }
+-keep public class your.class.** {
+  public void set*(***);
+  public *** get*();
+}
