@@ -33,7 +33,7 @@ dependencies:
 test:
   override:
      - echo "NO"
-#    - ./gradlew checkRelease assembleRelease --parallel --info --console=plain
+    - ./gradlew checkRelease assembleRelease --parallel --info --console=plain
   post:
     - mkdir -p ${CIRCLE_TEST_REPORTS}/junit/
     - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ${CIRCLE_TEST_REPORTS}/junit/ \;
@@ -44,7 +44,7 @@ deployment:
     commands:
       - curl https://raw.githubusercontent.com/quartictech/circleci-utils/develop/circleci-gcloud-login | bash
       - echo ${GOOGLE_PLAY_SERVICE_KEY} | base64 --decode > ${HOME}/google-play-service-key.json
-        #- ./gradlew dockerPush --parallel --info --console=plain
+      - ./gradlew dockerPush --parallel --info --console=plain
       - ./gradlew publishRelease
 
 general:
