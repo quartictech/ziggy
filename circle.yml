@@ -32,7 +32,6 @@ dependencies:
 
 test:
   override:
-     - echo "NO"
     - ./gradlew checkRelease assembleRelease --parallel --info --console=plain
   post:
     - mkdir -p ${CIRCLE_TEST_REPORTS}/junit/
