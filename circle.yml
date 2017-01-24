@@ -44,7 +44,7 @@ deployment:
       - curl https://raw.githubusercontent.com/quartictech/circleci-utils/develop/circleci-gcloud-login | bash
       - echo ${GOOGLE_PLAY_SERVICE_KEY} | base64 --decode > ${HOME}/google-play-service-key.json
       - ./gradlew dockerPush --parallel --info --console=plain
-      - ./gradlew publishRelease
+      - ./gradlew publishApkRelease
 
 general:
   artifacts:
