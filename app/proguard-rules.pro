@@ -58,3 +58,5 @@
 }
 
 -keepattributes InnerClasses
+
+-dontwarn com.google.android.gms.**
