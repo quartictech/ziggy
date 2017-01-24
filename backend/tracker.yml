@@ -1,8 +1,8 @@
 datastore:
-  namespace: tracker
+  namespace: tracker.devtest.quartic.io
 
 pubsub:
-  topic: tracker
+  topic: tracker.devtest.quartic.io
 
 signatureVerificationEnabled: false
 
