@@ -1,9 +1,8 @@
 datastore:
-  emulated: true
+  namespace: tracker.devtest.quartic.io
 
 pubsub:
-  emulated: true
-  topic: yeah
+  topic: tracker.devtest.quartic.io
 
 signatureVerificationEnabled: false
 
