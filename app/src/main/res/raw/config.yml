@@ -1,0 +1,2 @@
+backendBaseUrl: https://diggers.dev.quartic.io/api/
+uploadIntervalMilliseconds: 5000

@@ -1,5 +1,6 @@
-package io.quartic.app
+package io.quartic.app.ui
 
+import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
@@ -17,13 +18,18 @@ import android.widget.EditText
 import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.widget.editorActions
 import com.jakewharton.rxbinding.widget.textChanges
-import io.quartic.app.api.BackendApi
+import io.quartic.app.R
 import io.quartic.app.sensors.SensorService
+import io.quartic.app.generateKeyPair
+import io.quartic.app.publicKey
+import io.quartic.app.state.ApplicationState
+import io.quartic.app.tag
 import io.quartic.tracker.api.RegistrationRequest
 import rx.Observable.empty
 import rx.lang.kotlin.merge
 
 class LoginActivity : Activity() {
+    private val TAG by tag()
 
     private var loginTask: UserLoginTask? = null
     private lateinit var signInButton: Button
@@ -33,13 +39,12 @@ class LoginActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        loadPermissions(android.Manifest.permission.ACCESS_FINE_LOCATION, 0)
-        Log.i("LoginActivity", "request perms")
+        loadPermissions(Manifest.permission.ACCESS_FINE_LOCATION, 0)
+        Log.i(TAG, "request perms")
         loadPermissions("com.google.android.gms.permission.ACTIVITY_RECOGNITION", 0)
         configureWidgets()
         generateKeyPair()
         SensorService.startService(applicationContext)
-
     }
 
     private fun loadPermissions(perm: String, requestCode: Int) {
@@ -50,9 +55,8 @@ class LoginActivity : Activity() {
         }
     }
 
-
     private fun configureWidgets() {
-        setContentView(R.layout.activity_login)
+        setContentView(io.quartic.app.R.layout.activity_login)
 
         signInButton = findViewById(R.id.sign_in_button) as Button
         codeText = findViewById(R.id.code) as EditText
@@ -101,24 +105,28 @@ class LoginActivity : Activity() {
     private inner class UserLoginTask constructor(private val code: String) : AsyncTask<Void, Void, Boolean>() {
 
         override fun doInBackground(vararg params: Void): Boolean? {
-            val request = RegistrationRequest(code, Base64.encodeToString(publicKey.encoded, Base64.DEFAULT))
+            val request = RegistrationRequest(code, Base64.encodeToString(publicKey.encoded, Base64.NO_WRAP))
 
+            val state = ApplicationState.get(applicationContext)
             // TODO: we should inject this
-            val registration = clientOf<BackendApi>("http://localhost:5555")
+            val registration = state.client
 
             val observable = registration.register(request)
 
+            var success = false
             observable.subscribe(
-                    { Log.d("LoginActivity", it.toString()) },
-                    { Log.e("LoginActivity", "Error registering with server", it) }
+                    { resp ->
+                        state.userId = resp.userId
+                        success = true
+                    },
+                    { Log.e(TAG, "Error registering with server", it) }
             )
 
-            // TODO: send public key + code in request
             // TODO: if 2xx then cool - finish() activity (who's responsible for updating state in local storage?)
             // TODO: if 4xx then say "code incorrect"
             // TODO: if 5xx then say "server error - please try again later"
 
-            return false
+            return success
         }
 
         override fun onPostExecute(success: Boolean?) {
