@@ -83,7 +83,7 @@ class SensorContentProvider : ContentProvider() {
         when(uriMatcher.match(uri)) {
             SENSORS -> lock.read {
                 return helper.readableDatabase.query("sensors", arrayOf("id", "name", "value", "timestamp"),
-                        null, null, null, null, null, "${BATCH_SIZE}")
+                        null, null, null, null, null, "$BATCH_SIZE")
             }
             SENSORS_COUNT -> lock.read {
                 return helper.readableDatabase.rawQuery("select count(*) from sensors", null)
@@ -105,7 +105,7 @@ class SensorContentProvider : ContentProvider() {
     override fun delete(uri: Uri?, selection: String?, selectionArgs: Array<out String>?): Int {
         when(uriMatcher.match(uri)) {
             SENSORS_ID -> lock.write {
-                val db = helper!!.writableDatabase
+                val db = helper.writableDatabase
                 val id = uri!!.pathSegments[1]
                 return db.delete("sensors", "id=?", arrayOf(id))
             }
