@@ -5,30 +5,51 @@ import android.content.AbstractThreadedSyncAdapter
 import android.content.ContentProviderClient
 import android.content.Context
 import android.content.SyncResult
+import android.os.BatteryManager
 import android.os.Bundle
 import android.util.Log
-import io.quartic.app.api.BackendApi
-import io.quartic.app.clientOf
-import io.quartic.app.sensors.Database
+import io.quartic.app.ApplicationConfiguration
+import io.quartic.app.state.ApplicationState
+import io.quartic.tracker.api.SensorValue
 import io.quartic.tracker.api.UploadRequest
+import android.content.Context.BATTERY_SERVICE
+import io.quartic.app.tag
 
 class SyncAdapter(context: Context?, autoInitialize: Boolean) :
         AbstractThreadedSyncAdapter(context, autoInitialize) {
-    companion object {
-        const val TAG = "SyncAdapter"
-    }
+    val TAG by tag()
+    val config = ApplicationConfiguration.load(context!!.applicationContext)
+    val applicationState = ApplicationState(context!!.applicationContext, config)
 
     override fun onPerformSync(account: Account?, extras: Bundle?, authority: String?,
                                provider: ContentProviderClient?, syncResult: SyncResult?) {
         Log.i(TAG, "starting sync")
-        val sensorValues = Database(context).getUnsavedSensorData(100)
-        Log.i(TAG, "syncing ${sensorValues.size} values")
-        val backend = clientOf<BackendApi>("http://10.0.2.2:9000/api/")
-
-        backend.upload(UploadRequest(sensorValues)).subscribe(
-                { v -> Log.i(TAG, "uploaded ${sensorValues.size} values") },
-                { e -> Log.e(TAG, "error uploading: ${e.message}")}
-        )
+        while (applicationState.database.getBacklogSize() > 0) {
+            syncBatch()
+        }
     }
 
+    private fun syncBatch() {
+        val backend = applicationState.authClient
+        val sensorValues = applicationState.database.getSensorValues()
+        Log.i(TAG, "syncing ${sensorValues.size} values")
+        try {
+            backend.upload(UploadRequest(
+                    timestamp = System.currentTimeMillis(),
+                    batteryLevel = getBatteryLevel(),
+                    backlogSize = applicationState.database.getBacklogSize(),
+                    values = sensorValues
+            )).toBlocking().first()
+            applicationState.database.delete(sensorValues.map(SensorValue::id))
+            Log.i(TAG, "uploaded ${sensorValues.size} values")
+        }
+        catch (e: Exception) {
+            Log.e(TAG, "error uploading: ${e.message}. will try again later.")
+        }
+    }
+
+    private fun getBatteryLevel(): Int {
+        val bm = context.applicationContext.getSystemService(BATTERY_SERVICE) as BatteryManager
+        return bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+    }
 }

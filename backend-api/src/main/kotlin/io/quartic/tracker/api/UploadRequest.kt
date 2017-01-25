@@ -1,3 +1,9 @@
 package io.quartic.tracker.api
 
-data class UploadRequest(val values: List<SensorValue>)
+import java.time.Instant
+
+data class UploadRequest(
+        val timestamp: Long,
+        val backlogSize: Int,
+        val batteryLevel: Int,
+        val values: List<SensorValue>)
