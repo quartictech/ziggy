@@ -9,10 +9,11 @@ import android.os.IBinder
 import android.os.SystemClock
 import android.util.Log
 import io.quartic.app.state.ApplicationState
+import io.quartic.app.tag
 
 class SensorService : Service() {
     companion object {
-        const val TAG = "SensorService"
+        val TAG by tag()
         fun startService(context: Context) {
             Log.i(TAG, "starting SensorService")
             context.startService(Intent(context.applicationContext, SensorService::class.java))
