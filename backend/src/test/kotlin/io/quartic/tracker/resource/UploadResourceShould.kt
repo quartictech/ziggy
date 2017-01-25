@@ -29,7 +29,7 @@ class UploadResourceShould {
         verify(publisher).publish(encode(Message(
                 userId = UserId(123),
                 timestamp = clock.instant(),
-                readings = request.values
+                data = request
         )))
     }
 
@@ -44,8 +44,12 @@ class UploadResourceShould {
         on { id } doReturn UserId(userId)
     }
 
-    private fun uploadRequest() = UploadRequest(listOf(
-            SensorValue(45, "Alice", "Foo", 9876),
-            SensorValue(67, "Bob", "Bar", 5432)
-    ))
+    private fun uploadRequest() = UploadRequest(
+            System.currentTimeMillis(),
+            0,
+            0,
+            listOf(
+                    SensorValue(45, "Alice", "Foo", 9876),
+                    SensorValue(67, "Bob", "Bar", 5432)
+            ))
 }
