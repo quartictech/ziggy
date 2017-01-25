@@ -18,14 +18,19 @@ import io.quartic.app.tag
 class SyncAdapter(context: Context?, autoInitialize: Boolean) :
         AbstractThreadedSyncAdapter(context, autoInitialize) {
     val TAG by tag()
+    val config = ApplicationConfiguration.load(context!!.applicationContext)
+    val applicationState = ApplicationState(context!!.applicationContext, config)
 
     override fun onPerformSync(account: Account?, extras: Bundle?, authority: String?,
                                provider: ContentProviderClient?, syncResult: SyncResult?) {
         Log.i(TAG, "starting sync")
-        val config = ApplicationConfiguration.load(context.applicationContext)
-        val applicationState = ApplicationState(context.applicationContext, config)
-        val backend = applicationState.authClient
+        while (applicationState.database.getBacklogSize() > 0) {
+            syncBatch()
+        }
+    }
 
+    private fun syncBatch() {
+        val backend = applicationState.authClient
         val sensorValues = applicationState.database.getSensorValues()
         Log.i(TAG, "syncing ${sensorValues.size} values")
         try {
