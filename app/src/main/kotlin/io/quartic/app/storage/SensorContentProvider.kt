@@ -63,12 +63,12 @@ class SensorContentProvider : ContentProvider() {
         }
     }
 
-    private var helper: Helper? = null
+    private lateinit var helper: Helper
 
     override fun insert(uri: Uri?, values: ContentValues?): Uri {
         when(uriMatcher.match(uri)) {
             SENSORS -> lock.write {
-                val db = helper!!.writableDatabase
+                val db = helper.writableDatabase
                 db.beginTransaction()
                 val id = db.insertOrThrow("sensors", null, values)
                 db.setTransactionSuccessful()
@@ -82,11 +82,11 @@ class SensorContentProvider : ContentProvider() {
     override fun query(uri: Uri?, projection: Array<out String>?, selection: String?, selectionArgs: Array<out String>?, sortOrder: String?): Cursor {
         when(uriMatcher.match(uri)) {
             SENSORS -> lock.read {
-                return helper!!.readableDatabase.query("sensors", arrayOf("id", "name", "value", "timestamp"),
+                return helper.readableDatabase.query("sensors", arrayOf("id", "name", "value", "timestamp"),
                         null, null, null, null, null, "${BATCH_SIZE}")
             }
             SENSORS_COUNT -> lock.read {
-                return helper!!.readableDatabase.rawQuery("select count(*) from sensors", null)
+                return helper.readableDatabase.rawQuery("select count(*) from sensors", null)
             }
 
             else -> throw IllegalArgumentException("not recognised: $uri")
