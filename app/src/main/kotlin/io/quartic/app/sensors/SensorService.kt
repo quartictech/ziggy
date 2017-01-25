@@ -1,15 +1,24 @@
 package io.quartic.app.sensors
 
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.app.Service
-import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.os.IBinder
+import android.os.SystemClock
 import android.util.Log
-import io.quartic.app.sync.AccountSingleton
+import io.quartic.app.state.ApplicationState
+import io.quartic.app.tag
 
 class SensorService : Service() {
+    companion object {
+        val TAG by tag()
+        fun startService(context: Context) {
+            Log.i(TAG, "starting SensorService")
+            context.startService(Intent(context.applicationContext, SensorService::class.java))
+        }
+    }
     var thread : ServiceThread? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -20,14 +29,6 @@ class SensorService : Service() {
         return START_STICKY
     }
 
-    companion object {
-        const val TAG = "SensorService"
-        fun startService(context: Context) {
-            Log.i(TAG, "starting SensorService")
-            context.startService(Intent(context.applicationContext, SensorService::class.java))
-        }
-    }
-
     override fun onCreate() {
         if (thread == null) {
             Log.d(TAG, "Launching thread")
@@ -35,18 +36,16 @@ class SensorService : Service() {
             thread!!.start()
         }
 
-        Log.i(TAG, "requesting sync")
-        val settingsBundle = Bundle()
-        settingsBundle.putBoolean(
-                ContentResolver.SYNC_EXTRAS_MANUAL, true)
-        settingsBundle.putBoolean(
-                ContentResolver.SYNC_EXTRAS_EXPEDITED, true)
-
-        ContentResolver.requestSync(
-                AccountSingleton.getAccount(applicationContext),
-                "io.quartic.app.provider",
-                settingsBundle)
-
+        // Schedule repeating sync
+        // Note we should use SyncAdapter here but it won't allow faster than hourly updates
+        // TODO: Use periodic SyncAdapter
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(this, AlarmReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime(),
+                ApplicationState.get(applicationContext).configuration.uploadIntervalMilliseconds,
+                pendingIntent)
     }
 
     override fun onBind(intent: Intent?): IBinder {

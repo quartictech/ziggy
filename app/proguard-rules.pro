@@ -20,3 +20,7 @@
 
 # More workarounds
 -dontnote kotlin.reflect.jvm.internal.KClassImpl$**
+
+# SnakeYAML
+-dontwarn org.yaml.snakeyaml.**
+-dontwarn com.fasterxml.jackson.dataformat.yaml.snakeyaml.**

@@ -6,6 +6,8 @@ machine:
     BUILD_TOOLS_VERSION: 25.0.2
     SUPPORT_VERSION: 25.1.0
     PLAY_SERVICES_VERSION: 10.0.1
+  services:
+    - docker
 
 dependencies:
   pre:
@@ -35,6 +37,13 @@ test:
   post:
     - mkdir -p ${CIRCLE_TEST_REPORTS}/junit/
     - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ${CIRCLE_TEST_REPORTS}/junit/ \;
+
+deployment:
+  hub:
+    branch: /.*/
+    commands:
+      - curl https://raw.githubusercontent.com/quartictech/circleci-utils/develop/circleci-gcloud-login | bash
+      - ./gradlew dockerPush --parallel --info --console=plain
 
 general:
   artifacts:
