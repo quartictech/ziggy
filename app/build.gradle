@@ -4,6 +4,7 @@ plugins {
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'com.github.triplet.play'
 
 android {
     compileSdkVersion 25
@@ -53,6 +54,10 @@ android {
     dexOptions {
         preDexLibraries file("local.properties").exists()   // Prevents pointlessly running on CircleCI
     }
+}
+
+play {
+    jsonFile = file(System.properties["user.home"] + "/" + "google-play-service-key.json")
 }
 
 repositories {

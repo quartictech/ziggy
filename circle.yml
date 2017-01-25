@@ -39,7 +39,14 @@ test:
     - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ${CIRCLE_TEST_REPORTS}/junit/ \;
 
 deployment:
-  hub:
+  play_store:
+    branch: develop
+    commands:
+      - curl https://raw.githubusercontent.com/quartictech/circleci-utils/develop/circleci-gcloud-login | bash
+      - echo ${GOOGLE_PLAY_SERVICE_KEY} | base64 --decode > ${HOME}/google-play-service-key.json
+      # Note we can change to publishRelease once we have the play store content in repo
+      - ./gradlew dockerPush publishApkRelease --parallel --info --console=plain
+  docker_push:
     branch: /.*/
     commands:
       - curl https://raw.githubusercontent.com/quartictech/circleci-utils/develop/circleci-gcloud-login | bash
