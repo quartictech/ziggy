@@ -1,6 +1,7 @@
 package io.quartic.tracker.resource
 
-
+import com.codahale.metrics.MetricRegistry
+import com.codahale.metrics.annotation.Metered
 import io.dropwizard.auth.Auth
 import io.quartic.common.logging.logger
 import io.quartic.common.serdes.encode
@@ -15,17 +16,25 @@ import javax.ws.rs.core.MediaType
 @Path("/upload")
 @Consumes(MediaType.APPLICATION_JSON)   // TODO: should consider protobuf
 @Produces(MediaType.APPLICATION_JSON)
-class UploadResource(private val publisher: Publisher, private val clock: Clock) {
+class UploadResource(
+        private val publisher: Publisher,
+        private val clock: Clock,
+        metrics: MetricRegistry
+) {
     private val LOG by logger()
+    private val charsMeter = metrics.meter("${javaClass.name}.chars")
 
     @POST
+    @Metered
     fun upload(@Auth user: User, request: UploadRequest) {
         try {
-            val messageId = publisher.publish(encode(Message(
+            val encoded = encode(Message(
                     userId = user.id,
                     timestamp = clock.instant(),
                     data = request
-            )))
+            ))
+            val messageId = publisher.publish(encoded)
+            charsMeter.mark(encoded.length.toLong())
             LOG.info("User '${user.id}' uploaded ${request.values.size} sensor reading(s) with messageId=$messageId")
         } catch (e: Exception) {
             throw ServiceUnavailableException("Could not publish sensor readings", 30, e)
