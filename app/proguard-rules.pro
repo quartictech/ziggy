@@ -33,7 +33,7 @@
  -keep class org.codehaus.** { *; }
  -keepclassmembers public final enum org.codehaus.jackson.annotate.JsonAutoDetect$Visibility {
  public static final org.codehaus.jackson.annotate.JsonAutoDetect$Visibility *; }
--keep public class your.class.** {
+-keep public class io.quartic.** {
   public void set*(***);
   public *** get*();
 }
@@ -60,3 +60,6 @@
 -keepattributes InnerClasses
 
 -dontwarn com.google.android.gms.**
+
+# without this line, data classes lose their static constructors
+-keep class io.quartic.** { *; }
