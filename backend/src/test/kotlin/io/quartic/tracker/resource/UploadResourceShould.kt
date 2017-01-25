@@ -1,7 +1,7 @@
 package io.quartic.tracker.resource
 
 import com.nhaarman.mockito_kotlin.*
-import io.quartic.assertThrows
+import io.quartic.common.test.assertThrows
 import io.quartic.common.serdes.encode
 import io.quartic.tracker.Publisher
 import io.quartic.tracker.api.SensorValue

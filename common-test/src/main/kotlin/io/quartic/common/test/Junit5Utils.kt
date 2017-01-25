@@ -1,4 +1,4 @@
-package io.quartic
+package io.quartic.common.test
 
 import org.junit.jupiter.api.Assertions.assertThrows
 
