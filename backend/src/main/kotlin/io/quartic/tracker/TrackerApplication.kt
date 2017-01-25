@@ -8,6 +8,7 @@ import io.dropwizard.setup.Environment
 import io.quartic.common.application.ApplicationBase
 import io.quartic.tracker.TrackerConfiguration.DatastoreConfiguration
 import io.quartic.tracker.auth.ClientSignatureAuthFilter
+import io.quartic.tracker.healthcheck.DatastoreHealthCheck
 import io.quartic.tracker.healthcheck.PubSubTopicHealthCheck
 import io.quartic.tracker.model.User
 import io.quartic.tracker.resource.UploadResource
@@ -16,9 +17,11 @@ import java.time.Clock
 
 class TrackerApplication : ApplicationBase<TrackerConfiguration>() {
     override fun runApplication(configuration: TrackerConfiguration, environment: Environment) {
-        // Google Cloud service wrappers
-        val directory = UserDirectory(datastore(configuration.datastore))
         val pubsub = PubSubOptions.getDefaultInstance().service
+        val datastore = datastore(configuration.datastore)
+
+        // Google Cloud service wrappers
+        val directory = UserDirectory(datastore)
         val publisher = Publisher(pubsub, configuration.pubsub.topic!!)
 
         with (environment.jersey()) {
@@ -30,6 +33,7 @@ class TrackerApplication : ApplicationBase<TrackerConfiguration>() {
 
         with (environment.healthChecks()) {
             register("topic", PubSubTopicHealthCheck(pubsub, configuration.pubsub.topic!!))
+            register("datastore", DatastoreHealthCheck(datastore))
         }
     }
 

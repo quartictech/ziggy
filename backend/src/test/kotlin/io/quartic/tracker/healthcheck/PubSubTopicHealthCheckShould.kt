@@ -4,7 +4,8 @@ import com.google.cloud.pubsub.Topic
 import com.google.cloud.pubsub.testing.LocalPubSubHelper
 import org.joda.time.Duration
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class PubSubTopicHealthCheckShould {
@@ -24,18 +25,18 @@ class PubSubTopicHealthCheckShould {
         helper.start()
         pubsub.create(Topic.of("myTopic"))
 
-        Assertions.assertTrue(healthcheck.execute().isHealthy)
+        assertTrue(healthcheck.execute().isHealthy)
     }
 
     @Test
     fun report_unhealthy_if_pubsub_alive_but_topic_doesnt_exist() {
         helper.start()
 
-        Assertions.assertFalse(healthcheck.execute().isHealthy)
+        assertFalse(healthcheck.execute().isHealthy)
     }
 
     @Test
     fun report_unhealthy_if_pubsub_not_alive() {
-        Assertions.assertFalse(healthcheck.execute().isHealthy)
+        assertFalse(healthcheck.execute().isHealthy)
     }
 }
