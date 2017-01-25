@@ -8,6 +8,7 @@ import io.dropwizard.setup.Environment
 import io.quartic.common.application.ApplicationBase
 import io.quartic.tracker.TrackerConfiguration.DatastoreConfiguration
 import io.quartic.tracker.auth.ClientSignatureAuthFilter
+import io.quartic.tracker.healthcheck.PubSubTopicHealthCheck
 import io.quartic.tracker.model.User
 import io.quartic.tracker.resource.UploadResource
 import io.quartic.tracker.resource.UsersResource
@@ -17,13 +18,18 @@ class TrackerApplication : ApplicationBase<TrackerConfiguration>() {
     override fun runApplication(configuration: TrackerConfiguration, environment: Environment) {
         // Google Cloud service wrappers
         val directory = UserDirectory(datastore(configuration.datastore))
-        val publisher = Publisher(PubSubOptions.getDefaultInstance().service, configuration.pubsub.topic!!)
+        val pubsub = PubSubOptions.getDefaultInstance().service
+        val publisher = Publisher(pubsub, configuration.pubsub.topic!!)
 
         with (environment.jersey()) {
             register(AuthDynamicFeature(ClientSignatureAuthFilter.create(directory, configuration.signatureVerificationEnabled)))
             register(AuthValueFactoryProvider.Binder(User::class.java))
             register(UsersResource(directory))
             register(UploadResource(publisher, Clock.systemUTC()))
+        }
+
+        with (environment.healthChecks()) {
+            register("topic", PubSubTopicHealthCheck(pubsub, configuration.pubsub.topic!!))
         }
     }
 
