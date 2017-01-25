@@ -59,7 +59,9 @@
 
 -keepattributes InnerClasses
 
+# More workarounds
 -dontwarn com.google.android.gms.**
 
-# without this line, data classes lose their static constructors
+# without this line, kotlin data classes lose their static constructors
+# thus jackson doesn't work
 -keep class io.quartic.** { *; }
