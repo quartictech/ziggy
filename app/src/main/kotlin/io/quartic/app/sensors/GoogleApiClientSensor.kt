@@ -5,13 +5,12 @@ import android.util.Log
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.Api
 import com.google.android.gms.common.api.GoogleApiClient
+import io.quartic.app.tag
 
 abstract class GoogleApiClientSensor(val context: Context, val api: Api<out Api.ApiOptions.NotRequiredOptions>) : Sensor,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
-    companion object {
-        val TAG = GoogleApiClientSensor::class.java.name
-    }
+    open val TAG by tag()
 
     fun makeApiClient(): GoogleApiClient {
         Log.i(TAG, "connecting to google play APIs")

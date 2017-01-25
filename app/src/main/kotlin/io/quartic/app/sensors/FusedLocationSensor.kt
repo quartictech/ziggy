@@ -11,12 +11,10 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import io.quartic.app.storage.Database
+import io.quartic.app.tag
 
 class FusedLocationSensor(context: Context) : GoogleApiClientSensor(context, LocationServices.API) {
-    companion object {
-        const val TAG = "FusedLocationSensor"
-    }
-
+    override val TAG by tag()
     private val apiClient = makeApiClient()
 
     override fun onConnected(p0: Bundle?) {

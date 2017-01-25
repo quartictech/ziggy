@@ -13,12 +13,11 @@ import io.quartic.app.state.ApplicationState
 import io.quartic.tracker.api.SensorValue
 import io.quartic.tracker.api.UploadRequest
 import android.content.Context.BATTERY_SERVICE
+import io.quartic.app.tag
 
 class SyncAdapter(context: Context?, autoInitialize: Boolean) :
         AbstractThreadedSyncAdapter(context, autoInitialize) {
-    companion object {
-        const val TAG = "SyncAdapter"
-    }
+    val TAG by tag()
 
     override fun onPerformSync(account: Account?, extras: Bundle?, authority: String?,
                                provider: ContentProviderClient?, syncResult: SyncResult?) {

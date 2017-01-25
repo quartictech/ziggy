@@ -23,11 +23,13 @@ import io.quartic.app.sensors.SensorService
 import io.quartic.app.generateKeyPair
 import io.quartic.app.publicKey
 import io.quartic.app.state.ApplicationState
+import io.quartic.app.tag
 import io.quartic.tracker.api.RegistrationRequest
 import rx.Observable.empty
 import rx.lang.kotlin.merge
 
 class LoginActivity : Activity() {
+    private val TAG by tag()
 
     private var loginTask: UserLoginTask? = null
     private lateinit var signInButton: Button
@@ -38,7 +40,7 @@ class LoginActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         loadPermissions(Manifest.permission.ACCESS_FINE_LOCATION, 0)
-        Log.i("LoginActivity", "request perms")
+        Log.i(TAG, "request perms")
         loadPermissions("com.google.android.gms.permission.ACTIVITY_RECOGNITION", 0)
         configureWidgets()
         generateKeyPair()
@@ -117,7 +119,7 @@ class LoginActivity : Activity() {
                         state.userId = resp.userId
                         success = true
                     },
-                    { Log.e("LoginActivity", "Error registering with server", it) }
+                    { Log.e(TAG, "Error registering with server", it) }
             )
 
             // TODO: if 2xx then cool - finish() activity (who's responsible for updating state in local storage?)

@@ -8,11 +8,10 @@ import android.os.Bundle
 import android.util.Log
 import io.quartic.app.ApplicationConfiguration
 import io.quartic.app.state.ApplicationState
+import io.quartic.app.tag
 
 class AlarmReceiver : BroadcastReceiver() {
-    companion object {
-        const val TAG = "AlarmReceiver"
-    }
+    val TAG by tag()
 
     override fun onReceive(context: Context?, intent: Intent?) {
         Log.i(TAG, "alarm fired")

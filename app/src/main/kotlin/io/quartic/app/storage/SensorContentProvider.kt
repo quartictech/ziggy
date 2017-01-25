@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.net.Uri
 import android.content.ContentUris
+import io.quartic.app.tag
 import java.util.concurrent.locks.ReentrantReadWriteLock
 import kotlin.concurrent.read
 import kotlin.concurrent.write
@@ -16,9 +17,9 @@ import kotlin.concurrent.write
 
 class SensorContentProvider : ContentProvider() {
     val lock = ReentrantReadWriteLock()
+    val TAG by tag()
 
     companion object {
-        private const val TAG = "SensorContentProvider"
         private const val PROVIDER_NAME = "io.quartic.app.provider"
         private const val SENSORS = 1
         private const val SENSORS_ID = 2

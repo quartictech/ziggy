@@ -4,11 +4,10 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import io.quartic.app.tag
 
 class SyncService : Service() {
-    companion object {
-        const val TAG = "SyncService"
-    }
+    val TAG by tag()
     private val syncAdapterLock: Any = Any()
     private var syncAdapter: SyncAdapter? = null
 
