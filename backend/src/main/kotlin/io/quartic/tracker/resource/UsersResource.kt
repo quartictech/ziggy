@@ -21,7 +21,7 @@ class UsersResource(private val store: UserDirectory) {
     private val LOG by logger()
     private val keyFactory = KeyFactory.getInstance("EC")
 
-    // TODO: most of these methods should be exposed to the outside world!  (Perhaps use Dropwizard @RolesAllowed)
+    // TODO: most of these methods should not be exposed to the outside world!  (Perhaps use Dropwizard @RolesAllowed)
 
     @GET
     fun getUsers(): Map<UserId, User> = store.getUsers()

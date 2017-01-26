@@ -7,6 +7,7 @@ import io.quartic.common.logging.logger
 import io.quartic.common.serdes.encode
 import io.quartic.tracker.Publisher
 import io.quartic.tracker.api.UploadRequest
+import io.quartic.tracker.common.metrics.meter
 import io.quartic.tracker.model.Message
 import io.quartic.tracker.model.User
 import java.time.Clock
@@ -22,7 +23,7 @@ class UploadResource(
         metrics: MetricRegistry
 ) {
     private val LOG by logger()
-    private val charsMeter = metrics.meter("${javaClass.name}.chars")
+    private val charsMeter = meter(metrics, "upload", "chars")
 
     @POST
     @Metered
