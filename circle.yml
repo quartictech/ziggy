@@ -44,6 +44,7 @@ test:
     # Infuriating that we can't just run global check task (because that would trigger slow irrelevant stuff for Android debug variant)
     - ./gradlew :backend:check :scribe:check checkInternalRelease assembleRelease --parallel --info --console=plain
   post:
+    - adb devices | grep emulator | cut -f1 | while read line; do adb -s $line emu kill; done
     - mkdir -p ${CIRCLE_TEST_REPORTS}/junit/
     - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ${CIRCLE_TEST_REPORTS}/junit/ \;
 
