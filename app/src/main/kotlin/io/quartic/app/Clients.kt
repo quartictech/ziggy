@@ -15,7 +15,7 @@ inline fun <reified T : Any> clientOf(baseUrl: String, client: OkHttpClient) = R
         .addConverterFactory(JacksonConverterFactory.create(ObjectMapper().registerKotlinModule()))
         .build().create(T::class.java)
 
-inline fun authHttpClient(userId: String) = OkHttpClient.Builder()
+fun authHttpClient(userId: String) = OkHttpClient.Builder()
         .addInterceptor { chain ->
             val request = chain.request()
             val buffer = okio.Buffer()

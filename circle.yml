@@ -6,6 +6,8 @@ machine:
     BUILD_TOOLS_VERSION: 25.0.2
     SUPPORT_VERSION: 25.1.0
     PLAY_SERVICES_VERSION: 10.0.1
+    # Disable emulator audio
+    QEMU_AUDIO_DRV: none
   services:
     - docker
 
@@ -31,9 +33,18 @@ dependencies:
       - /usr/local/android-sdk-linux/extras/google/m2repository
 
 test:
+  pre:
+    - emulator -avd circleci-android24 -no-window:
+        background: true
+        parallel: true
+    - circle-android wait-for-boot
   override:
+    # Test the app
+    - ./gradlew connectedInternalDebugAndroidTest
+    # This is needed to free up memory on circle when we're done
+    - adb devices | grep emulator | cut -f1 | while read line; do adb -s $line emu kill; done
     # Infuriating that we can't just run global check task (because that would trigger slow irrelevant stuff for Android debug variant)
-    - ./gradlew :backend:check :scribe:check checkRelease assembleRelease --parallel --info --console=plain
+    - ./gradlew :backend:check :scribe:check checkInternalRelease assembleRelease --parallel --info --console=plain
   post:
     - mkdir -p ${CIRCLE_TEST_REPORTS}/junit/
     - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ${CIRCLE_TEST_REPORTS}/junit/ \;

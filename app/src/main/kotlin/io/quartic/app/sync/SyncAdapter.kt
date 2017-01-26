@@ -23,9 +23,14 @@ class SyncAdapter(context: Context?, autoInitialize: Boolean) :
 
     override fun onPerformSync(account: Account?, extras: Bundle?, authority: String?,
                                provider: ContentProviderClient?, syncResult: SyncResult?) {
-        Log.i(TAG, "starting sync")
-        while (applicationState.database.getBacklogSize() > 0) {
-            syncBatch()
+        if (applicationState.userId != null) {
+            Log.i(TAG, "starting sync")
+            while (applicationState.database.getBacklogSize() > 0) {
+                syncBatch()
+            }
+        }
+        else {
+            Log.i(TAG, "user needs to authenticate")
         }
     }
 

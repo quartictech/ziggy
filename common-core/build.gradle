@@ -1,0 +1,7 @@
+plugins {
+    id "nebula.kotlin" version "1.0.5"
+}
+
+dependencies {
+    testCompile "junit:junit:4.12"
+}

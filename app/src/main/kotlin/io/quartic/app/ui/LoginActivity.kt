@@ -43,7 +43,7 @@ class LoginActivity : Activity() {
         Log.i(TAG, "request perms")
         loadPermissions("com.google.android.gms.permission.ACTIVITY_RECOGNITION", 0)
         configureWidgets()
-        generateKeyPair()
+        generateKeyPair(applicationContext)
         SensorService.startService(applicationContext)
     }
 

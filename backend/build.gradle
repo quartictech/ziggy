@@ -19,6 +19,7 @@ service {
 dependencies {
     compile project(":backend-api")
     compile project(":common-application")
+    compile project(":common-core")
 
     compile "io.dropwizard:dropwizard-auth:${versions.dropwizard}"
     compile("com.google.cloud:google-cloud-pubsub:0.8.0") {

@@ -1,2 +1,6 @@
-backendBaseUrl: https://diggers.dev.quartic.io/api/
-uploadIntervalMilliseconds: 5000
+internal:
+  backendBaseUrl: http://10.0.2.2:9000/api/
+  uploadIntervalMilliseconds: 5000
+real:
+  backendBaseUrl: https://dev.diggers.quartic.io/api/
+  uploadIntervalMilliseconds: 5000
