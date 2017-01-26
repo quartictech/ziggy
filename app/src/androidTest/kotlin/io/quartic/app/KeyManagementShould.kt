@@ -33,7 +33,7 @@ class KeyManagementShould() {
     fun sign_compatible_with_backend() {
         generateKeyPair(instrumentationCtx)
         val data = "hello there".toByteArray()
-        val signature = sign(data)!!
+        val signature = sign(data)
         val valid = SignatureUtils.verify(publicKey, data, signature)
         assertThat(valid, equalTo(true))
     }

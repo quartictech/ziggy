@@ -20,9 +20,8 @@ class ClientSignatureAuthenticatorShould {
     private val directory = mock<UserDirectory>()
     private val authenticator = ClientSignatureAuthenticator(directory, true)
 
-    // These vectors were generated painfully from the Android app
     private val input = "abcdefghihjklmnop"
-    private val keyPair = SignatureUtils.generateRSAKeyPair()!!
+    private val keyPair = SignatureUtils.generateRSAKeyPair()
     private val signature = SignatureUtils.sign(keyPair.private, input.toByteArray())
     private val user = RegisteredUser(mock<UserId>(), keyPair.public)
 

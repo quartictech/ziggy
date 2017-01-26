@@ -41,6 +41,7 @@ test:
   override:
     # Test the app
     - ./gradlew connectedInternalDebugAndroidTest
+    # This is needed to free up memory on circle when we're done
     - adb devices | grep emulator | cut -f1 | while read line; do adb -s $line emu kill; done
     # Infuriating that we can't just run global check task (because that would trigger slow irrelevant stuff for Android debug variant)
     - ./gradlew :backend:check :scribe:check checkInternalRelease assembleRelease --parallel --info --console=plain

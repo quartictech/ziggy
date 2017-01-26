@@ -62,7 +62,7 @@ val publicKey: PublicKey
         }
     }
 
-fun sign(data: ByteArray): ByteArray? {
+fun sign(data: ByteArray): ByteArray {
     val ks = KeyStore.getInstance("AndroidKeyStore")
     ks.load(null)
     val entry = ks.getEntry(KEY_ALIAS, null) as? KeyStore.PrivateKeyEntry

@@ -1,5 +1,6 @@
 package io.quartic.tracker.resource
 
+import io.quartic.common.core.SignatureUtils
 import io.quartic.common.logging.logger
 import io.quartic.tracker.UserDirectory
 import io.quartic.tracker.api.RegistrationRequest
@@ -18,7 +19,7 @@ import javax.ws.rs.core.MediaType
 @Produces(MediaType.APPLICATION_JSON)
 class UsersResource(val store: UserDirectory) {
     private val LOG by logger()
-    private val keyFactory = KeyFactory.getInstance("EC")
+    private val keyFactory = KeyFactory.getInstance(SignatureUtils.ALGORITHM)
 
     // TODO: most of these methods should be exposed to the outside world!  (Perhaps use Dropwizard @RolesAllowed)
 
@@ -51,13 +52,10 @@ class UsersResource(val store: UserDirectory) {
 
     private fun decodeKey(base64EncodedKey: String): PublicKey {
         val publicKey = keyFactory.generatePublic(X509EncodedKeySpec(Base64.getDecoder().decode(base64EncodedKey)))
-        if (publicKey.algorithm != EXPECTED_KEY_ALGORITHM) {
+        if (publicKey.algorithm != SignatureUtils.ALGORITHM) {
             throw IllegalArgumentException("Incorrect key algorithm '${publicKey.algorithm}'")
         }
         return publicKey
     }
 
-    companion object {
-        val EXPECTED_KEY_ALGORITHM = "EC"
-    }
 }
