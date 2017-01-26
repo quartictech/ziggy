@@ -15,42 +15,9 @@ import java.security.spec.RSAKeyGenParameterSpec
 import java.util.*
 import javax.security.auth.x500.X500Principal
 
-
 private const val KEY_ALIAS = "key"
 
-//fun generateKeyPair23() {
-//    if (isKeyPresent()) return
-//    // TODO: validate that keys are being stored in hardware
-//    try {
-//        val kpg = KeyPairGenerator.getInstance(KEY_ALGORITHM_EC, "AndroidKeyStore")
-//        kpg.initialize(ECGenParameterSpec("secp256r1"))
-//        kpg.initialize(KeyGenParameterSpec.Builder(KEY_ALIAS, PURPOSE_SIGN)
-//                .setDigests(DIGEST_SHA256)
-//                .setAlgorithmParameterSpec(ECGenParameterSpec("secp256r1"))
-//                .build())
-//        kpg.generateKeyPair()
-//    } catch (e: Exception) {
-//        throw RuntimeException("Could not generate key pair", e) // TODO: what's a better error-handling approach?
-//    }
-//}
-
-fun listCryptoProviders() {
-    val providers = Security.getProviders()
-    for (provider in providers) {
-        Log.i("CRYPTO", "provider: " + provider.name)
-        val services = provider.services
-        for (service in services) {
-            Log.i("CRYPTO", "  algorithm: " + service.algorithm)
-        }
-    }
-}
-
 fun generateKeyPair(context: Context) {
-    listCryptoProviders()
-    generateKeyPair19(context)
-}
-
-fun generateKeyPair19(context: Context) {
     if (isKeyPresent()) return
     // TODO: validate that keys are being stored in hardware
     val kpg = KeyPairGenerator.getInstance("RSA", "AndroidKeyStore")
