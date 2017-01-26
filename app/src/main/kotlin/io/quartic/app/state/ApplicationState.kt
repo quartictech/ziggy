@@ -16,9 +16,16 @@ class ApplicationState(val context: Context, val configuration: ApplicationConfi
         fun get(context: Context): ApplicationState {
             return ApplicationState(context, ApplicationConfiguration.load(context))
         }
+
+        const val ACCOUNT_TYPE = "io.quartic.remote"
     }
 
     private val sharedPreferences = context.getSharedPreferences("tracker", 0)
+
+
+    fun clear() {
+        sharedPreferences.edit().clear().apply()
+    }
 
     var userId: String?
         get() = sharedPreferences.getString("userId", null)
@@ -35,12 +42,27 @@ class ApplicationState(val context: Context, val configuration: ApplicationConfi
     val database: Database
         get() = Database(context)
 
-    val account: Account
+    val account: Account?
         get() {
+            if (userId == null) {
+                return null
+            }
             val accountManager: AccountManager = context.getSystemService(ACCOUNT_SERVICE) as AccountManager;
-            val account = Account("dummy", "io.quartic.tracker")
+            val account = Account(userId, ACCOUNT_TYPE)
 
             accountManager.addAccountExplicitly(account, null, null)
             return account
         }
+    var lastSyncTime: Long
+        get() = sharedPreferences.getLong("lastSyncTime", 0)
+        set(timestamp) = sharedPreferences.edit()
+                .putLong("lastSyncTime", timestamp)
+                .apply()
+
+    var lastAttemptedSyncTime: Long
+        get() = sharedPreferences.getLong("lastAttemptedSyncTime", 0)
+        set(timestamp) { sharedPreferences.edit()
+                .putLong("lastAttemptedSyncTime", timestamp)
+                .commit() }
+
 }
