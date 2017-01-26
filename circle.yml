@@ -40,7 +40,7 @@ test:
     - circle-android wait-for-boot
   override:
     # Test the app
-    - ./gradlew connectedInternalReleaseAndroidTest
+    - ./gradlew connectedInternalDebugAndroidTest
     # Infuriating that we can't just run global check task (because that would trigger slow irrelevant stuff for Android debug variant)
     - ./gradlew :backend:check :scribe:check checkInternalRelease assembleRelease --parallel --info --console=plain
   post:
