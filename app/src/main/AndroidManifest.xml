@@ -39,8 +39,9 @@
             android:label="@string/title_activity_login">
         </activity>
 
+        <!-- On Android 19 this seems to need to be exported? -->
         <service android:name="io.quartic.app.sensors.SensorService"
-                 android:exported="false" />
+                 android:exported="true" />
 
         <provider
                 android:name=".storage.SensorContentProvider"
