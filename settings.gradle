@@ -17,6 +17,7 @@ pluginRepositories {
     }
 }
 
+include ":common-core"
 include ":common-test"
 
 include ":backend-api"

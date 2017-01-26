@@ -18,6 +18,7 @@ service {
 
 dependencies {
     compile project(":backend-api")
+    compile project(":common-core")
 
     compile "io.quartic.platform:common-application:923"
     compile "io.dropwizard:dropwizard-core:${versions.dropwizard}"

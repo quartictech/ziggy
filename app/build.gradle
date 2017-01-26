@@ -16,6 +16,7 @@ android {
         targetSdkVersion 25
         versionCode (version.isInteger() ? version.toInteger() : 1)
         versionName version
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
 
@@ -44,8 +45,20 @@ android {
         }
     }
 
+    productFlavors {
+        internal {
+            applicationId "io.quartic.remote.internal"
+        }
+        
+        real {
+            applicationId "io.quartic.remote"
+        }
+    }
+
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+        androidTest.java.srcDirs += 'src/androidTest/kotlin'
     }
 
     // Required to avoid "Duplicate files copied in APK META-INF/license" error
@@ -73,10 +86,12 @@ repositories {
 
 dependencies {
     compile project(":backend-api")
+    compile project(":common-core")
 
     compile "com.android.support:appcompat-v7:25.1.0"
     compile "com.android.support:design:25.1.0"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.7.6"
     compile "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.7.6"
@@ -95,4 +110,15 @@ dependencies {
     testCompile "com.github.tomakehurst:wiremock:2.2.2"
     testCompile "com.fasterxml.jackson.core:jackson-databind:2.7.6" // Explicit spec of transitive dep to avoid version conflicts
     testCompile "com.fasterxml.jackson.core:jackson-annotations:2.7.6" // Explicit spec of transitive dep to avoid version conflicts
+
+    // Required for instrumented tests
+    androidTestCompile 'com.android.support:support-annotations:25.1.0'
+    androidTestCompile 'com.android.support.test:runner:0.5'
+    androidTestCompile 'com.android.support.test:rules:0.5'
+    // Optional -- Hamcrest library
+    androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
+    // Optional -- UI testing with Espresso
+    //androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
+    // Optional -- UI testing with UI Automator
+    //androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
 }

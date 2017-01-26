@@ -6,6 +6,7 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.security.keystore.KeyProperties.*
 import android.util.Log
+import io.quartic.common.core.SignatureUtils
 import java.math.BigInteger
 import java.security.spec.ECGenParameterSpec
 import java.security.*
@@ -52,25 +53,21 @@ fun generateKeyPair(context: Context) {
 fun generateKeyPair19(context: Context) {
     if (isKeyPresent()) return
     // TODO: validate that keys are being stored in hardware
-    try {
-        val kpg = KeyPairGenerator.getInstance("RSA", "AndroidKeyStore")
-        val cal = Calendar.getInstance()
-        val now = cal.time
-        cal.add(Calendar.YEAR, 1)
-        val end = cal.time
+    val kpg = KeyPairGenerator.getInstance("RSA", "AndroidKeyStore")
+    val cal = Calendar.getInstance()
+    val now = cal.time
+    cal.add(Calendar.YEAR, 1)
+    val end = cal.time
 
-        kpg.initialize(KeyPairGeneratorSpec.Builder(context)
-                .setAlias(KEY_ALIAS)
-                .setStartDate(now)
-                .setEndDate(end)
-                .setSerialNumber(BigInteger.ONE)
-                .setSubject(X500Principal(
-                        "CN=SomeDistinguishedName"))
-                .build())
-        kpg.generateKeyPair()
-    } catch (e: Exception) {
-        throw RuntimeException("Could not generate key pair", e) // TODO: what's a better error-handling approach?
-    }
+    val parameterSpec = KeyPairGeneratorSpec.Builder(context)
+            .setAlias(KEY_ALIAS)
+            .setStartDate(now)
+            .setEndDate(end)
+            .setSerialNumber(BigInteger.ONE)
+            // TODO: does this need to be something proper?
+            .setSubject(X500Principal("CN=SomeDistinguishedName"))
+            .build()
+    SignatureUtils.generateKey(kpg, parameterSpec)
 }
 
 
@@ -78,6 +75,12 @@ fun isKeyPresent(): Boolean {
     val ks = KeyStore.getInstance("AndroidKeyStore")
     ks.load(null)
     return ks.getEntry(KEY_ALIAS, null) != null
+}
+
+fun deleteKey() {
+    val ks = KeyStore.getInstance("AndroidKeyStore")
+    ks.load(null)
+    ks.deleteEntry(KEY_ALIAS)
 }
 
 // TODO: what's a better error-handling approach?
@@ -97,11 +100,6 @@ fun sign(data: ByteArray): ByteArray? {
     ks.load(null)
     val entry = ks.getEntry(KEY_ALIAS, null) as? KeyStore.PrivateKeyEntry
             ?: throw RuntimeException("Not an instance of a PrivateKeyEntry")
-
-    val s = Signature.getInstance("SHA256withECDSA")
-    s.initSign(entry.privateKey)
-    s.update(data)
-
-    return s.sign()
+    return SignatureUtils.sign(entry.privateKey, data)
 }
 

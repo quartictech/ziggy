@@ -1,12 +1,12 @@
 package io.quartic.tracker.auth
 
 import io.dropwizard.auth.Authenticator
+import io.quartic.common.core.SignatureUtils
 import io.quartic.common.logging.logger
 import io.quartic.tracker.UserDirectory
 import io.quartic.tracker.model.RegisteredUser
 import io.quartic.tracker.model.UnregisteredUser
 import io.quartic.tracker.model.User
-import java.security.Signature
 import java.security.SignatureException
 import java.util.*
 
@@ -35,13 +35,10 @@ class ClientSignatureAuthenticator(
     }
 
     private fun verifySignature(credentials: ClientSignatureCredentials, user: RegisteredUser): Boolean {
-        val verificationFunction = Signature.getInstance("SHA256withECDSA")
-        verificationFunction.initVerify(user.publicKey)
-        verificationFunction.update(credentials.request)
         try {
-            return (verificationFunction.verify(credentials.signature))
+            return SignatureUtils.verify(user.publicKey, credentials.request, credentials.signature)
         } catch (e: SignatureException) {
-            LOG.warn("Invalid signature for '${user.id}'", e)
+            LOG.warn("[${user.id}] exception while validating signature " + e)
             return false
         }
     }

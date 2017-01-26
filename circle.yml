@@ -6,6 +6,8 @@ machine:
     BUILD_TOOLS_VERSION: 25.0.2
     SUPPORT_VERSION: 25.1.0
     PLAY_SERVICES_VERSION: 10.0.1
+    # Disable emulator audio
+    QEMU_AUDIO_DRV: none
   services:
     - docker
 
@@ -31,7 +33,14 @@ dependencies:
       - /usr/local/android-sdk-linux/extras/google/m2repository
 
 test:
+  pre:
+    - emulator -avd circleci-android24 -no-window:
+        background: true
+        parallel: true
+    - circle-android wait-for-boot
   override:
+    # Test the app
+    - ./gradlew connectedAndroidTest
     # Infuriating that we can't just run global check task (because that would trigger slow irrelevant stuff for Android debug variant)
     - ./gradlew :backend:check :scribe:check checkRelease assembleRelease --parallel --info --console=plain
   post:
