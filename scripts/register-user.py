@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 
+import argparse
 import requests
 
 API_ROOT = "http://localhost:9000/api"
 
 if __name__ == "__main__":
-    # Create
-    r = requests.post("{}/users".format(API_ROOT))
-    r.raise_for_status()
-    user_id = r.json()
+    parser = argparse.ArgumentParser(description="Register user.")
+    parser.add_argument("-u", "--user-id", required=True, help="ID of registered user")
+    args = parser.parse_args()
 
     # Get registration code
-    r = requests.get("{}/users/{}".format(API_ROOT, user_id))
+    r = requests.get("{}/users/{}".format(API_ROOT, args.user_id))
     r.raise_for_status()
     code = r.json()["registrationCode"]
 
@@ -22,4 +22,4 @@ if __name__ == "__main__":
     })
     r.raise_for_status()
 
-    print("Registered user with ID: {}".format(user_id))
+    print("Registered user with ID {}".format(args.user_id))

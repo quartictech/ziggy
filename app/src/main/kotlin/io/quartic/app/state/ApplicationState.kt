@@ -20,7 +20,7 @@ class ApplicationState(val context: Context, val configuration: ApplicationConfi
 
     private val sharedPreferences = context.getSharedPreferences("tracker", 0)
 
-    var userId: String
+    var userId: String?
         get() = sharedPreferences.getString("userId", null)
         set(userId) = sharedPreferences.edit()
                 .putString("userId", userId)
@@ -30,14 +30,14 @@ class ApplicationState(val context: Context, val configuration: ApplicationConfi
         get() = clientOf(configuration.backendBaseUrl, OkHttpClient())
 
     val authClient: BackendApi
-        get() = clientOf(configuration.backendBaseUrl, authHttpClient(userId))
+        get() = clientOf(configuration.backendBaseUrl, authHttpClient(userId!!))
 
     val database: Database
         get() = Database(context)
 
     val account: Account
         get() {
-            val accountManager: AccountManager = context.getSystemService(ACCOUNT_SERVICE) as AccountManager;
+            val accountManager = context.getSystemService(ACCOUNT_SERVICE) as AccountManager
             val account = Account("dummy", "io.quartic.tracker")
 
             accountManager.addAccountExplicitly(account, null, null)
