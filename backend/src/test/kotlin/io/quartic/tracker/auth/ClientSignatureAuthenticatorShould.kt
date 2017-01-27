@@ -12,8 +12,8 @@ import io.quartic.tracker.model.User
 import io.quartic.tracker.model.UserId
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Test
+import org.junit.Assert.assertFalse
+import org.junit.Test
 import java.util.*
 
 class ClientSignatureAuthenticatorShould {
