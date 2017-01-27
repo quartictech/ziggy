@@ -5,16 +5,14 @@ import android.content.AbstractThreadedSyncAdapter
 import android.content.ContentProviderClient
 import android.content.Context
 import android.content.SyncResult
-import android.os.BatteryManager
 import android.os.Bundle
 import android.util.Log
 import io.quartic.app.ApplicationConfiguration
+import io.quartic.app.BuildConfig
 import io.quartic.app.state.ApplicationState
+import io.quartic.app.tag
 import io.quartic.tracker.api.SensorValue
 import io.quartic.tracker.api.UploadRequest
-import android.content.Context.BATTERY_SERVICE
-import io.quartic.app.BuildConfig
-import io.quartic.app.tag
 
 class SyncAdapter(context: Context, autoInitialize: Boolean) :
         AbstractThreadedSyncAdapter(context, autoInitialize) {
@@ -34,8 +32,9 @@ class SyncAdapter(context: Context, autoInitialize: Boolean) :
                 }
                 catch (e: Exception) {
                     Log.e(TAG, "error uploading: ${e.message}. will try again later.")
-                    break
+                    return
                 }
+                applicationState.lastSyncTime = System.currentTimeMillis()
             }
         }
         else {
@@ -56,7 +55,6 @@ class SyncAdapter(context: Context, autoInitialize: Boolean) :
                 values = sensorValues
         )).toBlocking().first()
         applicationState.database.delete(sensorValues.map(SensorValue::id))
-        applicationState.lastSyncTime = System.currentTimeMillis()
         Log.i(TAG, "uploaded ${sensorValues.size} values")
 
     }
