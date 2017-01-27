@@ -31,19 +31,27 @@ In order to run locally:
     ./gradlew run --parallel    
     ```
     
-### Registering a fake user
+### API scripts
 
-**Note:** Requires emulator variables to be set.
+**Note:** All of these require the above emulator environment variables to be set.
+
+#### Creating a user
 
 ```
-./scripts/register-user.py
+./scripts/create-user.py
+```
+
+This prints the user's ID and code.
+
+#### Registering a user
+
+```
+./scripts/register-user.py -u ${USER_ID}
 ```
 
 This prints the user's ID.
 
-### Uploading fake data
-
-**Note:** Requires emulator variables to be set.
+#### Uploading fake data
 
 ```
 ./scripts/register-user.py -u ${USER_ID}

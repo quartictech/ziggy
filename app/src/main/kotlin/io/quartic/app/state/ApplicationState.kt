@@ -47,7 +47,7 @@ class ApplicationState(val context: Context, val configuration: ApplicationConfi
             if (userId == null) {
                 return null
             }
-            val accountManager: AccountManager = context.getSystemService(ACCOUNT_SERVICE) as AccountManager;
+            val accountManager = context.getSystemService(ACCOUNT_SERVICE) as AccountManager
             val account = Account(userId, ACCOUNT_TYPE)
 
             accountManager.addAccountExplicitly(account, null, null)
