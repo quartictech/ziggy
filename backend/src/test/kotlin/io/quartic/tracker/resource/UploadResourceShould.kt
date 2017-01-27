@@ -47,6 +47,8 @@ class UploadResourceShould {
 
     private fun uploadRequest() = UploadRequest(
             System.currentTimeMillis(),
+            1,
+            "SweetVersion",
             0,
             0,
             listOf(

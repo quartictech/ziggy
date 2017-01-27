@@ -2,7 +2,7 @@
 <sync-adapter
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:contentAuthority="io.quartic.app.provider"
-        android:accountType="io.quartic.tracker"
+        android:accountType="io.quartic.remote"
         android:userVisible="false"
         android:supportsUploading="false"
         android:allowParallelSyncs="false"
