@@ -37,7 +37,7 @@ class ApplicationState(val context: Context, val configuration: ApplicationConfi
 
     val account: Account
         get() {
-            val accountManager: AccountManager = context.getSystemService(ACCOUNT_SERVICE) as AccountManager;
+            val accountManager = context.getSystemService(ACCOUNT_SERVICE) as AccountManager
             val account = Account("dummy", "io.quartic.tracker")
 
             accountManager.addAccountExplicitly(account, null, null)
