@@ -34,7 +34,7 @@ class SyncShould {
     @Test
     fun start_sync_adapter() {
         applicationState.lastAttemptedSyncTime = 0
-        forceSync(instrumentationCtx)
+        forceSync(ApplicationState.get(instrumentationCtx))
         Thread.sleep(5000)
         assertThat(applicationState.lastAttemptedSyncTime, not(equalTo(0L)))
     }

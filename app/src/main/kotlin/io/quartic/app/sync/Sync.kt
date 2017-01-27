@@ -10,15 +10,12 @@ import android.os.BatteryManager
 import android.content.Intent
 import android.content.IntentFilter
 
-fun forceSync(context: Context) {
+fun forceSync(applicationState: ApplicationState) {
     val settingsBundle = Bundle()
         with(settingsBundle) {
             putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true)
             putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true)
         }
-
-    val applicationState = ApplicationState(context.applicationContext,
-            ApplicationConfiguration.load(context.applicationContext))
 
     if (applicationState.account != null) {
         ContentResolver.requestSync(

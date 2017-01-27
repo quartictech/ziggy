@@ -27,7 +27,6 @@ class ApplicationState(val context: Context, val configuration: ApplicationConfi
 
     private val sharedPreferences = context.getSharedPreferences(PREFERENCES_NAME, 0)
 
-
     private fun <R> checkedEdit(block: SharedPreferences.Editor.() -> R) {
         val editor = sharedPreferences.edit()
         editor.block()
