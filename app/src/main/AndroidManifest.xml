@@ -51,8 +51,10 @@
 
         <service
                 android:name=".sync.SyncService"
-                android:exported="true"
-                android:process=":sync">
+                android:exported="true">
+                <!-- seems to cause issues with SharedPreferences -->
+                <!-- android:process=":sync" -->
+
             <intent-filter>
                 <action android:name="android.content.SyncAdapter"/>
             </intent-filter>
