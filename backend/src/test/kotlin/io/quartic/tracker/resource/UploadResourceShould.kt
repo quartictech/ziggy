@@ -9,7 +9,7 @@ import io.quartic.tracker.api.UploadRequest
 import io.quartic.tracker.model.Message
 import io.quartic.tracker.model.User
 import io.quartic.tracker.model.UserId
-import org.junit.jupiter.api.Test
+import org.junit.Test
 import org.mockito.Mockito.RETURNS_DEEP_STUBS
 import java.time.Clock
 import java.time.Instant

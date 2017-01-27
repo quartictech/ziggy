@@ -7,16 +7,16 @@ import com.google.cloud.pubsub.testing.LocalPubSubHelper
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.joda.time.Duration
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
 
 class PublisherShould {
     private val helper = LocalPubSubHelper.create()
     private lateinit var publisher: Publisher
     private lateinit var subscription: Subscription
 
-    @BeforeEach
+    @Before
     fun before() {
         helper.start()
         val pubsub = helper.options.service
@@ -27,7 +27,7 @@ class PublisherShould {
         publisher = Publisher(pubsub, TOPIC)
     }
 
-    @AfterEach
+    @After
     fun after() {
         helper.stop(Duration.millis(3000))
     }

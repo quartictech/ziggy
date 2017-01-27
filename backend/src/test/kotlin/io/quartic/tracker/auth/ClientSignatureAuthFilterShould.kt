@@ -5,7 +5,7 @@ import io.quartic.common.test.assertThrows
 import io.quartic.tracker.model.UserId
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
-import org.junit.jupiter.api.Test
+import org.junit.Test
 import org.mockito.Mockito.RETURNS_DEEP_STUBS
 import java.io.InputStream
 import java.util.*
