@@ -2,16 +2,11 @@ package io.quartic.app
 
 import android.content.Context
 import android.security.KeyPairGeneratorSpec
-import android.security.keystore.KeyGenParameterSpec
-import android.security.keystore.KeyProperties
-import android.security.keystore.KeyProperties.*
-import android.util.Log
 import io.quartic.common.core.SignatureUtils
 import java.math.BigInteger
-import java.security.spec.ECGenParameterSpec
-import java.security.*
-import java.security.spec.AlgorithmParameterSpec
-import java.security.spec.RSAKeyGenParameterSpec
+import java.security.KeyPairGenerator
+import java.security.KeyStore
+import java.security.PublicKey
 import java.util.*
 import javax.security.auth.x500.X500Principal
 

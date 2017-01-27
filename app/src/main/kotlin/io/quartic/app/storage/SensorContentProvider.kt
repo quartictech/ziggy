@@ -20,11 +20,11 @@ class SensorContentProvider : ContentProvider() {
     val TAG by tag()
 
     companion object {
-        private const val PROVIDER_NAME = "io.quartic.app.provider"
+        const val PROVIDER_NAME = "io.quartic.app.provider"
         private const val SENSORS = 1
         private const val SENSORS_ID = 2
         private const val SENSORS_COUNT = 3
-        val CONTENT_URI: Uri = Uri.parse("content://${PROVIDER_NAME}/sensors")
+        val CONTENT_URI: Uri = Uri.parse("content://$PROVIDER_NAME/sensors")
 
         private const val BATCH_SIZE = 100
     }
