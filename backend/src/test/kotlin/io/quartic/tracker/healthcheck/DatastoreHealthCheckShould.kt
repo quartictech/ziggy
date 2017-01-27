@@ -2,17 +2,17 @@ package io.quartic.tracker.healthcheck
 
 import com.google.cloud.datastore.testing.LocalDatastoreHelper
 import org.joda.time.Duration
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Test
+import org.junit.After
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
+import org.junit.Test
 
 class DatastoreHealthCheckShould {
     private val helper = LocalDatastoreHelper.create()
     private val datastore = helper.options.service
     private val healthcheck = DatastoreHealthCheck(datastore)
 
-    @AfterEach
+    @After
     fun after() {
         try {
             helper.stop(Duration.millis(3000))
