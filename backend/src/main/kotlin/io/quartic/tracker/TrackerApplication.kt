@@ -20,15 +20,15 @@ class TrackerApplication : ApplicationBase<TrackerConfiguration>() {
         val pubsub = PubSubOptions.getDefaultInstance().service
         val datastore = datastore(configuration.datastore)
 
-        // Google Cloud service wrappers
         val directory = UserDirectory(datastore)
         val publisher = Publisher(pubsub, configuration.pubsub.topic!!)
 
+        val metrics = environment.metrics()
         with (environment.jersey()) {
             register(AuthDynamicFeature(ClientSignatureAuthFilter.create(directory, configuration.signatureVerificationEnabled)))
             register(AuthValueFactoryProvider.Binder(User::class.java))
             register(UsersResource(directory))
-            register(UploadResource(publisher, Clock.systemUTC()))
+            register(UploadResource(publisher, Clock.systemUTC(), metrics))
         }
 
         with (environment.healthChecks()) {

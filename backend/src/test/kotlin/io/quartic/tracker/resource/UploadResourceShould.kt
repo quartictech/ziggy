@@ -1,8 +1,8 @@
 package io.quartic.tracker.resource
 
 import com.nhaarman.mockito_kotlin.*
-import io.quartic.common.test.assertThrows
 import io.quartic.common.serdes.encode
+import io.quartic.common.test.assertThrows
 import io.quartic.tracker.Publisher
 import io.quartic.tracker.api.SensorValue
 import io.quartic.tracker.api.UploadRequest
@@ -10,6 +10,7 @@ import io.quartic.tracker.model.Message
 import io.quartic.tracker.model.User
 import io.quartic.tracker.model.UserId
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito.RETURNS_DEEP_STUBS
 import java.time.Clock
 import java.time.Instant
 import java.time.ZoneId
@@ -18,7 +19,7 @@ import javax.ws.rs.ServerErrorException
 class UploadResourceShould {
     private val publisher = mock<Publisher>()
     private val clock = Clock.fixed(Instant.EPOCH, ZoneId.systemDefault())
-    private val resource = UploadResource(publisher, clock)
+    private val resource = UploadResource(publisher, clock, mock(RETURNS_DEEP_STUBS))
 
     @Test
     fun publish_uploaded_sensor_data_along_with_metadata() {
