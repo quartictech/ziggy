@@ -1,5 +1,6 @@
 package io.quartic.tracker.resource
 
+import com.codahale.metrics.annotation.Metered
 import io.quartic.common.core.SignatureUtils
 import io.quartic.common.logging.logger
 import io.quartic.tracker.UserDirectory
@@ -17,11 +18,11 @@ import javax.ws.rs.core.MediaType
 @Path("/users")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-class UsersResource(val store: UserDirectory) {
+class UsersResource(private val store: UserDirectory) {
     private val LOG by logger()
     private val keyFactory = KeyFactory.getInstance(SignatureUtils.ALGORITHM)
 
-    // TODO: most of these methods should be exposed to the outside world!  (Perhaps use Dropwizard @RolesAllowed)
+    // TODO: most of these methods should not be exposed to the outside world!  (Perhaps use Dropwizard @RolesAllowed)
 
     @GET
     fun getUsers(): Map<UserId, User> = store.getUsers()
@@ -39,6 +40,7 @@ class UsersResource(val store: UserDirectory) {
 
     @POST
     @Path("/register")
+    @Metered
     fun registerUser(request: RegistrationRequest): RegistrationResponse {
         val publicKey = try {
             decodeKey(request.publicKey)
