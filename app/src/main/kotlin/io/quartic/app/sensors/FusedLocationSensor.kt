@@ -18,6 +18,7 @@ class FusedLocationSensor(context: Context) : GoogleApiClientSensor(context, Loc
     private val apiClient = makeApiClient()
 
     override fun onConnected(p0: Bundle?) {
+        Log.i(TAG, "connected")
         val intent = Intent(context.applicationContext, SensorService::class.java)
         val pendingIntent = PendingIntent.getService(context.applicationContext, 0, intent, 0)
         val locationRequest = LocationRequest.create()

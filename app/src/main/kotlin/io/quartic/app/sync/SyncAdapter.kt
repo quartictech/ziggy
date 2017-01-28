@@ -52,7 +52,8 @@ class SyncAdapter(context: Context, autoInitialize: Boolean) :
                 appVersionName = BuildConfig.VERSION_NAME,
                 batteryLevel = getBatteryLevel(context.applicationContext),
                 backlogSize = applicationState.database.getBacklogSize(),
-                values = sensorValues
+                values = sensorValues,
+                deviceInformation = getDeviceInformation()
         )).toBlocking().first()
         applicationState.database.delete(sensorValues.map(SensorValue::id))
         Log.i(TAG, "uploaded ${sensorValues.size} values")

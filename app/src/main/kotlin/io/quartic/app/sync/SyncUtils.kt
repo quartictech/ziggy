@@ -3,12 +3,12 @@ package io.quartic.app.sync
 import android.content.ContentResolver
 import android.content.Context
 import android.os.Bundle
-import io.quartic.app.ApplicationConfiguration
 import io.quartic.app.state.ApplicationState
 import io.quartic.app.storage.SensorContentProvider
 import android.os.BatteryManager
 import android.content.Intent
 import android.content.IntentFilter
+import io.quartic.tracker.api.DeviceInformation
 
 fun forceSync(applicationState: ApplicationState) {
     val settingsBundle = Bundle()
@@ -28,3 +28,9 @@ fun getBatteryLevel(context: Context): Int {
     val battery = context.registerReceiver(null, batIntentFilter)
     return battery.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
 }
+
+fun getDeviceInformation() = DeviceInformation(
+        device = android.os.Build.DEVICE,
+        manufacturer = android.os.Build.MANUFACTURER,
+        model = android.os.Build.MODEL
+)
