@@ -39,6 +39,13 @@
             android:label="@string/title_activity_login">
         </activity>
 
+        <receiver android:name=".BootReceiver" android:enabled="true" android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+
+
         <!-- On Android 19 this seems to need to be exported? -->
         <service android:name="io.quartic.app.sensors.SensorService"
                  android:exported="true" />

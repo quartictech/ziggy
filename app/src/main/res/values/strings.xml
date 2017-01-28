@@ -8,5 +8,6 @@
     <string name="action_sign_in">Sign in</string>
     <string name="error_invalid_code">This code is too short</string>
     <string name="error_unrecognised_code">This code is not recognised</string>
+    <string name="error_server">Unexpected server error.  Please try again later.</string>
     <string name="error_field_required">This field is required</string>
 </resources>

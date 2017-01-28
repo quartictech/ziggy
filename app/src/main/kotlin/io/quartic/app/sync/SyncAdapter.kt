@@ -34,8 +34,8 @@ class SyncAdapter(context: Context, autoInitialize: Boolean) :
                     Log.e(TAG, "error uploading: ${e.message}. will try again later.")
                     return
                 }
-                applicationState.lastSyncTime = System.currentTimeMillis()
             }
+            applicationState.lastSyncTime = System.currentTimeMillis()
         }
         else {
             Log.i(TAG, "user needs to authenticate")

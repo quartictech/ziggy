@@ -9,7 +9,7 @@ import io.quartic.tracker.api.RegistrationResponse
 import io.quartic.tracker.model.UserId
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
-import org.junit.jupiter.api.Test
+import org.junit.Test
 import java.security.PublicKey
 import java.util.*
 import javax.ws.rs.BadRequestException

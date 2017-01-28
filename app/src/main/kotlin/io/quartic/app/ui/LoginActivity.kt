@@ -15,16 +15,20 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
+import android.widget.Toast.LENGTH_LONG
 import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.widget.editorActions
 import com.jakewharton.rxbinding.widget.textChanges
 import io.quartic.app.R
-import io.quartic.app.sensors.SensorService
 import io.quartic.app.generateKeyPair
 import io.quartic.app.publicKey
+import io.quartic.app.sensors.SensorService
 import io.quartic.app.state.ApplicationState
 import io.quartic.app.tag
+import io.quartic.app.ui.LoginActivity.Result.*
 import io.quartic.tracker.api.RegistrationRequest
+import retrofit2.adapter.rxjava.HttpException
 import rx.Observable.empty
 import rx.lang.kotlin.merge
 
@@ -80,6 +84,7 @@ class LoginActivity : Activity() {
             return
         }
 
+        codeText.error = null
         showProgress(true)
         loginTask = UserLoginTask(codeText.text.toString())
         loginTask!!.execute(null)
@@ -102,42 +107,46 @@ class LoginActivity : Activity() {
                 })
     }
 
-    private inner class UserLoginTask constructor(private val code: String) : AsyncTask<Void, Void, Boolean>() {
+    enum class Result {
+        SUCCESS,
+        INCORRECT_CODE,
+        OTHER_ERROR
+    }
 
-        override fun doInBackground(vararg params: Void): Boolean? {
+    private inner class UserLoginTask constructor(private val code: String) : AsyncTask<Void, Void, Result>() {
+        override fun doInBackground(vararg params: Void): Result {
             val request = RegistrationRequest(code, Base64.encodeToString(publicKey.encoded, Base64.NO_WRAP))
-
             val state = ApplicationState.get(applicationContext)
-            // TODO: we should inject this
-            val registration = state.client
-
-            val observable = registration.register(request)
-
-            var success = false
-            observable.subscribe(
+            var result = OTHER_ERROR
+            state.client.register(request).subscribe(
                     { resp ->
                         state.userId = resp.userId
-                        success = true
+                        result = SUCCESS
                     },
-                    { Log.e(TAG, "Error registering with server", it) }
+                    {
+                        Log.e(TAG, "Error registering with server", it)
+                        if (it is HttpException && it.code() == 401) {
+                            result = INCORRECT_CODE
+                        }
+                    }
             )
-
-            // TODO: if 2xx then cool - finish() activity (who's responsible for updating state in local storage?)
-            // TODO: if 4xx then say "code incorrect"
-            // TODO: if 5xx then say "server error - please try again later"
-
-            return success
+            return result
         }
 
-        override fun onPostExecute(success: Boolean?) {
+        override fun onPostExecute(result: Result) {
             loginTask = null
             showProgress(false)
 
-            if (success!!) {
-                finish()
-            } else {
-                codeText.error = getString(R.string.error_unrecognised_code)
-                codeText.requestFocus()
+            when (result) {
+                SUCCESS -> finish()
+                INCORRECT_CODE -> {
+                    codeText.error = getString(R.string.error_unrecognised_code)
+                    codeText.requestFocus()
+                }
+                OTHER_ERROR -> {
+                    Toast.makeText(applicationContext, R.string.error_server, LENGTH_LONG).show()
+                    codeText.requestFocus()
+                }
             }
         }
 
