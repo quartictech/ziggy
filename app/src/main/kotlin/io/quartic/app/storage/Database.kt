@@ -16,23 +16,24 @@ class Database(val context: Context) {
         context.contentResolver.insert(CONTENT_URI, contentValues)
     }
 
-    fun getSensorValues(): List<SensorValue> {
-        val sensorValues = arrayListOf<SensorValue>()
-        context.contentResolver.query(CONTENT_URI, null, null, null, null)
-                .use { cursor ->
-                    cursor.moveToFirst()
-                    while (!cursor.isAfterLast) {
-                        sensorValues.add(SensorValue(
-                                cursor.getInt(0),
-                                cursor.getString(1),
-                                cursor.getString(2),
-                                cursor.getLong(3)
-                        ))
-                        cursor.moveToNext()
+    val sensorValues: List<SensorValue>
+        get() {
+            val sensorValues = arrayListOf<SensorValue>()
+            context.contentResolver.query(CONTENT_URI, null, null, null, null)
+                    .use { cursor ->
+                        cursor.moveToFirst()
+                        while (!cursor.isAfterLast) {
+                            sensorValues.add(SensorValue(
+                                    cursor.getInt(0),
+                                    cursor.getString(1),
+                                    cursor.getString(2),
+                                    cursor.getLong(3)
+                            ))
+                            cursor.moveToNext()
+                        }
                     }
-                }
-        return sensorValues
-    }
+            return sensorValues
+        }
 
     fun delete(ids: List<Int>) {
         ids.forEach { id -> context.contentResolver.delete(
@@ -40,9 +41,10 @@ class Database(val context: Context) {
         }
     }
 
-    fun  getBacklogSize(): Int {
-        val cursor = context.contentResolver.query(CONTENT_URI.buildUpon().appendPath("count").build(), null, null, null, null)
-        cursor.moveToFirst()
-        return cursor.getInt(0)
-    }
+    val backlogSize: Int
+        get() {
+            val cursor = context.contentResolver.query(CONTENT_URI.buildUpon().appendPath("count").build(), null, null, null, null)
+            cursor.moveToFirst()
+            return cursor.getInt(0)
+        }
 }

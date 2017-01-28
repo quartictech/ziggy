@@ -18,8 +18,7 @@ android {
         versionName version
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-
-
+    
     signingConfigs {
         release {
             // TODO: figure out where to put these
@@ -74,6 +73,10 @@ android {
     dexOptions {
         preDexLibraries file("local.properties").exists()   // Prevents pointlessly running on CircleCI
     }
+
+    testOptions {
+        unitTests.returnDefaultValues = true    // Just WTF
+    }
 }
 
 play {
@@ -106,7 +109,8 @@ dependencies {
     compile "io.reactivex:rxandroid:1.2.1"
     compile "com.jakewharton.rxbinding:rxbinding-kotlin:1.0.0"
 
-    testCompile "junit:junit:4.12"
+    // FFS - apparently subproject dependencies don't work
+    testCompile libraries.testCommon
     testCompile "com.github.tomakehurst:wiremock:2.2.2"
     testCompile "com.fasterxml.jackson.core:jackson-databind:2.7.6" // Explicit spec of transitive dep to avoid version conflicts
     testCompile "com.fasterxml.jackson.core:jackson-annotations:2.7.6" // Explicit spec of transitive dep to avoid version conflicts

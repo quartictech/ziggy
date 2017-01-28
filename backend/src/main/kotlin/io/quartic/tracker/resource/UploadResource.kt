@@ -27,7 +27,7 @@ class UploadResource(
 
     @POST
     @Metered
-    fun upload(@Auth user: User, request: UploadRequest) {
+    fun upload(@Auth user: User, request: UploadRequest): Int {
         try {
             val encoded = encode(Message(
                     userId = user.id,
@@ -37,6 +37,7 @@ class UploadResource(
             val messageId = publisher.publish(encoded)
             charsHistogram.update(encoded.length)
             LOG.info("User '${user.id}' uploaded ${request.values.size} sensor reading(s) with messageId=$messageId")
+            return request.values.size
         } catch (e: Exception) {
             throw ServiceUnavailableException("Could not publish sensor readings", 30, e)
         }
