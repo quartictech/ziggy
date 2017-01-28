@@ -17,12 +17,10 @@ fun forceSync(applicationState: ApplicationState) {
             putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true)
         }
 
-    if (applicationState.account != null) {
-        ContentResolver.requestSync(
-                applicationState.account,
-                SensorContentProvider.PROVIDER_NAME,
-                settingsBundle)
-    }
+    ContentResolver.requestSync(
+            applicationState.account,
+            SensorContentProvider.PROVIDER_NAME,
+            settingsBundle)
 }
 
 fun getBatteryLevel(context: Context): Int {

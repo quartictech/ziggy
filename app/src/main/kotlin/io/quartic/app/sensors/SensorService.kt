@@ -72,7 +72,7 @@ class SensorService : Service() {
         val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
         alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 SystemClock.elapsedRealtime(),
-                applicationState.configuration.periodicUploadIntervalMilliseconds,
+                applicationState.configuration.liveUploadIntervalMilliseconds,
                 pendingIntent)
     }
 }

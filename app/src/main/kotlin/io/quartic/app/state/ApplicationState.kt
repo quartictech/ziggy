@@ -56,11 +56,8 @@ class ApplicationState(val context: Context, val configuration: ApplicationConfi
 
     val account: Account?
         get() {
-            if (userId == null) {
-                return null
-            }
             val accountManager = context.getSystemService(ACCOUNT_SERVICE) as AccountManager
-            val account = Account(userId, ACCOUNT_TYPE)
+            val account = Account("Quartic Remote Account", ACCOUNT_TYPE)
 
             accountManager.addAccountExplicitly(account, null, null)
             return account
