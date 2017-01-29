@@ -21,19 +21,19 @@ class SyncService : Service() {
     override fun onCreate() {
         Log.i(TAG, "creating SyncService")
         synchronized(syncAdapterLock) {
-            syncAdapter = object : AbstractThreadedSyncAdapter(applicationContext, true) {
-                private val config = ApplicationConfiguration.load(context.applicationContext)
-                private val state = ApplicationState(context.applicationContext, config)
-                private val uploader = BatchUploader(state, { getBatteryLevel(context) }, { System.currentTimeMillis() })
-
-                override fun onPerformSync(account: Account?, extras: Bundle?, authority: String?, provider: ContentProviderClient?, syncResult: SyncResult?) {
-                    uploader.upload()
-                }
-            }
+            syncAdapter = MySyncAdapter()
         }
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
-        return syncAdapter.syncAdapterBinder
+    private inner class MySyncAdapter : AbstractThreadedSyncAdapter(applicationContext, true) {
+        private val config = ApplicationConfiguration.load(context.applicationContext)
+        private val state = ApplicationState(context.applicationContext, config)
+        private val uploader = BatchUploader(state, { getBatteryLevel(context) }, { System.currentTimeMillis() })
+
+        override fun onPerformSync(account: Account?, extras: Bundle?, authority: String?, provider: ContentProviderClient?, syncResult: SyncResult?) {
+            uploader.upload()
+        }
     }
+
+    override fun onBind(intent: Intent?): IBinder = syncAdapter.syncAdapterBinder
 }
