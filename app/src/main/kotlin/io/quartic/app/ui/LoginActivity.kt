@@ -23,7 +23,6 @@ import com.jakewharton.rxbinding.widget.textChanges
 import io.quartic.app.R
 import io.quartic.app.generateKeyPair
 import io.quartic.app.publicKey
-import io.quartic.app.sensors.SensorService
 import io.quartic.app.state.ApplicationState
 import io.quartic.app.tag
 import io.quartic.app.ui.LoginActivity.Result.*
@@ -48,7 +47,6 @@ class LoginActivity : Activity() {
         loadPermissions("com.google.android.gms.permission.ACTIVITY_RECOGNITION", 0)
         configureWidgets()
         generateKeyPair(applicationContext)
-        SensorService.startService(applicationContext)
     }
 
     private fun loadPermissions(perm: String, requestCode: Int) {

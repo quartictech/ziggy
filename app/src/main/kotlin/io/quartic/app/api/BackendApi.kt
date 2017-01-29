@@ -12,5 +12,5 @@ interface BackendApi {
     fun register(@Body request: RegistrationRequest): Observable<RegistrationResponse>
 
     @POST("upload")
-    fun upload(@Body request: UploadRequest): Observable<Void>
+    fun upload(@Body request: UploadRequest): Observable<Int>
 }

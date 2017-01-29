@@ -8,5 +8,5 @@ versions.dropwizard = "1.0.5"
 libraries.testCommon = [
         "junit:junit:4.12",
         "org.hamcrest:hamcrest-all:1.3",
-        "com.nhaarman:mockito-kotlin:1.0.1",
+        "com.nhaarman:mockito-kotlin:1.1.0",
 ]
