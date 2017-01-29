@@ -38,6 +38,7 @@ test:
         background: true
         parallel: true
     - circle-android wait-for-boot
+    - echo ${ZIGGY_KEYSTORE} | base64 --decode > ${HOME}/release-key.jks  # APK signing key is in this keystore
   override:
     # Test the app
     - ./gradlew connectedInternalDebugAndroidTest
