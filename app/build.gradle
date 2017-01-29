@@ -21,11 +21,10 @@ android {
     
     signingConfigs {
         release {
-            // TODO: figure out where to put these
-            storeFile file("release-key.jks")
-            storePassword "quartic"
+            storeFile file("${System.properties['user.home']}/release-key.jks")
+            storePassword System.env.ZIGGY_STORE_PASSWORD
             keyAlias "release-key"
-            keyPassword "quartic"
+            keyPassword System.env.ZIGGY_KEY_PASSWORD
         }
     }
 
