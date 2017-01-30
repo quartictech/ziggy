@@ -65,3 +65,6 @@
 # without this line, kotlin data classes lose their static constructors
 # thus jackson doesn't work
 -keep class io.quartic.** { *; }
+
+# Disable obfuscation for now. It causes issues with kotlin reflection
+-dontobfuscate

@@ -13,8 +13,7 @@
         tools:showIn="@layout/activity_main"
         tools:context="io.quartic.app.ui.MainActivity">
 
-    <TextView
-            android:text="All your bases are belong to Quartic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+    <WebView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" android:id="@+id/webview"/>
 </RelativeLayout>

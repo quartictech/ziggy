@@ -45,7 +45,8 @@ class BatchUploader(
                 appVersionName = BuildConfig.VERSION_NAME,
                 batteryLevel = getBatteryLevel(),
                 backlogSize = state.database.backlogSize,
-                values = sensorValues
+                values = sensorValues,
+                deviceInformation = getDeviceInformation()
         )).subscribe(
                 { handleSuccess(sensorValues); success = true },
                 { handleFailure(it); success = false }

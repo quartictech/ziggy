@@ -1,6 +1,12 @@
 internal:
   backendBaseUrl: http://10.0.2.2:9000/api/
-  uploadIntervalMilliseconds: 5000
+  enableLiveUpload: true
+  liveUploadIntervalMilliseconds: 5000
+  enablePeriodicUpload: true
+  periodicUploadIntervalSeconds: 3600
 real:
   backendBaseUrl: https://diggers.dev.quartic.io/api/
-  uploadIntervalMilliseconds: 5000
+  enableLiveUpload: true
+  liveUploadIntervalMilliseconds: 5000
+  enablePeriodicUpload: true
+  periodicUploadIntervalSeconds: 3600

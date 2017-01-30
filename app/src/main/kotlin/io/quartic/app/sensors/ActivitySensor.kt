@@ -28,6 +28,7 @@ class ActivitySensor(context: Context) : GoogleApiClientSensor(context, Activity
     }
 
     override fun onConnected(p0: Bundle?) {
+        Log.i(TAG, "connected")
         val intent = Intent(context.applicationContext, SensorService::class.java)
         val pendingIntent = PendingIntent.getService(context.applicationContext, 0, intent, 0)
         ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(apiClient, 30000, pendingIntent)

@@ -4,6 +4,7 @@ import com.nhaarman.mockito_kotlin.*
 import io.quartic.common.serdes.encode
 import io.quartic.common.test.assertThrows
 import io.quartic.tracker.Publisher
+import io.quartic.tracker.api.DeviceInformation
 import io.quartic.tracker.api.SensorValue
 import io.quartic.tracker.api.UploadRequest
 import io.quartic.tracker.model.Message
@@ -54,5 +55,10 @@ class UploadResourceShould {
             listOf(
                     SensorValue(45, "Alice", "Foo", 9876),
                     SensorValue(67, "Bob", "Bar", 5432)
+            ),
+            DeviceInformation(
+                    device = "device",
+                    manufacturer = "manufacturer",
+                    model = "model"
             ))
 }

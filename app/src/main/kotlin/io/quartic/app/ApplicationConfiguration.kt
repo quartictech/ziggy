@@ -8,7 +8,10 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 
 data class ApplicationConfiguration(
         val backendBaseUrl: String,
-        val uploadIntervalMilliseconds: Long
+        val enablePeriodicUpload: Boolean,
+        val periodicUploadIntervalSeconds: Long,
+        val enableLiveUpload: Boolean,
+        val liveUploadIntervalMilliseconds: Long
 ){
     companion object {
         fun load(context: Context): ApplicationConfiguration {

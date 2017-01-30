@@ -27,7 +27,6 @@ class ApplicationState(val context: Context, val configuration: ApplicationConfi
 
     private val sharedPreferences = context.getSharedPreferences(PREFERENCES_NAME, 0)
 
-
     private fun <R> checkedEdit(block: SharedPreferences.Editor.() -> R) {
         val editor = sharedPreferences.edit()
         editor.block()
@@ -57,11 +56,8 @@ class ApplicationState(val context: Context, val configuration: ApplicationConfi
 
     val account: Account?
         get() {
-            if (userId == null) {
-                return null
-            }
             val accountManager = context.getSystemService(ACCOUNT_SERVICE) as AccountManager
-            val account = Account(userId, ACCOUNT_TYPE)
+            val account = Account("Quartic Remote Account", ACCOUNT_TYPE)
 
             accountManager.addAccountExplicitly(account, null, null)
             return account
