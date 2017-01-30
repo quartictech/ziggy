@@ -9,7 +9,7 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 data class ApplicationConfiguration(
         val backendBaseUrl: String,
         val enablePeriodicUpload: Boolean,
-        val periodicUploadIntervalMilliseconds: Long,
+        val periodicUploadIntervalSeconds: Long,
         val enableLiveUpload: Boolean,
         val liveUploadIntervalMilliseconds: Long
 ){

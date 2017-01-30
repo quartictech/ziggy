@@ -3,10 +3,10 @@ internal:
   enableLiveUpload: true
   liveUploadIntervalMilliseconds: 5000
   enablePeriodicUpload: true
-  periodicUploadIntervalMilliseconds: 3600
+  periodicUploadIntervalSeconds: 3600
 real:
   backendBaseUrl: https://diggers.dev.quartic.io/api/
   enableLiveUpload: true
   liveUploadIntervalMilliseconds: 5000
   enablePeriodicUpload: true
-  periodicUploadIntervalMilliseconds: 3600
+  periodicUploadIntervalSeconds: 3600

@@ -63,7 +63,7 @@ class SensorService : Service() {
                 applicationState.account,
                 SensorContentProvider.PROVIDER_NAME,
                 Bundle.EMPTY,
-                applicationState.configuration.periodicUploadIntervalMilliseconds)
+                applicationState.configuration.periodicUploadIntervalSeconds)
     }
 
     private fun registerLiveUploadAlarm(applicationState: ApplicationState) {
