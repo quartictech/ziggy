@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
             <html>
             <body>
             <b>User Id: </b> ${applicationState.userId} <br>
-            <b>Backlog Size:</b> ${applicationState.database.getBacklogSize()}
+            <b>Backlog Size:</b> ${applicationState.database.backlogSize}
             </body>
             </html>
         """, "text/html", null)

@@ -61,6 +61,17 @@ You can also specify the number of messages to send with the `-n` flag, and over
 `-p` flag.
 
 
+## APK signing
+
+The release APK is signed with a private key maintained in a keystore that's injected via a CircleCI environment
+variable (along with passwords).  This avoids this material being held in the same repo as the code itself.  The
+script in the `ziggy-secrets` repo sets the following environment variables in CircleCI:
+
+- `ZIGGY_KEYSTORE`
+- `ZIGGY_STORE_PASSWORD`
+- `ZIGGY_KEY_PASSWORD`
+
+
 ## TODO before this becomes real
 
 ### Application ID
@@ -68,19 +79,6 @@ You can also specify the number of messages to send with the `-n` flag, and over
 Need to set the `applicationId` to something sensible - it needs to be the same for the lifetime of the app.
 
 See https://developer.android.com/studio/build/application-id.html for more info.
-  
-### Signing
- 
-Figure out where keystore + passwords should live.  For now the keystore lives in the repo, and the passwords are
-hardcoded into `build.gradle`.  Potentially the passwords should be injected as env vars by CI.
-
-Current key is generated with:
-
-```
-keytool -genkey -v -keystore release-key.jks -keyalg RSA -keysize 2048 -validity 10000 -dname "O=Quartic Technologies" -alias release-key
-```
-
-See https://developer.android.com/studio/publish/app-signing.html for more info.
 
 ### Versioning scheme
 

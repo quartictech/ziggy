@@ -70,4 +70,8 @@ class ApplicationState(val context: Context, val configuration: ApplicationConfi
     var lastAttemptedSyncTime: Long
         get() = sharedPreferences.getLong("lastAttemptedSyncTime", 0)
         set(timestamp) = checkedEdit { putLong("lastAttemptedSyncTime", timestamp) }
+
+    var numConsecutiveSyncAuthFailures: Int
+        get() = sharedPreferences.getInt("numConsecutiveSyncAuthFailures", 0)
+        set(num) = checkedEdit { putInt("numConsecutiveSyncAuthFailures", num) }
 }
