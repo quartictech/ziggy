@@ -26,7 +26,7 @@ class SyncShould {
         applicationState = ApplicationState(instrumentationCtx,
                 ApplicationConfiguration.load(instrumentationCtx))
 
-        generateKeyPair(instrumentationCtx)
+        generateKeyPairIfMissing(instrumentationCtx)
         applicationState.clear()
         applicationState.userId = "1"
     }

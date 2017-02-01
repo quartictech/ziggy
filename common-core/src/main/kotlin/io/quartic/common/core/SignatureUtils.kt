@@ -24,19 +24,17 @@ object SignatureUtils {
         return s.sign()
     }
 
-    fun generateRSAKeyPair(): KeyPair {
-        val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
-        val algorithmParameterSpec = RSAKeyGenParameterSpec(2048, RSAKeyGenParameterSpec.F0)
-        return generateKey(keyPairGenerator, algorithmParameterSpec)
-    }
+    fun generateRSAKeyPair() = generateKeyPair(
+            KeyPairGenerator.getInstance("RSA"),
+            RSAKeyGenParameterSpec(2048, RSAKeyGenParameterSpec.F0)
+    )
 
-    fun generateECKeyPair(): KeyPair {
-        val keyPairGenerator = KeyPairGenerator.getInstance("EC")
-        val algorithmParameterSpec = ECGenParameterSpec("secp256r1")
-        return generateKey(keyPairGenerator, algorithmParameterSpec)
-    }
+    fun generateECKeyPair() = generateKeyPair(
+            KeyPairGenerator.getInstance("EC"),
+            ECGenParameterSpec("secp256r1")
+    )
 
-    fun generateKey(keyPairGenerator: KeyPairGenerator, algorithmParameterSpec: AlgorithmParameterSpec): KeyPair {
+    private fun generateKeyPair(keyPairGenerator: KeyPairGenerator, algorithmParameterSpec: AlgorithmParameterSpec): KeyPair {
         try {
             keyPairGenerator.initialize(algorithmParameterSpec)
             return keyPairGenerator.generateKeyPair()

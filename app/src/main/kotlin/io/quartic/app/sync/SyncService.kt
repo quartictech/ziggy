@@ -10,11 +10,12 @@ import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import io.quartic.app.ApplicationConfiguration
+import io.quartic.app.api.authedBackendClient
 import io.quartic.app.state.ApplicationState
 import io.quartic.app.tag
 
 class SyncService : Service() {
-    val TAG by tag()
+    private val TAG by tag()
     private val syncAdapterLock: Any = Any()
     private lateinit var syncAdapter: AbstractThreadedSyncAdapter
 
@@ -28,10 +29,13 @@ class SyncService : Service() {
     private inner class MySyncAdapter : AbstractThreadedSyncAdapter(applicationContext, true) {
         private val config = ApplicationConfiguration.load(context.applicationContext)
         private val state = ApplicationState(context.applicationContext, config)
-        private val uploader = BatchUploader(state,
+        private val uploader = BatchUploader(
+                state,
+                authedBackendClient(state),
                 { getBatteryLevel(context) },
                 { System.currentTimeMillis() },
-                { getDeviceInformation() })
+                { getDeviceInformation() }
+        )
 
         override fun onPerformSync(account: Account?, extras: Bundle?, authority: String?, provider: ContentProviderClient?, syncResult: SyncResult?) {
             uploader.upload()

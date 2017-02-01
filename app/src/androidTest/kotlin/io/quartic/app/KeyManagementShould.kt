@@ -25,13 +25,13 @@ class KeyManagementShould() {
     @Test
     fun generate_a_key() {
         assertThat(isKeyPresent(), equalTo(false))
-        generateKeyPair(instrumentationCtx)
+        generateKeyPairIfMissing(instrumentationCtx)
         assertThat(isKeyPresent(), equalTo(true))
     }
 
     @Test
     fun sign_compatible_with_backend() {
-        generateKeyPair(instrumentationCtx)
+        generateKeyPairIfMissing(instrumentationCtx)
         val data = "hello there".toByteArray()
         val signature = sign(data)
         val valid = SignatureUtils.verify(publicKey, data, signature)

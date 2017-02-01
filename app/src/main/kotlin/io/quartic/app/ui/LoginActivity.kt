@@ -20,9 +20,9 @@ import android.widget.Toast.LENGTH_LONG
 import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.widget.editorActions
 import com.jakewharton.rxbinding.widget.textChanges
+import io.quartic.app.KeyManager
 import io.quartic.app.R
-import io.quartic.app.generateKeyPair
-import io.quartic.app.publicKey
+import io.quartic.app.api.unauthedBackendClient
 import io.quartic.app.state.ApplicationState
 import io.quartic.app.tag
 import io.quartic.app.ui.LoginActivity.Result.*
@@ -35,6 +35,8 @@ class LoginActivity : Activity() {
     private val TAG by tag()
 
     private var loginTask: UserLoginTask? = null
+    private lateinit var state: ApplicationState
+    private lateinit var keyManager: KeyManager
     private lateinit var signInButton: Button
     private lateinit var codeText: EditText
     private lateinit var progressView: View
@@ -42,11 +44,16 @@ class LoginActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         loadPermissions(Manifest.permission.ACCESS_FINE_LOCATION, 0)
         Log.i(TAG, "request perms")
         loadPermissions("com.google.android.gms.permission.ACTIVITY_RECOGNITION", 0)
         configureWidgets()
-        generateKeyPair(applicationContext)
+
+        state = ApplicationState.get(applicationContext)
+        keyManager = KeyManager(state)
+
+        keyManager.generateKeyPairIfMissing()
     }
 
     private fun loadPermissions(perm: String, requestCode: Int) {
@@ -113,10 +120,10 @@ class LoginActivity : Activity() {
 
     private inner class UserLoginTask constructor(private val code: String) : AsyncTask<Void, Void, Result>() {
         override fun doInBackground(vararg params: Void): Result {
-            val request = RegistrationRequest(code, Base64.encodeToString(publicKey.encoded, Base64.NO_WRAP))
-            val state = ApplicationState.get(applicationContext)
+            val request = RegistrationRequest(code, Base64.encodeToString(keyManager.publicKey.encoded, Base64.NO_WRAP))
             var result = OTHER_ERROR
-            state.client.register(request).subscribe(
+
+            unauthedBackendClient(state).register(request).subscribe(
                     { resp ->
                         state.userId = resp.userId
                         result = SUCCESS

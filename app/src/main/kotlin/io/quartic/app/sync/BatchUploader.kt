@@ -2,6 +2,7 @@ package io.quartic.app.sync
 
 import android.util.Log
 import io.quartic.app.BuildConfig
+import io.quartic.app.api.BackendApi
 import io.quartic.app.state.ApplicationState
 import io.quartic.app.tag
 import io.quartic.tracker.api.DeviceInformation
@@ -11,6 +12,7 @@ import retrofit2.adapter.rxjava.HttpException
 
 class BatchUploader(
         private val state: ApplicationState,
+        private val backend: BackendApi,
         private val getBatteryLevel: () -> Int,
         private val getCurrentTimeMillis: () -> Long,    // TODO: how do we inject a proper clock?
         private val getDeviceInformation: () -> DeviceInformation
@@ -36,7 +38,6 @@ class BatchUploader(
     }
 
     private fun syncBatch(): Boolean {
-        val backend = state.authClient
         val sensorValues = state.database.sensorValues
         Log.i(TAG, "Syncing ${sensorValues.size} values")
 
