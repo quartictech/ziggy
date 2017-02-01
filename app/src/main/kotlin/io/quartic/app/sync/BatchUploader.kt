@@ -4,6 +4,7 @@ import android.util.Log
 import io.quartic.app.BuildConfig
 import io.quartic.app.state.ApplicationState
 import io.quartic.app.tag
+import io.quartic.tracker.api.DeviceInformation
 import io.quartic.tracker.api.SensorValue
 import io.quartic.tracker.api.UploadRequest
 import retrofit2.adapter.rxjava.HttpException
@@ -11,7 +12,8 @@ import retrofit2.adapter.rxjava.HttpException
 class BatchUploader(
         private val state: ApplicationState,
         private val getBatteryLevel: () -> Int,
-        private val getCurrentTimeMillis: () -> Long    // TODO: how do we inject a proper clock?
+        private val getCurrentTimeMillis: () -> Long,    // TODO: how do we inject a proper clock?
+        private val getDeviceInformation: () -> DeviceInformation
 ) {
     private val TAG by tag()
 

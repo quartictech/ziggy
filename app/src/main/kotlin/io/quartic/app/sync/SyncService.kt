@@ -28,7 +28,10 @@ class SyncService : Service() {
     private inner class MySyncAdapter : AbstractThreadedSyncAdapter(applicationContext, true) {
         private val config = ApplicationConfiguration.load(context.applicationContext)
         private val state = ApplicationState(context.applicationContext, config)
-        private val uploader = BatchUploader(state, { getBatteryLevel(context) }, { System.currentTimeMillis() })
+        private val uploader = BatchUploader(state,
+                { getBatteryLevel(context) },
+                { System.currentTimeMillis() },
+                { getDeviceInformation() })
 
         override fun onPerformSync(account: Account?, extras: Bundle?, authority: String?, provider: ContentProviderClient?, syncResult: SyncResult?) {
             uploader.upload()

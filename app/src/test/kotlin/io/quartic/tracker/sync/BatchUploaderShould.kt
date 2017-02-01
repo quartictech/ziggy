@@ -5,6 +5,7 @@ import io.quartic.app.BuildConfig
 import io.quartic.app.state.ApplicationState
 import io.quartic.app.sync.BatchUploader
 import io.quartic.app.sync.BatchUploader.Companion.MAX_CONSECUTIVE_AUTH_FAILURES
+import io.quartic.tracker.api.DeviceInformation
 import io.quartic.tracker.api.SensorValue
 import io.quartic.tracker.api.UploadRequest
 import org.junit.Test
@@ -19,7 +20,8 @@ class BatchUploaderShould {
     private val state = mock<ApplicationState>(RETURNS_DEEP_STUBS)
     private val getBatteryLevel = mock<() -> Int>{}
     private val getCurrentTimeMillis = mock<() -> Long>{}
-    private val uploader = BatchUploader(state, getBatteryLevel, getCurrentTimeMillis)
+    private val getDeviceInformation = { DeviceInformation("device", "manufacturer", "model") }
+    private val uploader = BatchUploader(state, getBatteryLevel, getCurrentTimeMillis, getDeviceInformation)
 
     private val paramsA = State(listOf(sensorValue(69), sensorValue(70)), 123, 42, 5)
     private val paramsB = State(listOf(sensorValue(71), sensorValue(72)), 126, 39, 3)
@@ -189,7 +191,12 @@ class BatchUploaderShould {
                 appVersionName = BuildConfig.VERSION_NAME,
                 batteryLevel = batteryLevel,
                 backlogSize = backlogSize,
-                values = values
+                values = values,
+                deviceInformation = DeviceInformation(
+                        device = "device",
+                        manufacturer = "manufacturer",
+                        model = "model"
+                )
         )
     }
 
