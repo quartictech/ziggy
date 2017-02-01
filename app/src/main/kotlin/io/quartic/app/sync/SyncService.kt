@@ -10,7 +10,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import io.quartic.app.ApplicationConfiguration
-import io.quartic.app.api.authedBackendClient
+import io.quartic.app.api.BackendApi.Companion.authedBackendClient
 import io.quartic.app.state.ApplicationState
 import io.quartic.app.tag
 

@@ -15,7 +15,7 @@ inline fun <reified T : Any> clientOf(baseUrl: String, client: OkHttpClient): T 
         .addConverterFactory(JacksonConverterFactory.create(ObjectMapper().registerKotlinModule()))
         .build().create(T::class.java)
 
-fun authHttpClient(keyManager: KeyManager, userId: String): OkHttpClient = OkHttpClient.Builder()
+fun authHttpClient(keyManager: KeyManager, userId: () -> String): OkHttpClient = OkHttpClient.Builder()
         .addInterceptor { chain ->
             val request = chain.request()
             val buffer = okio.Buffer()
@@ -24,7 +24,7 @@ fun authHttpClient(keyManager: KeyManager, userId: String): OkHttpClient = OkHtt
             val requestBuilder = request.newBuilder()
             val signature = keyManager.sign(data)
             val base64Signature = Base64.encodeToString(signature, Base64.NO_WRAP)
-            requestBuilder.addHeader("Authorization", "QuarticAuth userId=\"$userId\", signature=\"$base64Signature\"")
+            requestBuilder.addHeader("Authorization", "QuarticAuth userId=\"${userId()}\", signature=\"$base64Signature\"")
             chain.proceed(requestBuilder.build())
         }
         .build()

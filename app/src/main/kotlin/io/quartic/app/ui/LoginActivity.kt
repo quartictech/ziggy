@@ -22,7 +22,7 @@ import com.jakewharton.rxbinding.widget.editorActions
 import com.jakewharton.rxbinding.widget.textChanges
 import io.quartic.app.KeyManager
 import io.quartic.app.R
-import io.quartic.app.api.unauthedBackendClient
+import io.quartic.app.api.BackendApi.Companion.unauthedBackendClient
 import io.quartic.app.state.ApplicationState
 import io.quartic.app.tag
 import io.quartic.app.ui.LoginActivity.Result.*
