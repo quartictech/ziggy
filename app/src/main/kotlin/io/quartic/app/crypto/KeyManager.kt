@@ -1,4 +1,4 @@
-package io.quartic.app
+package io.quartic.app.crypto
 
 import android.util.Base64
 import io.quartic.app.state.ApplicationState

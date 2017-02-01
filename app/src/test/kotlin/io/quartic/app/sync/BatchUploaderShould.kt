@@ -1,11 +1,9 @@
-package io.quartic.tracker.sync
+package io.quartic.app.sync
 
 import com.nhaarman.mockito_kotlin.*
 import io.quartic.app.BuildConfig
 import io.quartic.app.api.BackendApi
 import io.quartic.app.state.ApplicationState
-import io.quartic.app.sync.BatchUploader
-import io.quartic.app.sync.BatchUploader.Companion.MAX_CONSECUTIVE_AUTH_FAILURES
 import io.quartic.tracker.api.DeviceInformation
 import io.quartic.tracker.api.SensorValue
 import io.quartic.tracker.api.UploadRequest
@@ -20,8 +18,8 @@ import rx.Observable.just
 class BatchUploaderShould {
     private val state = mock<ApplicationState>(RETURNS_DEEP_STUBS)
     private val backend = mock<BackendApi>()
-    private val getBatteryLevel = mock<() -> Int>{}
-    private val getCurrentTimeMillis = mock<() -> Long>{}
+    private val getBatteryLevel = mock<() -> Int> {}
+    private val getCurrentTimeMillis = mock<() -> Long> {}
     private val getDeviceInformation = { DeviceInformation("device", "manufacturer", "model") }
     private val uploader = BatchUploader(state, backend, getBatteryLevel, getCurrentTimeMillis, getDeviceInformation)
 
@@ -131,7 +129,7 @@ class BatchUploaderShould {
         mockValidAuth()
         mockUnsuccessfulUpload(401)
         mockState(paramsA)
-        whenever(state.numConsecutiveSyncAuthFailures).thenReturn(MAX_CONSECUTIVE_AUTH_FAILURES)    // Should be MAX - 1, but this mock always returns the same value
+        whenever(state.numConsecutiveSyncAuthFailures).thenReturn(BatchUploader.MAX_CONSECUTIVE_AUTH_FAILURES)    // Should be MAX - 1, but this mock always returns the same value
 
         uploader.upload()
 

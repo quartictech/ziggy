@@ -1,6 +1,6 @@
 package io.quartic.app.api
 
-import io.quartic.app.KeyManager
+import io.quartic.app.crypto.KeyManager
 import io.quartic.app.authHttpClient
 import io.quartic.app.clientOf
 import io.quartic.app.state.ApplicationState

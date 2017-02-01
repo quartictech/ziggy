@@ -20,7 +20,7 @@ import android.widget.Toast.LENGTH_LONG
 import com.jakewharton.rxbinding.view.clicks
 import com.jakewharton.rxbinding.widget.editorActions
 import com.jakewharton.rxbinding.widget.textChanges
-import io.quartic.app.KeyManager
+import io.quartic.app.crypto.KeyManager
 import io.quartic.app.R
 import io.quartic.app.api.BackendApi.Companion.unauthedBackendClient
 import io.quartic.app.state.ApplicationState
