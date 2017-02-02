@@ -1,10 +1,11 @@
 package io.quartic.common.core
 
-import java.security.*
-import java.security.spec.AlgorithmParameterSpec
+import java.security.KeyPairGenerator
+import java.security.PrivateKey
+import java.security.PublicKey
+import java.security.Signature
 import java.security.spec.ECGenParameterSpec
 import java.security.spec.RSAKeyGenParameterSpec
-
 
 object SignatureUtils {
     const val SIGNING_ALGORITHM = "SHA256withRSA"
@@ -24,22 +25,15 @@ object SignatureUtils {
         return s.sign()
     }
 
-    fun generateRSAKeyPair() = generateKeyPair(
-            KeyPairGenerator.getInstance("RSA"),
-            RSAKeyGenParameterSpec(2048, RSAKeyGenParameterSpec.F0)
-    )
+    fun rsaKeyPairGenerator(): KeyPairGenerator {
+        val kpg = KeyPairGenerator.getInstance("RSA")
+        kpg.initialize(RSAKeyGenParameterSpec(2048, RSAKeyGenParameterSpec.F0))
+        return kpg
+    }
 
-    fun generateECKeyPair() = generateKeyPair(
-            KeyPairGenerator.getInstance("EC"),
-            ECGenParameterSpec("secp256r1")
-    )
-
-    private fun generateKeyPair(keyPairGenerator: KeyPairGenerator, algorithmParameterSpec: AlgorithmParameterSpec): KeyPair {
-        try {
-            keyPairGenerator.initialize(algorithmParameterSpec)
-            return keyPairGenerator.generateKeyPair()
-        } catch (e: Exception) {
-            throw RuntimeException("Could not generate key pair", e) // TODO: what's a better error-handling approach?
-        }
+    fun ecKeyPairGenerator(): KeyPairGenerator {
+        val kpg = KeyPairGenerator.getInstance("EC")
+        kpg.initialize(ECGenParameterSpec("secp256r1"))
+        return kpg
     }
 }

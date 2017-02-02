@@ -5,6 +5,7 @@ import android.accounts.AccountManager
 import android.content.Context
 import android.content.Context.ACCOUNT_SERVICE
 import android.content.SharedPreferences
+import android.util.Base64
 import android.util.Log
 import io.quartic.app.ApplicationConfiguration
 import io.quartic.app.storage.Database
@@ -65,13 +66,13 @@ class ApplicationState(val context: Context, val configuration: ApplicationConfi
         get() = sharedPreferences.getInt("numConsecutiveSyncAuthFailures", 0)
         set(num) = checkedEdit { putInt("numConsecutiveSyncAuthFailures", num) }
 
-    var encodedPrivateKey: String?
-        get() = sharedPreferences.getString("encodedPrivateKey", null)
-        set(encodedPrivateKey) = checkedEdit { putString("encodedPrivateKey", encodedPrivateKey) }
+    var encodedPrivateKey: ByteArray
+        get() = Base64.decode(sharedPreferences.getString("encodedPrivateKey", ""), Base64.NO_WRAP)
+        set(encodedPrivateKey) = checkedEdit { putString("encodedPrivateKey", Base64.encodeToString(encodedPrivateKey, Base64.NO_WRAP)) }
 
-    var encodedPublicKey: String?
-        get() = sharedPreferences.getString("encodedPublicKey", null)
-        set(encodedPublicKey) = checkedEdit { putString("encodedPublicKey", encodedPublicKey) }
+    var encodedPublicKey: ByteArray
+        get() = Base64.decode(sharedPreferences.getString("encodedPublicKey", ""), Base64.NO_WRAP)
+        set(encodedPublicKey) = checkedEdit { putString("encodedPublicKey", Base64.encodeToString(encodedPublicKey, Base64.NO_WRAP)) }
 
     // TODO: replace the above repetition with delegated properties
 }
