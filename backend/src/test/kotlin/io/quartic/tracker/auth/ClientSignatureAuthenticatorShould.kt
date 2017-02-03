@@ -5,6 +5,7 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import io.quartic.EC_PUBLIC_KEY
 import io.quartic.common.core.SignatureUtils
+import io.quartic.common.core.SignatureUtils.rsaKeyPairGenerator
 import io.quartic.tracker.UserDirectory
 import io.quartic.tracker.model.RegisteredUser
 import io.quartic.tracker.model.UnregisteredUser
@@ -21,7 +22,7 @@ class ClientSignatureAuthenticatorShould {
     private val authenticator = ClientSignatureAuthenticator(directory, true)
 
     private val input = "abcdefghihjklmnop"
-    private val keyPair = SignatureUtils.generateRSAKeyPair()
+    private val keyPair = rsaKeyPairGenerator().genKeyPair()
     private val signature = SignatureUtils.sign(keyPair.private, input.toByteArray())
     private val user = RegisteredUser(mock<UserId>(), keyPair.public)
 
