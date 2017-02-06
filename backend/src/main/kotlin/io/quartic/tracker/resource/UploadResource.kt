@@ -4,10 +4,10 @@ import com.codahale.metrics.MetricRegistry
 import com.codahale.metrics.annotation.Metered
 import io.dropwizard.auth.Auth
 import io.quartic.common.logging.logger
+import io.quartic.common.metrics.histogram
 import io.quartic.common.serdes.encode
 import io.quartic.tracker.Publisher
 import io.quartic.tracker.api.UploadRequest
-import io.quartic.tracker.common.metrics.histogram
 import io.quartic.tracker.model.Message
 import io.quartic.tracker.model.User
 import java.time.Clock

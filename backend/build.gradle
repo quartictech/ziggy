@@ -16,9 +16,9 @@ service {
 
 dependencies {
     compile project(":backend-api")
-    compile project(":common-application")
     compile project(":common-core")
 
+    compile "io.quartic.platform:common-application:949"
     compile "io.dropwizard:dropwizard-auth:${versions.dropwizard}"
     compile("com.google.cloud:google-cloud-pubsub:0.8.0") {
         exclude group: "javax.servlet", module: "servlet-api"   // Conflicts with Dropwizard ecosystem
@@ -27,5 +27,6 @@ dependencies {
         exclude group: "javax.servlet", module: "servlet-api"   // Conflicts with Dropwizard ecosystem
     }
 
-    testCompile project(":common-test")
+    testCompile libraries.testCommon
+    testCompile "io.quartic.platform:common-test:949"
 }
