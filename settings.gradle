@@ -17,6 +17,7 @@ pluginRepositories {
     }
 }
 
+include ":cartan-application"
 include ":common-application"
 include ":common-core"
 include ":common-test"

@@ -8,7 +8,7 @@ import io.quartic.common.serdes.encode
 import io.quartic.tracker.Publisher
 import io.quartic.tracker.api.UploadRequest
 import io.quartic.tracker.common.metrics.histogram
-import io.quartic.tracker.model.Message
+import io.quartic.tracker.api.Message
 import io.quartic.tracker.model.User
 import java.time.Clock
 import javax.ws.rs.*

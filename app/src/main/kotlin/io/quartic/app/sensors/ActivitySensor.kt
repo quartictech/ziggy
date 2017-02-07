@@ -9,6 +9,7 @@ import com.google.android.gms.location.ActivityRecognition
 import com.google.android.gms.location.ActivityRecognitionResult
 import io.quartic.app.storage.Database
 import io.quartic.app.tag
+import io.quartic.tracker.api.ActivitySensorValue
 
 class ActivitySensor(context: Context) : GoogleApiClientSensor(context, ActivityRecognition.API) {
     override val TAG by tag()
@@ -23,7 +24,7 @@ class ActivitySensor(context: Context) : GoogleApiClientSensor(context, Activity
     private fun processUpdate(result: ActivityRecognitionResult, database: Database) {
         Log.i(TAG, "writing activity update")
         database.writeSensor("activity",
-                result.mostProbableActivity.type.toString(),
+                ActivitySensorValue(result.mostProbableActivity.type, result.mostProbableActivity.confidence),
                 result.time)
     }
 

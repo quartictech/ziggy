@@ -2,7 +2,7 @@ package io.quartic.tracker.auth
 
 import com.nhaarman.mockito_kotlin.*
 import io.quartic.common.test.assertThrows
-import io.quartic.tracker.model.UserId
+import io.quartic.tracker.api.UserId
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.junit.Test

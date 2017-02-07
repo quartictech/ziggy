@@ -6,7 +6,7 @@ import io.quartic.common.test.assertThrows
 import io.quartic.tracker.UserDirectory
 import io.quartic.tracker.api.RegistrationRequest
 import io.quartic.tracker.api.RegistrationResponse
-import io.quartic.tracker.model.UserId
+import io.quartic.tracker.api.UserId
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.Test

@@ -1,4 +1,4 @@
-package io.quartic.tracker.model
+package io.quartic.tracker.api
 
 import com.fasterxml.jackson.annotation.JsonValue
 

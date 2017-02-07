@@ -5,7 +5,7 @@ import io.quartic.app.BuildConfig
 import io.quartic.app.state.ApplicationState
 import io.quartic.app.tag
 import io.quartic.tracker.api.DeviceInformation
-import io.quartic.tracker.api.SensorValue
+import io.quartic.tracker.api.SensorReading
 import io.quartic.tracker.api.UploadRequest
 import retrofit2.adapter.rxjava.HttpException
 
@@ -56,9 +56,9 @@ class BatchUploader(
         return success
     }
 
-    private fun handleSuccess(values: List<SensorValue>) {
+    private fun handleSuccess(values: List<SensorReading>) {
         Log.i(TAG, "Uploaded ${values.size} values")
-        state.database.delete(values.map(SensorValue::id))
+        state.database.delete(values.map(SensorReading::id))
     }
 
     private fun handleFailure(t: Throwable) {

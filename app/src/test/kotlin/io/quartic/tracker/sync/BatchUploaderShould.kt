@@ -6,7 +6,7 @@ import io.quartic.app.state.ApplicationState
 import io.quartic.app.sync.BatchUploader
 import io.quartic.app.sync.BatchUploader.Companion.MAX_CONSECUTIVE_AUTH_FAILURES
 import io.quartic.tracker.api.DeviceInformation
-import io.quartic.tracker.api.SensorValue
+import io.quartic.tracker.api.SensorReading
 import io.quartic.tracker.api.UploadRequest
 import org.junit.Test
 import org.mockito.Mockito.RETURNS_DEEP_STUBS
@@ -180,7 +180,7 @@ class BatchUploaderShould {
     }
 
     private data class State(
-            val values: List<SensorValue>,
+            val values: List<SensorReading>,
             val timestamp: Long,
             val backlogSize: Int,
             val batteryLevel: Int
@@ -200,7 +200,7 @@ class BatchUploaderShould {
         )
     }
 
-    private fun sensorValue(myId: Int) = mock<SensorValue> { on { id } doReturn myId }
+    private fun sensorValue(myId: Int) = mock<SensorReading> { on { id } doReturn myId }
 
     companion object {
         val INITIAL_TIMESTAMP = 666L

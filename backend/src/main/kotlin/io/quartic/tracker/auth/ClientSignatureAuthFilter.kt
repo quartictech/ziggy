@@ -4,7 +4,7 @@ import io.dropwizard.auth.AuthFilter
 import io.quartic.common.logging.logger
 import io.quartic.tracker.UserDirectory
 import io.quartic.tracker.model.User
-import io.quartic.tracker.model.UserId
+import io.quartic.tracker.api.UserId
 import java.util.*
 import javax.ws.rs.WebApplicationException
 import javax.ws.rs.container.ContainerRequestContext

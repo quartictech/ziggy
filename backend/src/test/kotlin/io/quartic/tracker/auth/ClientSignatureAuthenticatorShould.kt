@@ -9,7 +9,7 @@ import io.quartic.tracker.UserDirectory
 import io.quartic.tracker.model.RegisteredUser
 import io.quartic.tracker.model.UnregisteredUser
 import io.quartic.tracker.model.User
-import io.quartic.tracker.model.UserId
+import io.quartic.tracker.api.UserId
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.equalTo
 import org.junit.Assert.assertFalse

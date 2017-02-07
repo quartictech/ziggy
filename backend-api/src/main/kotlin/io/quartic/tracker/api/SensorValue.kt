@@ -1,3 +1,11 @@
 package io.quartic.tracker.api
 
-data class SensorValue(val id: Int, val name: String, val value: String, val timestamp: Long)
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
+
+@JsonTypeInfo(use= JsonTypeInfo.Id.NAME, include= JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes(
+        JsonSubTypes.Type(value = ActivitySensorValue::class, name = "activity"),
+        JsonSubTypes.Type(value = FusedLocationSensorValue::class, name = "fused_location")
+)
+interface SensorValue

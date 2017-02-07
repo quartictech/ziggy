@@ -1,6 +1,6 @@
 package io.quartic.tracker.auth
 
-import io.quartic.tracker.model.UserId
+import io.quartic.tracker.api.UserId
 import java.util.*
 
 data class ClientSignatureCredentials(val userId: UserId, val signature: ByteArray, val request: ByteArray) {
