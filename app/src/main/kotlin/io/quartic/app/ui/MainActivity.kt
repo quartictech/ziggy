@@ -13,7 +13,7 @@ import io.quartic.app.tag
 
 class MainActivity : AppCompatActivity() {
     companion object {
-        val TAG  by tag()
+        private val TAG by tag()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,8 +34,6 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
-
-
     }
 
     fun render() {

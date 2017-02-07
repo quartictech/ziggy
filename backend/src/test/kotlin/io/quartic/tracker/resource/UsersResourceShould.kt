@@ -1,7 +1,8 @@
 package io.quartic.tracker.resource
 
 import com.nhaarman.mockito_kotlin.*
-import io.quartic.common.core.SignatureUtils
+import io.quartic.common.core.SignatureUtils.ecKeyPairGenerator
+import io.quartic.common.core.SignatureUtils.rsaKeyPairGenerator
 import io.quartic.common.test.assertThrows
 import io.quartic.tracker.UserDirectory
 import io.quartic.tracker.api.RegistrationRequest
@@ -20,8 +21,8 @@ class UsersResourceShould {
     private val directory = mock<UserDirectory>()
     private val resource = UsersResource(directory)
 
-    private val invalidKeyPair = SignatureUtils.generateECKeyPair()
-    private val validKeyPair = SignatureUtils.generateRSAKeyPair()
+    private val invalidKeyPair = ecKeyPairGenerator().generateKeyPair()
+    private val validKeyPair = rsaKeyPairGenerator().generateKeyPair()
 
     @Test
     fun respond_with_404_if_trying_to_lookup_unrecognised_user() {

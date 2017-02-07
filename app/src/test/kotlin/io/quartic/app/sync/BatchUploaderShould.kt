@@ -1,10 +1,9 @@
-package io.quartic.tracker.sync
+package io.quartic.app.sync
 
 import com.nhaarman.mockito_kotlin.*
 import io.quartic.app.BuildConfig
+import io.quartic.app.api.BackendApi
 import io.quartic.app.state.ApplicationState
-import io.quartic.app.sync.BatchUploader
-import io.quartic.app.sync.BatchUploader.Companion.MAX_CONSECUTIVE_AUTH_FAILURES
 import io.quartic.tracker.api.DeviceInformation
 import io.quartic.tracker.api.SensorReading
 import io.quartic.tracker.api.UploadRequest
@@ -18,10 +17,11 @@ import rx.Observable.just
 
 class BatchUploaderShould {
     private val state = mock<ApplicationState>(RETURNS_DEEP_STUBS)
-    private val getBatteryLevel = mock<() -> Int>{}
-    private val getCurrentTimeMillis = mock<() -> Long>{}
+    private val backend = mock<BackendApi>()
+    private val getBatteryLevel = mock<() -> Int> {}
+    private val getCurrentTimeMillis = mock<() -> Long> {}
     private val getDeviceInformation = { DeviceInformation("device", "manufacturer", "model") }
-    private val uploader = BatchUploader(state, getBatteryLevel, getCurrentTimeMillis, getDeviceInformation)
+    private val uploader = BatchUploader(state, backend, getBatteryLevel, getCurrentTimeMillis, getDeviceInformation)
 
     private val paramsA = State(listOf(sensorValue(69), sensorValue(70)), 123, 42, 5)
     private val paramsB = State(listOf(sensorValue(71), sensorValue(72)), 126, 39, 3)
@@ -36,11 +36,11 @@ class BatchUploaderShould {
 
         verify(state, never()).lastAttemptedSyncTime = any()
         verify(state, never()).lastSyncTime = any()
-        verify(state.authClient, never()).upload(any())
+        verify(backend, never()).upload(any())
     }
 
     @Test
-    fun do_nothing_except_log_sync_times_if_backlog_is_empty_not_set() {
+    fun do_nothing_except_log_sync_times_if_backlog_is_empty() {
         mockState()
         whenever(state.userId).thenReturn("1234")             // This would otherwise allow a sync to occur
         whenever(state.database.backlogSize).thenReturn(0)
@@ -49,7 +49,7 @@ class BatchUploaderShould {
 
         verify(state).lastAttemptedSyncTime = INITIAL_TIMESTAMP
         verify(state).lastSyncTime = FINAL_TIMESTAMP
-        verify(state.authClient, never()).upload(any())
+        verify(backend, never()).upload(any())
     }
 
     @Test
@@ -62,7 +62,7 @@ class BatchUploaderShould {
 
         verify(state).lastAttemptedSyncTime = INITIAL_TIMESTAMP
         verify(state).lastSyncTime = FINAL_TIMESTAMP
-        verify(state.authClient).upload(paramsA.toRequest())
+        verify(backend).upload(paramsA.toRequest())
         verify(state.database).delete(listOf(69, 70))
     }
 
@@ -74,8 +74,8 @@ class BatchUploaderShould {
 
         uploader.upload()
 
-        verify(state.authClient).upload(paramsA.toRequest())
-        verify(state.authClient).upload(paramsB.toRequest())
+        verify(backend).upload(paramsA.toRequest())
+        verify(backend).upload(paramsB.toRequest())
     }
 
     @Test
@@ -87,7 +87,7 @@ class BatchUploaderShould {
         uploader.upload()
 
         verify(state, never()).lastSyncTime = any()
-        verify(state.authClient, times(1)).upload(any())
+        verify(backend, times(1)).upload(any())
     }
 
     @Test
@@ -129,7 +129,7 @@ class BatchUploaderShould {
         mockValidAuth()
         mockUnsuccessfulUpload(401)
         mockState(paramsA)
-        whenever(state.numConsecutiveSyncAuthFailures).thenReturn(MAX_CONSECUTIVE_AUTH_FAILURES)    // Should be MAX - 1, but this mock always returns the same value
+        whenever(state.numConsecutiveSyncAuthFailures).thenReturn(BatchUploader.MAX_CONSECUTIVE_AUTH_FAILURES)    // Should be MAX - 1, but this mock always returns the same value
 
         uploader.upload()
 
@@ -152,11 +152,11 @@ class BatchUploaderShould {
     }
 
     private fun mockSuccessfulUpload() {
-        whenever(state.authClient.upload(any())).thenReturn(just(1))    // Returned int isn't used currently
+        whenever(backend.upload(any())).thenReturn(just(1))    // Returned int isn't used currently
     }
 
     private fun mockUnsuccessfulUpload(code: Int) {
-        whenever(state.authClient.upload(any())).thenReturn(error(HttpException(error<String>(code, mock()))))
+        whenever(backend.upload(any())).thenReturn(error(HttpException(error<String>(code, mock()))))
     }
 
     private fun mockState(vararg states: State) {
