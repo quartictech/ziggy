@@ -1,10 +1,9 @@
-package io.quartic.tracker.model
+package io.quartic.tracker.api
 
-import io.quartic.tracker.api.UploadRequest
 import java.time.Instant
 
 data class Message(
-        val userId: UserId,
+        val userId: io.quartic.tracker.api.UserId,
         val timestamp: Instant,
         val data: UploadRequest
 )

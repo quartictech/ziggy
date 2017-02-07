@@ -6,6 +6,6 @@ data class UploadRequest(
         val appVersionName: String,
         val backlogSize: Int,
         val batteryLevel: Int,
-        val values: List<SensorValue>,
+        val values: List<SensorReading>,
         val deviceInformation: DeviceInformation
 )

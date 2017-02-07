@@ -7,7 +7,7 @@ import io.quartic.common.logging.logger
 import io.quartic.tracker.model.RegisteredUser
 import io.quartic.tracker.model.UnregisteredUser
 import io.quartic.tracker.model.User
-import io.quartic.tracker.model.UserId
+import io.quartic.tracker.api.UserId
 import java.security.KeyFactory
 import java.security.PublicKey
 import java.security.spec.X509EncodedKeySpec

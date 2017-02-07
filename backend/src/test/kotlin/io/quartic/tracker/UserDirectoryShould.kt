@@ -5,7 +5,7 @@ import io.quartic.EC_PUBLIC_KEY
 import io.quartic.tracker.model.RegisteredUser
 import io.quartic.tracker.model.UnregisteredUser
 import io.quartic.tracker.model.User
-import io.quartic.tracker.model.UserId
+import io.quartic.tracker.api.UserId
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.joda.time.Duration

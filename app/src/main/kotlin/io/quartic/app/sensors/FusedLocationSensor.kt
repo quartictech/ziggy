@@ -12,6 +12,7 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import io.quartic.app.storage.Database
 import io.quartic.app.tag
+import io.quartic.tracker.api.FusedLocationSensorValue
 
 class FusedLocationSensor(context: Context) : GoogleApiClientSensor(context, LocationServices.API) {
     override val TAG by tag()
@@ -38,7 +39,7 @@ class FusedLocationSensor(context: Context) : GoogleApiClientSensor(context, Loc
         Log.i(TAG, "writing to db: $result")
         database.writeSensor(
                 "location",
-                "${result.lastLocation.latitude}, ${result.lastLocation.longitude}",
+                FusedLocationSensorValue(result.lastLocation.latitude, result.lastLocation.longitude),
                 result.lastLocation.time
         )
     }

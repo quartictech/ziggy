@@ -5,11 +5,11 @@ import io.quartic.common.serdes.encode
 import io.quartic.common.test.assertThrows
 import io.quartic.tracker.Publisher
 import io.quartic.tracker.api.DeviceInformation
-import io.quartic.tracker.api.SensorValue
+import io.quartic.tracker.api.SensorReading
 import io.quartic.tracker.api.UploadRequest
-import io.quartic.tracker.model.Message
+import io.quartic.tracker.api.Message
 import io.quartic.tracker.model.User
-import io.quartic.tracker.model.UserId
+import io.quartic.tracker.api.UserId
 import org.junit.Test
 import org.mockito.Mockito.RETURNS_DEEP_STUBS
 import java.time.Clock
@@ -53,8 +53,8 @@ class UploadResourceShould {
             0,
             0,
             listOf(
-                    SensorValue(45, "Alice", "Foo", 9876),
-                    SensorValue(67, "Bob", "Bar", 5432)
+                    SensorReading(45, "Alice", "Foo", 9876),
+                    SensorReading(67, "Bob", "Bar", 5432)
             ),
             DeviceInformation(
                     device = "device",

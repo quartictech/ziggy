@@ -2,31 +2,37 @@ package io.quartic.app.storage
 
 import android.content.ContentValues
 import android.content.Context
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.quartic.app.storage.SensorContentProvider.Companion.CONTENT_URI
+import io.quartic.tracker.api.SensorReading
 import io.quartic.tracker.api.SensorValue
 
 class Database(val context: Context) {
-    fun writeSensor(name: String, value: String, timestamp: Long) {
+    companion object {
+        val OBJECT_MAPPER = jacksonObjectMapper()
+    }
+
+    fun writeSensor(name: String, value: SensorValue, timestamp: Long) {
         val contentValues = ContentValues()
         with(contentValues) {
             put("name", name)
-            put("value", value)
+            put("value", OBJECT_MAPPER.writeValueAsString(value))
             put("timestamp", timestamp)
         }
         context.contentResolver.insert(CONTENT_URI, contentValues)
     }
 
-    val sensorValues: List<SensorValue>
+    val sensorValues: List<SensorReading>
         get() {
-            val sensorValues = arrayListOf<SensorValue>()
+            val sensorValues = arrayListOf<SensorReading>()
             context.contentResolver.query(CONTENT_URI, null, null, null, null)
                     .use { cursor ->
                         cursor.moveToFirst()
                         while (!cursor.isAfterLast) {
-                            sensorValues.add(SensorValue(
+                            sensorValues.add(SensorReading(
                                     cursor.getInt(0),
                                     cursor.getString(1),
-                                    cursor.getString(2),
+                                    OBJECT_MAPPER.readValue(cursor.getString(2), SensorValue::class.java),
                                     cursor.getLong(3)
                             ))
                             cursor.moveToNext()
