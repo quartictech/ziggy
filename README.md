@@ -2,8 +2,8 @@
 
 ## Running backend services locally
 
-The backend services rely on several Google Cloud components - Datastore, PubSub, and Storage.  There are emulators for
-Datastore and PubSub, but not for Storage.  Thus we write to a real cloud bucket, even when running locally.
+The backend services rely on Google Cloud components - Datastore and PubSub.  There are emulators for
+Datastore and PubSub.
 
 In order to run locally:
  
