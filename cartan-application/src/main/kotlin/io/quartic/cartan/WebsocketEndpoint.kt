@@ -12,7 +12,6 @@ import rx.Subscription
 import javax.websocket.Session
 
 class WebsocketEndpoint(val observable: Observable<Map<UserId, MessageProcessor.Entity>>): ResourceManagingEndpoint<Subscription>() {
-
     data class LiveEvent (
             val updateType: String,
             val timestamp: Long,
