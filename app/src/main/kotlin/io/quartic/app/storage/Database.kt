@@ -48,9 +48,9 @@ class Database(val context: Context) {
     }
 
     val backlogSize: Int
-        get() {
-            val cursor = context.contentResolver.query(CONTENT_URI.buildUpon().appendPath("count").build(), null, null, null, null)
-            cursor.moveToFirst()
-            return cursor.getInt(0)
-        }
+        get() = context.contentResolver.query(CONTENT_URI.buildUpon().appendPath("count").build(), null, null, null, null)
+                    .use { cursor ->
+                        cursor.moveToFirst()
+                        return cursor.getInt(0)
+                    }
 }
