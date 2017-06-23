@@ -43,13 +43,16 @@ android {
         }
     }
 
+    flavorDimensions "quartic"
     productFlavors {
         internal {
             applicationId "io.quartic.remote.internal"
+	    dimension "quartic"
         }
         
         real {
             applicationId "io.quartic.remote"
+	    dimension "quartic"
         }
     }
 
