@@ -23,7 +23,7 @@ dependencies:
     - if [ ! -d "${ANDROID_HOME}/extras/google/m2repository/com/google/android/gms/play-services/${PLAY_SERVICES_VERSION}" ]; then echo y | android update sdk --no-ui --all --filter "extra-google-m2repository";  fi
 
   override:
-    - ./gradlew resolveConfigurations --parallel --console=plain
+    - ./gradlew resolveConfigurations --console=plain
   cache_directories:
       # CircleCI seems to not expand env vars for cache_directories (https://discuss.circleci.com/t/variable-substitution-does-not-work-for-cache-directories/9080)
       - /usr/local/android-sdk-linux/platforms/android-25
