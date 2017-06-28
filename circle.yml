@@ -30,6 +30,7 @@ jobs:
                 A=$(adb shell getprop sys.boot_completed | tr -d '\r')
                 echo "Waiting for emulator to finish booting..."
             done
+            sleep 10
 
             ./gradlew connectedInternalDebugAndroidTest --parallel --info --console=plain
             ./gradlew check assembleInternalRelease --parallel --info --console=plain 
