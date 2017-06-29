@@ -33,5 +33,5 @@ jobs:
             done
             adb devices
 
-            ./gradlew connectedInternalDebugAndroidTest --parallel --info --console=plain
+            ./gradlew connectedInternalDebugAndroidTest --parallel --debug --console=plain
             ./gradlew check assembleInternalRelease --parallel --info --console=plain 
