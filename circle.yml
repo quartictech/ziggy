@@ -14,6 +14,7 @@ jobs:
           name: Install dependencies
           command: |
             ./gradlew resolveConfigurations --parallel --console=plain
+            echo ${ZIGGY_KEYSTORE} | base64 --decode > ${HOME}/release-key.jks  # APK signing key is in this keystore
 
       - run:
           name: Build artifacts and run tests
