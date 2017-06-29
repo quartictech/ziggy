@@ -20,9 +20,10 @@ jobs:
           command: |
             export ADB_INSTALL_TIMEOUT=120
             pushd /usr/local/android-sdk/emulator
-            ./emulator -memory 1024 -avd test -noaudio -no-window -gpu swiftshader -verbose &
+            ./emulator -memory 512 -avd test -noaudio -no-window -gpu swiftshader -verbose &
             popd
             adb wait-for-device
+            adb start-server
             A=$(adb shell getprop sys.boot_completed | tr -d '\r')
 
             while [ "$A" != "1" ]; do
@@ -30,7 +31,6 @@ jobs:
                 A=$(adb shell getprop sys.boot_completed | tr -d '\r')
                 echo "Waiting for emulator to finish booting..."
             done
-            sleep 10
             adb devices
 
             ./gradlew connectedInternalDebugAndroidTest --parallel --info --console=plain
