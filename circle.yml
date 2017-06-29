@@ -33,6 +33,7 @@ jobs:
                 echo "Waiting for emulator to finish booting..."
             done
             adb devices
+            adb logcat &
 
             ./gradlew build --parallel --console=plain
             ./gradlew connectedInternalDebugAndroidTest --debug --console=plain
