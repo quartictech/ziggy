@@ -21,7 +21,7 @@ jobs:
           command: |
             export ADB_INSTALL_TIMEOUT=120
             pushd /usr/local/android-sdk/emulator
-            ./emulator -memory 1024 -avd test -noaudio -no-window -gpu swiftshader -verbose &
+            ./emulator -avd test -noaudio -no-window -gpu swiftshader -verbose -qemu &
             popd
             adb wait-for-device
             adb start-server
