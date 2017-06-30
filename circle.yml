@@ -21,7 +21,7 @@ jobs:
           command: |
             sdkmanager  "system-images;android-24;google_apis;armeabi-v7a"
             echo "no" | avdmanager create avd -n test -d pixel -k  "system-images;android-24;google_apis;armeabi-v7a"
-            $ANDROID_HOME/tools/emulator -avd test -noaudio -no-window -gpu swiftshader -verbose -qemu &
+            SHELL=xterm $ANDROID_HOME/tools/emulator -avd test -noaudio -no-window -gpu swiftshader -verbose -qemu &
             adb start-server
             # export ADB_INSTALL_TIMEOUT=120
             # pushd /usr/local/android-sdk/emulator
@@ -39,7 +39,7 @@ jobs:
             # adb devices
             # adb logcat &
             #./gradlew build --console=plain
-            circle-android wait-for-device
+            circle-android wait-for-boot
             ./gradlew connectedInternalDebugAndroidTest --debug --console=plain
             ./gradlew check assembleInternalRelease --info --console=plain 
       - run:
