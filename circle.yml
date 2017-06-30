@@ -1,68 +1,52 @@
-machine:
-  java:
-    version: openjdk8
-  environment:
-    ANDROID_SDK_VERSION: 25
-    BUILD_TOOLS_VERSION: 25.0.2
-    SUPPORT_VERSION: 25.1.0
-    PLAY_SERVICES_VERSION: 10.0.1
-    # Disable emulator audio
-    QEMU_AUDIO_DRV: none
-  services:
-    - docker
+version: 2
 
-dependencies:
-  pre:
-    # Although the Android Gradle plugin claims to install SDK components
-    # (https://developer.android.com/studio/intro/update.html#download-with-gradle), it's still rife with shittiness
-    # (e.g. http://stackoverflow.com/a/38381577/129570 and https://code.google.com/p/android/issues/detail?id=230654).
-    # Thus we install the SDK and tooling components manually.
-    - if [ ! -d "${ANDROID_HOME}/platforms/android-${ANDROID_SDK_VERSION}" ]; then echo y | android update sdk --no-ui --all --filter "platform-tools,android-${ANDROID_SDK_VERSION}"; fi
-    - if [ ! -d "${ANDROID_HOME}/build-tools/${BUILD_TOOLS_VERSION}" ]; then echo y | android update sdk --no-ui --all --filter "build-tools-${BUILD_TOOLS_VERSION}"; fi
-    - if [ ! -d "${ANDROID_HOME}/extras/android/m2repository/com/android/support/design/${SUPPORT_VERSION}" ]; then echo y | android update sdk --no-ui --all --filter "extra-android-m2repository"; fi
-    - if [ ! -d "${ANDROID_HOME}/extras/google/m2repository/com/google/android/gms/play-services/${PLAY_SERVICES_VERSION}" ]; then echo y | android update sdk --no-ui --all --filter "extra-google-m2repository";  fi
+jobs:
+  build:
+    docker:
+      - image: circleci/android:api-25-alpha
 
-  override:
-    - ./gradlew resolveConfigurations --parallel --console=plain
-  cache_directories:
-      # CircleCI seems to not expand env vars for cache_directories (https://discuss.circleci.com/t/variable-substitution-does-not-work-for-cache-directories/9080)
-      - /usr/local/android-sdk-linux/platforms/android-25
-      - /usr/local/android-sdk-linux/platform-tools
-      - /usr/local/android-sdk-linux/build-tools/25.0.2
-      - /usr/local/android-sdk-linux/extras/android/m2repository
-      - /usr/local/android-sdk-linux/extras/google/m2repository
+    working_directory: ~/ziggy
 
-test:
-  pre:
-    - emulator -avd circleci-android24 -no-window:
-        background: true
-        parallel: true
-    - circle-android wait-for-boot
-    - echo ${ZIGGY_KEYSTORE} | base64 --decode > ${HOME}/release-key.jks  # APK signing key is in this keystore
-  override:
-    # Test the app
-    - ./gradlew connectedInternalDebugAndroidTest
-    # This is needed to free up memory on circle when we're done
-    - adb devices | grep emulator | cut -f1 | while read line; do adb -s $line emu kill; done
-    - ./gradlew check assembleInternalRelease --parallel --info --console=plain
-  post:
-    - mkdir -p ${CIRCLE_TEST_REPORTS}/junit/
-    - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ${CIRCLE_TEST_REPORTS}/junit/ \;
+    steps:
+      - checkout
 
-deployment:
-  play_store:
-    branch: develop
-    commands:
-      - curl https://raw.githubusercontent.com/quartictech/circleci-utils/develop/circleci-gcloud-login | bash
-      - echo ${GOOGLE_PLAY_SERVICE_KEY} | base64 --decode > ${HOME}/google-play-service-key.json
-      # Note we can change to publishRelease once we have the play store content in repo
-      - ./gradlew dockerPush publishApkRealRelease --parallel --info --console=plain
-  docker_push:
-    branch: /.*/
-    commands:
-      - curl https://raw.githubusercontent.com/quartictech/circleci-utils/develop/circleci-gcloud-login | bash
-      - ./gradlew dockerPush --parallel --info --console=plain
+      - run:
+          name: Install dependencies
+          command: |
+            ./gradlew resolveConfigurations --parallel --console=plain
+            echo ${ZIGGY_KEYSTORE} | base64 --decode > ${HOME}/release-key.jks  # APK signing key is in this keystore
 
-general:
-  artifacts:
-    - app/build/outputs
+      - run:
+          name: Build artifacts and run tests
+          command: |
+            sudo apt-get install file
+            sdkmanager  "system-images;android-24;google_apis;armeabi-v7a"
+            echo "no" | avdmanager create avd -n test -d pixel -k  "system-images;android-24;google_apis;armeabi-v7a"
+            $ANDROID_HOME/tools/emulator -avd test -noaudio -no-window -gpu swiftshader -verbose -qemu &
+            adb start-server
+            # export ADB_INSTALL_TIMEOUT=120
+            # pushd /usr/local/android-sdk/emulator
+            # ./emulator -avd test -noaudio -no-window -gpu swiftshader -verbose -qemu &
+            # popd
+            # adb wait-for-device
+            # adb start-server
+            # A=$(adb shell getprop sys.boot_completed | tr -d '\r')
+
+            # while [ "$A" != "1" ]; do
+            #     sleep 2
+            #     A=$(adb shell getprop sys.boot_completed | tr -d '\r')
+            #     echo "Waiting for emulator to finish booting..."
+            # done
+            # adb devices
+            # adb logcat &
+            #./gradlew build --console=plain
+            circle-android wait-for-boot
+            ./gradlew connectedInternalDebugAndroidTest --debug --console=plain
+            ./gradlew check assembleInternalRelease --info --console=plain 
+      - run:
+          name: Collect test results
+          command: |
+            mkdir -p /test-results
+            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} /test-results/ \;
+      - store_test_results:
+          path: /test-results/
