@@ -37,7 +37,7 @@ jobs:
             # done
             # adb devices
             # adb logcat &
-            ./gradlew build --parallel --console=plain
+            ./gradlew build --console=plain
             circle-android wait-for-device
             ./gradlew connectedInternalDebugAndroidTest --debug --console=plain
-            ./gradlew check assembleInternalRelease --parallel --info --console=plain 
+            ./gradlew check assembleInternalRelease --info --console=plain 
