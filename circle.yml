@@ -41,3 +41,10 @@ jobs:
             circle-android wait-for-device
             ./gradlew connectedInternalDebugAndroidTest --debug --console=plain
             ./gradlew check assembleInternalRelease --info --console=plain 
+      - run:
+          name: Collect test results
+          command: |
+            mkdir -p /test-results
+            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} /test-results/ \;
+      - store_test_results:
+          path: /test-results/
