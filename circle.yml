@@ -3,7 +3,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: quartic/uber-builder:47
+      - image: circleci/android:api-25-alpha
 
     working_directory: ~/ziggy
 
@@ -19,21 +19,24 @@ jobs:
       - run:
           name: Build artifacts and run tests
           command: |
-            export ADB_INSTALL_TIMEOUT=120
-            pushd /usr/local/android-sdk/emulator
-            ./emulator -avd test -noaudio -no-window -gpu swiftshader -verbose -qemu &
-            popd
-            adb wait-for-device
-            adb start-server
-            A=$(adb shell getprop sys.boot_completed | tr -d '\r')
+            sdkmanager  "system-images;android-25;google_apis;armeabi-v7a"
+            echo "no" | avdmanager create avd -n test -d pixel -k  "system-images;android-25;google_apis;armeabi-v7a"
+            emulator -avd test -noaudio -no-window -gpu swiftshader -verbose -qemu &
+            # export ADB_INSTALL_TIMEOUT=120
+            # pushd /usr/local/android-sdk/emulator
+            # ./emulator -avd test -noaudio -no-window -gpu swiftshader -verbose -qemu &
+            # popd
+            # adb wait-for-device
+            # adb start-server
+            # A=$(adb shell getprop sys.boot_completed | tr -d '\r')
 
-            while [ "$A" != "1" ]; do
-                sleep 2
-                A=$(adb shell getprop sys.boot_completed | tr -d '\r')
-                echo "Waiting for emulator to finish booting..."
-            done
-            adb devices
-            adb logcat &
+            # while [ "$A" != "1" ]; do
+            #     sleep 2
+            #     A=$(adb shell getprop sys.boot_completed | tr -d '\r')
+            #     echo "Waiting for emulator to finish booting..."
+            # done
+            # adb devices
+            # adb logcat &
 
             ./gradlew build --parallel --console=plain
             ./gradlew connectedInternalDebugAndroidTest --debug --console=plain
