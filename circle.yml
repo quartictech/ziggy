@@ -20,7 +20,7 @@ jobs:
           name: Build artifacts and run tests
           command: |
             sdkmanager  "system-images;android-24;google_apis;armeabi-v7a"
-            echo "no" | avdmanager create avd -n test -d pixel -k  "system-images;android-25;google_apis;armeabi-v7a"
+            echo "no" | avdmanager create avd -n test -d pixel -k  "system-images;android-24;google_apis;armeabi-v7a"
             $ANDROID_HOME/tools/emulator -avd test -noaudio -no-window -gpu swiftshader -verbose -qemu &
             adb-start-server
             # export ADB_INSTALL_TIMEOUT=120
