@@ -86,3 +86,7 @@ Note there's both `versionCode` and `versionName` to consider.  Could use the Ci
 what to do for the latter.  Maybe based on Git tags?
 
 See https://developer.android.com/studio/publish/versioning.html for more info.
+
+## License
+
+This project is made available under [BSD License 2.0](https://github.com/quartictech/ziggy/blob/develop/LICENSE).
